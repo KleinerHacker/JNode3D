@@ -1,12 +1,11 @@
 package org.pcsoft.framework.jnode3d.android;
 
-import org.pcsoft.framework.jnode3d.Scene3D;
-import org.pcsoft.framework.jnode3d.internal.InternalScene3D;
+import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.node.Node3D;
-import org.pcsoft.framework.jnode3d.type.Color3D;
+import org.pcsoft.framework.jnode3d.type.Color;
 
-public class JNode3DScene implements Scene3D {
-    private final InternalScene3D scene3D = new InternalScene3D();
+public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
+    private final JNode3DInternalScene scene3D = new JNode3DInternalScene(null);//TODO
 
     @Override
     public Node3D getRoot() {
@@ -19,12 +18,12 @@ public class JNode3DScene implements Scene3D {
     }
 
     @Override
-    public Color3D getBackColor() {
+    public Color getBackColor() {
         return scene3D.getBackColor();
     }
 
     @Override
-    public void setBackColor(Color3D color) {
+    public void setBackColor(Color color) {
         scene3D.setBackColor(color);
     }
 }

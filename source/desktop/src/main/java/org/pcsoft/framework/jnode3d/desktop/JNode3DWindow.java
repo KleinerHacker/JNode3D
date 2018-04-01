@@ -4,17 +4,16 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
-import org.pcsoft.framework.jnode3d.node.Node3D;
 
 import java.awt.*;
 import java.nio.IntBuffer;
 
-public class JNodeWindow3D extends JNodeStandalone3D {
+public class JNode3DWindow extends JNode3DStandalone {
     private boolean resizable = true;
     private int width = 300, height = 300;
     private boolean centerWindow = true;
 
-    public JNodeWindow3D(JNode3DConfiguration configuration) {
+    public JNode3DWindow(JNode3DConfiguration configuration) {
         super(configuration);
 
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
@@ -51,16 +50,6 @@ public class JNodeWindow3D extends JNodeStandalone3D {
 
     public void setCenterWindow(boolean centerWindow) {
         this.centerWindow = centerWindow;
-    }
-
-    @Override
-    public Node3D getRoot() {
-        return root;
-    }
-
-    @Override
-    public void setRoot(Node3D root) {
-        this.root = root;
     }
 
     @Override

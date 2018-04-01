@@ -5,10 +5,10 @@ import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
 
 import java.awt.*;
 
-public final class JNodeFullscreen3D extends JNodeStandalone3D {
+public final class JNode3DFullscreen extends JNode3DStandalone {
     private Dimension dimension = new Dimension(800, 600);
 
-    public JNodeFullscreen3D(JNode3DConfiguration configuration) {
+    public JNode3DFullscreen(JNode3DConfiguration configuration) {
         super(configuration);
     }
 

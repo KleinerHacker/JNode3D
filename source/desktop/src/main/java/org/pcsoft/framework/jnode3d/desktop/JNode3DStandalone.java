@@ -4,25 +4,25 @@ import org.apache.commons.lang.StringUtils;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
-import org.pcsoft.framework.jnode3d.Scene3D;
+import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
+import org.pcsoft.framework.jnode3d.desktop.type.GLImpl;
+import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.node.Node3D;
-import org.pcsoft.framework.jnode3d.type.Color3D;
+import org.pcsoft.framework.jnode3d.type.Color;
 
 import java.awt.*;
 
-public abstract class JNodeStandalone3D implements Scene3D {
-    protected Node3D root;
+public abstract class JNode3DStandalone implements JNode3DScene {
     protected String title = "";
     protected boolean autoExit = true;
-    private Color3D backColor = Color3D.BLACK;
 
     protected final JNode3DConfiguration configuration;
 
     protected long windowPtr;
+    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(new GLImpl());
 
-    protected JNodeStandalone3D(JNode3DConfiguration configuration) {
+    protected JNode3DStandalone(JNode3DConfiguration configuration) {
         this.configuration = configuration;
 
         if (!LWJGL.isInitialized()) {
@@ -47,23 +47,23 @@ public abstract class JNodeStandalone3D implements Scene3D {
     }
 
     @Override
-    public Color3D getBackColor() {
-        return backColor;
-    }
-
-    @Override
-    public void setBackColor(Color3D backColor) {
-        this.backColor = backColor;
-    }
-
-    @Override
     public Node3D getRoot() {
-        return root;
+        return internalScene.getRoot();
     }
 
     @Override
     public void setRoot(Node3D root) {
-        this.root = root;
+        internalScene.setRoot(root);
+    }
+
+    @Override
+    public Color getBackColor() {
+        return internalScene.getBackColor();
+    }
+
+    @Override
+    public void setBackColor(Color color) {
+        internalScene.setBackColor(color);
     }
 
     public final void showAndWait() {
@@ -99,6 +99,8 @@ public abstract class JNodeStandalone3D implements Scene3D {
             GLFW.glfwSwapInterval(1);
         }
 
+        internalScene.initialize();
+
         onInit();
     }
 
@@ -122,13 +124,10 @@ public abstract class JNodeStandalone3D implements Scene3D {
         // bindings available for use.
         GL.createCapabilities();
 
-        // Set the clear color
-        GL11.glClearColor(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA());
-
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!GLFW.glfwWindowShouldClose(windowPtr)) {
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+            internalScene.loop();
 
             GLFW.glfwSwapBuffers(windowPtr); // swap the color buffers
 

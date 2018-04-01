@@ -11,4 +11,11 @@
     <artifactId>jnode3d-core</artifactId>
     <name>${project.groupId} - ${project.artifactId}</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
