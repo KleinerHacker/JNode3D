@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.transformation;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3f;
 
 public final class Scaling extends Transformation {
     private float x, y, z;
@@ -35,13 +35,13 @@ public final class Scaling extends Transformation {
         this.z = z;
     }
 
-    public Vector3D getScale() {
-        return new Vector3D(x, y, z);
+    public Vector3f getScale() {
+        return new Vector3f(x, y, z);
     }
 
-    public void setScale(Vector3D scale) {
-        x = (float) scale.getX();
-        y = (float) scale.getY();
-        z = (float) scale.getZ();
+    public void setScale(Vector3f scale) {
+        x = scale.x();
+        y = scale.y();
+        z = scale.z();
     }
 }

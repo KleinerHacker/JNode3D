@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.transformation;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3f;
 
 public abstract class Transformation {
     //<editor-fold desc="Rotation">
@@ -9,11 +9,11 @@ public abstract class Transformation {
     }
 
     public static Rotation createRotation(float angle) {
-        return createRotation(angle, new Vector3D(0, 1, 0));
+        return createRotation(angle, new Vector3f(0, 1, 0));
     }
 
-    public static Rotation createRotation(float angle, Vector3D axis) {
-        return createRotation(angle, (float) axis.getX(), (float) axis.getY(), (float) axis.getZ());
+    public static Rotation createRotation(float angle, Vector3f axis) {
+        return createRotation(angle, axis.x(), axis.y(), axis.z());
     }
 
     public static Rotation createRotation(float angle, float axisX, float axisY, float axisZ) {
@@ -23,11 +23,11 @@ public abstract class Transformation {
 
     //<editor-fold desc="Translation">
     public static Translation createTranslation() {
-        return createTranslation(Vector3D.ZERO);
+        return createTranslation(new Vector3f());
     }
 
-    public static Translation createTranslation(Vector3D position) {
-        return createTranslation((float) position.getX(), (float) position.getY(), (float) position.getZ());
+    public static Translation createTranslation(Vector3f position) {
+        return createTranslation(position.x(), position.y(), position.z());
     }
 
     public static Translation createTranslation(float x, float y, float z) {
@@ -40,8 +40,8 @@ public abstract class Transformation {
         return createScaling(1f);
     }
 
-    public static Scaling createScaling(Vector3D scale) {
-        return createScaling((float) scale.getX(), (float) scale.getY(), (float) scale.getZ());
+    public static Scaling createScaling(Vector3f scale) {
+        return createScaling(scale.x(), scale.y(), scale.z());
     }
 
     public static Scaling createScaling(float scale) {

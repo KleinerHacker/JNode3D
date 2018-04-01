@@ -13,8 +13,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
+            <groupId>org.joml</groupId>
+            <artifactId>joml</artifactId>
         </dependency>
     </dependencies>
 

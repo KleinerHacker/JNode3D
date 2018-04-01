@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.pcsoft.framework.jnode3d.desktop.type.GLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
+import org.pcsoft.framework.jnode3d.node.Camera;
 import org.pcsoft.framework.jnode3d.node.Node3D;
 import org.pcsoft.framework.jnode3d.type.Color;
 
@@ -36,5 +37,15 @@ public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScen
     @Override
     public void setBackColor(Color color) {
         JNode3DInternalScene.setBackColor(color);
+    }
+
+    @Override
+    public Camera getCamera() {
+        return JNode3DInternalScene.getCamera();
+    }
+
+    @Override
+    public void setCamera(Camera camera) {
+        JNode3DInternalScene.setCamera(camera);
     }
 }

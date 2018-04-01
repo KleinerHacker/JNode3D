@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.transformation;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3f;
 
 public final class Translation extends Transformation {
     private float x, y, z;
@@ -35,13 +35,13 @@ public final class Translation extends Transformation {
         this.z = z;
     }
 
-    public Vector3D getPosition() {
-        return new Vector3D(x, y, z);
+    public Vector3f getPosition() {
+        return new Vector3f(x, y, z);
     }
 
-    public void setPosition(Vector3D position) {
-        x = (float) position.getX();
-        y = (float) position.getY();
-        z = (float) position.getZ();
+    public void setPosition(Vector3f position) {
+        x = position.x();
+        y = position.y();
+        z = position.z();
     }
 }

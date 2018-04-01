@@ -1,15 +1,15 @@
 package org.pcsoft.framework.jnode3d.node;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.internal.GL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public abstract class ConstructedObject3D extends Object3D {
-    protected Vector3D[] points = new Vector3D[0];
-    protected Vector2D[] texCoords = new Vector2D[0];
+    protected Vector3f[] points = new Vector3f[0];
+    protected Vector2f[] texCoords = new Vector2f[0];
     protected Color[] colors = new Color[0];
-    protected Vector3D[] normals = new Vector3D[0];
+    protected Vector3f[] normals = new Vector3f[0];
 
     protected abstract void recalculate();
 
@@ -25,5 +25,6 @@ public abstract class ConstructedObject3D extends Object3D {
             }
         }
         gl.glEnd();
+        gl.glFlush();
     }
 }

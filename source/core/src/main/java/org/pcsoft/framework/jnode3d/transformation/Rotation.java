@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.transformation;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3f;
 
 public final class Rotation extends Transformation {
     private float angle;
@@ -45,13 +45,13 @@ public final class Rotation extends Transformation {
         this.axisZ = axisZ;
     }
 
-    public Vector3D getAxis() {
-        return new Vector3D(axisX, axisY, axisZ);
+    public Vector3f getAxis() {
+        return new Vector3f(axisX, axisY, axisZ);
     }
 
-    public void setAxis(Vector3D axis) {
-        axisX = (float) axis.getX();
-        axisY = (float) axis.getY();
-        axisZ = (float) axis.getZ();
+    public void setAxis(Vector3f axis) {
+        axisX = axis.x();
+        axisY = axis.y();
+        axisZ = axis.z();
     }
 }

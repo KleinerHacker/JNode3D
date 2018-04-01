@@ -46,6 +46,12 @@ public class GLImpl extends GL {
     public void glEnd() {
         GL11.glEnd();
     }
+
+    @Override
+    public void glFlush() {
+        GL11.glFlush();
+    }
+
     //</editor-fold>
 
 
@@ -68,6 +74,11 @@ public class GLImpl extends GL {
     @Override
     public void glFrustum(float left, float top, float right, float bottom, float near, float far) {
         GL11.glFrustum(left, right, bottom, top, near, far);
+    }
+
+    @Override
+    public void glLoadMatrix(float[] matrix) {
+        GL11.glLoadMatrixf(matrix);
     }
 
     //</editor-fold>

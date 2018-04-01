@@ -8,6 +8,7 @@ import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.desktop.type.GLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
+import org.pcsoft.framework.jnode3d.node.Camera;
 import org.pcsoft.framework.jnode3d.node.Node3D;
 import org.pcsoft.framework.jnode3d.type.Color;
 
@@ -64,6 +65,16 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     @Override
     public void setBackColor(Color color) {
         internalScene.setBackColor(color);
+    }
+
+    @Override
+    public Camera getCamera() {
+        return internalScene.getCamera();
+    }
+
+    @Override
+    public void setCamera(Camera camera) {
+        internalScene.setCamera(camera);
     }
 
     public final void showAndWait() {

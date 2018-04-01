@@ -1,7 +1,8 @@
 package org.pcsoft.framework.jnode3d.internal;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.Rectangle;
 
@@ -68,8 +69,8 @@ public abstract class GL {
     //<editor-fold desc="Rendering">
     public abstract void glVertex(float x, float y, float z);
 
-    public final void glVertex(Vector3D vector3D) {
-        glVertex((float) vector3D.getX(), (float) vector3D.getY(), (float) vector3D.getZ());
+    public final void glVertex(Vector3f vector3D) {
+        glVertex(vector3D.x(), vector3D.y(), vector3D.z());
     }
 
     public abstract void glColor(float r, float g, float b);
@@ -80,23 +81,31 @@ public abstract class GL {
 
     public abstract void glTexCoord(float x, float y);
 
-    public final void glTexCoord(Vector2D vector2D) {
-        glTexCoord((float) vector2D.getX(), (float) vector2D.getY());
+    public final void glTexCoord(Vector2f vector2D) {
+        glTexCoord(vector2D.x(), vector2D.y());
     }
 
     public abstract void glNormal(float x, float y, float z);
 
-    public final void glNormal(Vector3D vector3D) {
-        glNormal((float) vector3D.getX(), (float) vector3D.getY(), (float) vector3D.getZ());
+    public final void glNormal(Vector3f vector3D) {
+        glNormal(vector3D.x(), vector3D.y(), vector3D.z());
     }
 
     public abstract void glBegin(int mode);
 
     public abstract void glEnd();
+
+    public abstract void glFlush();
     //</editor-fold>
 
     //<editor-fold desc="Matrix">
     public abstract void glMatrixMode(int mode);
+
+    public abstract void glLoadMatrix(float[] matrix);
+
+    public final void glLoadMatrix(Matrix4f matrix) {
+        glLoadMatrix(matrix.get(new float[4 * 4]));
+    }
 
     public abstract void glLoadIdentity();
 
