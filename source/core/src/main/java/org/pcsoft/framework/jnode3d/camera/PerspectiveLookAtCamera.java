@@ -2,7 +2,7 @@ package org.pcsoft.framework.jnode3d.camera;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.internal.GL;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
 
 public final class PerspectiveLookAtCamera extends PerspectiveCamera {
     private Vector3f lookAt = new Vector3f();
@@ -33,12 +33,12 @@ public final class PerspectiveLookAtCamera extends PerspectiveCamera {
     }
 
     @Override
-    protected void applyTransformation(GL gl, int width, int height) {
-        super.applyTransformation(gl, width, height);
+    protected void applyTransformation(OGL OGL, int width, int height) {
+        super.applyTransformation(OGL, width, height);
 
         Matrix4f matrix4f = new Matrix4f();
         matrix4f.perspective((float) Math.toRadians(getAngle()), getAspect(), getNear(), getFar());
             matrix4f.lookAt(getPosition(),lookAt, upDirection);
-        gl.glLoadMatrix(matrix4f);
+        OGL.glLoadMatrix(matrix4f);
     }
 }

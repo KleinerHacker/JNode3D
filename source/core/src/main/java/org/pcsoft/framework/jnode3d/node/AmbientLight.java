@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.node;
 
-import org.pcsoft.framework.jnode3d.internal.GL;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public final class AmbientLight extends LightNode {
@@ -31,7 +31,7 @@ public final class AmbientLight extends LightNode {
     }
 
     @Override
-    public void render(GL gl) {
+    public void render(OGL OGL) {
 
     }
 }

@@ -1,6 +1,7 @@
 package org.pcsoft.framework.jnode3d.camera;
 
-import org.pcsoft.framework.jnode3d.internal.GL;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.type.MatrixMode;
 
 public abstract class Camera {
     private float near = 0.001f, far = 100.0f;
@@ -29,14 +30,11 @@ public abstract class Camera {
         this.far = far;
     }
 
-    public final void apply(GL gl, int width, int height) {
-        gl.glMatrixMode(GL.GL_PROJECTION);
-        gl.glLoadIdentity();
-        applyTransformation(gl, width, height);
-
-        gl.glMatrixMode(GL.GL_MODELVIEW);
-        gl.glLoadIdentity();
+    public final void apply(OGL OGL, int width, int height) {
+        OGL.glMatrixMode(MatrixMode.Projection);
+        OGL.glLoadIdentity();
+        applyTransformation(OGL, width, height);
     }
 
-    protected abstract void applyTransformation(GL gl, int width, int height);
+    protected abstract void applyTransformation(OGL OGL, int width, int height);
 }

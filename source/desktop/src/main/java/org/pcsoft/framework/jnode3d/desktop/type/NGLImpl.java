@@ -1,19 +1,18 @@
 package org.pcsoft.framework.jnode3d.desktop.type;
 
 import org.lwjgl.opengl.GL11;
-import org.pcsoft.framework.jnode3d.internal.GL;
+import org.pcsoft.framework.jnode3d.internal.NGL;
+import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
 
-public class GLImpl extends GL {
+public class NGLImpl implements NGL {
     //<editor-fold desc="Clean Up">
-    @Override
-    public void glClearColor(float r, float g, float b, float a) {
-        GL11.glClearColor(r, g, b, a);
-    }
 
     @Override
-    public void glClear(int mask) {
+    public void glClear(float r, float g, float b, float a, int mask) {
+        GL11.glClearColor(r, g, b, a);
         GL11.glClear(mask);
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Rendering">
@@ -43,20 +42,31 @@ public class GLImpl extends GL {
     }
 
     @Override
-    public void glBegin(int mode) {
+    public void glDraw(int mode, DrawingCallback drawingCallback) {
         GL11.glBegin(mode);
-    }
-
-    @Override
-    public void glEnd() {
+        drawingCallback.draw();
         GL11.glEnd();
     }
 
+    //</editor-fold>
+
+    //<editor-fold desc="Texture">
     @Override
-    public void glFlush() {
-        GL11.glFlush();
+    public void glTextureWrap(int sWrap, int tWrap) {
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, sWrap);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, tWrap);
     }
 
+    @Override
+    public void glTextureBorder(float r, float g, float b, float a) {
+        GL11.glTexParameterfv(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_BORDER_COLOR, new float[]{r, g, b, a});
+    }
+
+    @Override
+    public void glMinMagFilter(int minFilter, int magFilter) {
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minFilter);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, magFilter);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Matrix">

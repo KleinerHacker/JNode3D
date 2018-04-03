@@ -2,18 +2,20 @@ package org.pcsoft.framework.jnode3d.desktop.awt;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.pcsoft.framework.jnode3d.desktop.type.GLImpl;
+import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
+import org.pcsoft.framework.jnode3d.desktop.type.NGLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.node.Node;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 
 public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
     private final JNode3DInternalScene JNode3DInternalScene;
 
-    public JNode3DAwtScene(int width, int height) {
-        JNode3DInternalScene = new JNode3DInternalScene(new GLImpl(), width, height);
+    public JNode3DAwtScene(JNode3DConfiguration configuration, int width, int height) {
+        JNode3DInternalScene = new JNode3DInternalScene(configuration, new OGL(new NGLImpl()), width, height);
 
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -69,5 +71,10 @@ public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScen
     @Override
     public void setHeight(int height) {
         JNode3DInternalScene.setHeight(height);
+    }
+
+    @Override
+    public JNode3DConfiguration getConfiguration() {
+        return JNode3DInternalScene.getConfiguration();
     }
 }

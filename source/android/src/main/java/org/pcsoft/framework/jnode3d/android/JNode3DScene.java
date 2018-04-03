@@ -1,12 +1,13 @@
 package org.pcsoft.framework.jnode3d.android;
 
+import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
-    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(null, 800, 600);//TODO
+    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(null,null, 800, 600);//TODO
 
     @Override
     public Node getRoot() {
@@ -56,5 +57,10 @@ public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
     @Override
     public void setHeight(int height) {
         internalScene.setHeight(height);
+    }
+
+    @Override
+    public JNode3DConfiguration getConfiguration() {
+        return internalScene.getConfiguration();
     }
 }

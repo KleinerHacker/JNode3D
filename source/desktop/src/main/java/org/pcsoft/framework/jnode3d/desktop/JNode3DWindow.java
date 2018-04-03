@@ -3,7 +3,7 @@ package org.pcsoft.framework.jnode3d.desktop;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
-import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
+import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 
 import java.awt.*;
 import java.nio.IntBuffer;

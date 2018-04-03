@@ -26,7 +26,7 @@ public abstract class JNode3DTest {
 
     private static PerspectiveLookAtCamera buildCamera() {
         final PerspectiveLookAtCamera camera = new PerspectiveLookAtCamera();
-        camera.setPosition(new Vector3f(-1, -1, -1));
+        camera.setPosition(new Vector3f(-1f, -0.5f, -1f));
         
         return camera;
     }

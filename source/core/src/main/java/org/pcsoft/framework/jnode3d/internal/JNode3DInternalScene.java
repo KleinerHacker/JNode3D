@@ -4,10 +4,11 @@ import org.joml.Matrix4f;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
-import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.node.RenderNode;
-import org.pcsoft.framework.jnode3d.node.TransformableNode;
+import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
+import org.pcsoft.framework.jnode3d.node.*;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.MatrixMode;
 
 public final class JNode3DInternalScene implements JNode3DScene {
     private Node root;
@@ -15,11 +16,13 @@ public final class JNode3DInternalScene implements JNode3DScene {
     private Camera camera = new OrthographicCamera();
     private int width, height;
 
-    private final GL gl;
+    private final OGL ogl;
+    private final JNode3DConfiguration configuration;
     private boolean initialized = false;
 
-    public JNode3DInternalScene(GL gl, int width, int height) {
-        this.gl = gl;
+    public JNode3DInternalScene(JNode3DConfiguration configuration, OGL ogl, int width, int height) {
+        this.configuration = configuration;
+        this.ogl = ogl;
         this.width = width;
         this.height = height;
     }
@@ -74,6 +77,11 @@ public final class JNode3DInternalScene implements JNode3DScene {
         this.height = height;
     }
 
+    @Override
+    public JNode3DConfiguration getConfiguration() {
+        return configuration;
+    }
+
     public void initialize() {
         if (initialized)
             throw new IllegalStateException("Already initialized");
@@ -82,11 +90,14 @@ public final class JNode3DInternalScene implements JNode3DScene {
     }
 
     public void loop() {
-        camera.apply(gl, width, height);
+        camera.apply(ogl, width, height);
+
+        ogl.glMatrixMode(MatrixMode.ModelView);
+        ogl.glLoadIdentity();
 
         // Set the clear color
-        gl.glClearColor(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA());
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
+        ogl.glClear(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA(),
+                OGL.GL_COLOR_BUFFER_BIT | OGL.GL_DEPTH_BUFFER_BIT | OGL.GL_STENCIL_BUFFER_BIT);
 
         renderChildren(root, new Matrix4f().identity());
     }
@@ -95,24 +106,36 @@ public final class JNode3DInternalScene implements JNode3DScene {
         if (root == null)
             return;
 
-        //Transformation
-        final Matrix4f childRootMatrix; //Store for child
-        if (root instanceof TransformableNode) {
-            childRootMatrix = ((TransformableNode) root).transform(gl, rootMatrix);
+        if (root instanceof ManuelNode) { //Manuel rendering
+            ((ManuelNode) root).getCallback().process(ogl);
         } else {
-            childRootMatrix = rootMatrix;
-        }
+            //Transformation
+            final Matrix4f childRootMatrix; //Store for child
+            if (root instanceof TransformableNode) {
+                childRootMatrix = ((TransformableNode) root).transform(ogl, rootMatrix);
+            } else {
+                childRootMatrix = rootMatrix;
+            }
 
-        //Rendering
-        if (root instanceof RenderNode) {
-            ((RenderNode) root).render(gl);
-        }
+            //Texture
+            if (root instanceof TexturedNode) {
+                ((TexturedNode) root).setupTextureAttributes(configuration, ogl);
+            }
 
-        for (final Node child : root.getChildren()) {
-            if (!(child instanceof RenderNode))
-                continue;
+            //Rendering
+            if (root instanceof RenderNode) {
+                ((RenderNode) root).render(ogl);
+            }
 
-            renderChildren(child, childRootMatrix);
+            //Sub elements
+            if (root instanceof Group) {
+                for (final Node child : ((Group) root).getChildren()) {
+                    if (!(child instanceof RenderNode))
+                        continue;
+
+                    renderChildren(child, childRootMatrix);
+                }
+            }
         }
     }
 }

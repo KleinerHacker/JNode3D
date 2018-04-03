@@ -1,8 +1,8 @@
 package org.pcsoft.framework.jnode3d.camera;
 
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.internal.GL;
-import org.pcsoft.framework.jnode3d.type.Rectangle;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.type.Bounds2D;
 
 public abstract class PerspectiveCamera extends Camera {
     private float angle = 45.0f, aspect = 1f;
@@ -45,7 +45,7 @@ public abstract class PerspectiveCamera extends Camera {
     }
 
     @Override
-    protected void applyTransformation(GL gl, int width, int height) {
-        gl.glFrustum(new Rectangle(0, 0, width, height), -1, 1);
+    protected void applyTransformation(OGL OGL, int width, int height) {
+        OGL.glFrustum(new Bounds2D(0, 0, width, height), -1, 1);
     }
 }

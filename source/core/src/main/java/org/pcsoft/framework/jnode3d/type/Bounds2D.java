@@ -2,11 +2,11 @@ package org.pcsoft.framework.jnode3d.type;
 
 import java.util.Objects;
 
-public final class Rectangle {
+public class Bounds2D {
     private float left, top;
     private float width, height;
 
-    public Rectangle(float left, float top, float width, float height) {
+    public Bounds2D(float left, float top, float width, float height) {
         this.left = left;
         this.top = top;
         this.width = width;
@@ -65,11 +65,11 @@ public final class Rectangle {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Rectangle rectangle = (Rectangle) o;
-        return Float.compare(rectangle.left, left) == 0 &&
-                Float.compare(rectangle.top, top) == 0 &&
-                Float.compare(rectangle.width, width) == 0 &&
-                Float.compare(rectangle.height, height) == 0;
+        Bounds2D bounds2D = (Bounds2D) o;
+        return Float.compare(bounds2D.left, left) == 0 &&
+                Float.compare(bounds2D.top, top) == 0 &&
+                Float.compare(bounds2D.width, width) == 0 &&
+                Float.compare(bounds2D.height, height) == 0;
     }
 
     @Override
@@ -79,7 +79,7 @@ public final class Rectangle {
 
     @Override
     public String toString() {
-        return "Rectangle{" +
+        return "Bounds2D{" +
                 "left=" + left +
                 ", top=" + top +
                 ", width=" + width +

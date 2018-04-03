@@ -1,11 +1,11 @@
 package org.pcsoft.framework.jnode3d.camera;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.pcsoft.framework.jnode3d.internal.GL;
-import org.pcsoft.framework.jnode3d.type.Rectangle;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.type.Bounds2D;
 
 public final class OrthographicCamera extends Camera {
-    private Rectangle viewport = null;
+    private Bounds2D viewport = null;
 
     public OrthographicCamera() {
     }
@@ -14,26 +14,26 @@ public final class OrthographicCamera extends Camera {
         super(near, far);
     }
 
-    public OrthographicCamera(Rectangle viewport) {
+    public OrthographicCamera(Bounds2D viewport) {
         this.viewport = viewport;
     }
 
-    public OrthographicCamera(Rectangle viewport, float near, float far) {
+    public OrthographicCamera(Bounds2D viewport, float near, float far) {
         super(near, far);
         this.viewport = viewport;
     }
 
-    public Rectangle getViewport() {
+    public Bounds2D getViewport() {
         return viewport;
     }
 
-    public void setViewport(Rectangle viewport) {
+    public void setViewport(Bounds2D viewport) {
         this.viewport = viewport;
     }
 
     @Override
-    protected void applyTransformation(GL gl, int width, int height) {
-        gl.glOrtho((Rectangle) ObjectUtils.defaultIfNull(viewport, new Rectangle(0, 0, width, height)),
+    protected void applyTransformation(OGL OGL, int width, int height) {
+        OGL.glOrtho((Bounds2D) ObjectUtils.defaultIfNull(viewport, new Bounds2D(0, 0, width, height)),
                 getNear(), getFar());
     }
 }

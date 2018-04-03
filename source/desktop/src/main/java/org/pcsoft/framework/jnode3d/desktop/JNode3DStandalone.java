@@ -5,11 +5,12 @@ import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
-import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
-import org.pcsoft.framework.jnode3d.desktop.type.GLImpl;
+import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
+import org.pcsoft.framework.jnode3d.desktop.type.NGLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.node.Node;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 import java.awt.*;
@@ -21,15 +22,11 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     protected String title = "";
     protected boolean autoExit = true;
 
-    protected final JNode3DConfiguration configuration;
-
     protected long windowPtr;
     private final JNode3DInternalScene internalScene;
 
     protected JNode3DStandalone(JNode3DConfiguration configuration, int width, int height) {
-        internalScene = new JNode3DInternalScene(new GLImpl(), width, height);
-
-        this.configuration = configuration;
+        internalScene = new JNode3DInternalScene(configuration, new OGL(new NGLImpl()), width, height);
 
         if (!LWJGL.isInitialized()) {
             LWJGL.initialize();
@@ -102,6 +99,11 @@ public abstract class JNode3DStandalone implements JNode3DScene {
         internalScene.setHeight(height);
     }
 
+    @Override
+    public JNode3DConfiguration getConfiguration() {
+        return internalScene.getConfiguration();
+    }
+
     public final void showAndWait() {
         init();
 
@@ -131,7 +133,7 @@ public abstract class JNode3DStandalone implements JNode3DScene {
         // Make the OpenGL context current
         GLFW.glfwMakeContextCurrent(windowPtr);
         // Enable v-sync
-        if (configuration.isUseVSync()) {
+        if (getConfiguration().isUseVSync()) {
             GLFW.glfwSwapInterval(1);
         }
 
