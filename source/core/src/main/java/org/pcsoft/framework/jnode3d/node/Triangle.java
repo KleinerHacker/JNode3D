@@ -4,27 +4,25 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public final class Triangle extends ConstructedObject {
-    private float width = 1f, height = 1f;
-    private float topPercentage = 0.5f;
+public final class Triangle extends ConstructedObjectNode<Triangle.Points> {
+    private float width, height;
+    private float topPercentage;
 
     public Triangle() {
-        recalculate();
+        this(1f, 1f);
     }
 
     public Triangle(float width, float height) {
-        this.width = width;
-        this.height = height;
-
-        recalculate();
+        this(width, height, 0.5f);
     }
 
     public Triangle(float width, float height, float topPercentage) {
+        super(Points.class);
         this.width = width;
         this.height = height;
         this.topPercentage = topPercentage;
 
-        recalculate();
+        recalcualteAll();
     }
 
     public float getWidth() {
@@ -33,7 +31,7 @@ public final class Triangle extends ConstructedObject {
 
     public void setWidth(float width) {
         this.width = width;
-        recalculate();
+        recalculatePointsAndNormals();
     }
 
     public float getHeight() {
@@ -42,7 +40,7 @@ public final class Triangle extends ConstructedObject {
 
     public void setHeight(float height) {
         this.height = height;
-        recalculate();
+        recalculatePointsAndNormals();
     }
 
     public float getTopPercentage() {
@@ -51,30 +49,44 @@ public final class Triangle extends ConstructedObject {
 
     public void setTopPercentage(float topPercentage) {
         this.topPercentage = topPercentage;
-        recalculate();
+        recalculatePointsAndNormals();
     }
 
     @Override
-    protected void recalculate() {
+    protected void recalculatePointsAndNormals() {
         this.points = new Vector3f[]{
                 new Vector3f(-width / 2f, -height / 2f, 0f),
                 new Vector3f(topPercentage * width -width / 2f, height / 2f, 0f),
                 new Vector3f(width / 2f, -height / 2f, 0f)
-        };
-        this.colors = new Color[] {
-                Color.RED,
-                Color.GREEN,
-                Color.BLUE
-        };
-        this.texCoords = new Vector2f[] {
-                new Vector2f(0f, 1f),
-                new Vector2f(0.5f, 0f),
-                new Vector2f(1f, 1f)
         };
         this.normals = new Vector3f[] { //TODO
                 new Vector3f(),
                 new Vector3f(),
                 new Vector3f()
         };
+    }
+
+    @Override
+    protected void recalculateColors() {
+        this.colors = new Color[] {
+                getColorAt(Points.LeftCorner),
+                getColorAt(Points.Top),
+                getColorAt(Points.RightCorner)
+        };
+    }
+
+    @Override
+    protected void recalculateTexCoords() {
+        this.texCoords = new Vector2f[] {
+                new Vector2f(0f, 1f),
+                new Vector2f(0.5f, 0f),
+                new Vector2f(1f, 1f)
+        };
+    }
+
+    public enum Points {
+        LeftCorner,
+        RightCorner,
+        Top
     }
 }

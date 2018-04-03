@@ -3,7 +3,7 @@ package org.pcsoft.framework.jnode3d.node;
 import org.pcsoft.framework.jnode3d.internal.GL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public final class AmbientLight extends Light {
+public final class AmbientLight extends LightNode {
     private float direction;
 
     public AmbientLight() {

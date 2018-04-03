@@ -1,7 +1,24 @@
 package org.pcsoft.framework.jnode3d.node;
 
-public final class Box extends ConstructedObject {
+public final class Box extends ConstructedObjectNode<Box.Points> {
     private float width, height, depth;
+
+    public Box() {
+        this(1f);
+    }
+
+    public Box(float size) {
+        this(size, size, size);
+    }
+
+    public Box(float width, float height, float depth) {
+        super(Points.class);
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
+
+        recalcualteAll();
+    }
 
     public float getWidth() {
         return width;
@@ -9,7 +26,7 @@ public final class Box extends ConstructedObject {
 
     public void setWidth(float width) {
         this.width = width;
-        recalculate();
+        recalculatePointsAndNormals();
     }
 
     public float getHeight() {
@@ -18,7 +35,7 @@ public final class Box extends ConstructedObject {
 
     public void setHeight(float height) {
         this.height = height;
-        recalculate();
+        recalculatePointsAndNormals();
     }
 
     public float getDepth() {
@@ -27,11 +44,32 @@ public final class Box extends ConstructedObject {
 
     public void setDepth(float depth) {
         this.depth = depth;
-        recalculate();
+        recalculatePointsAndNormals();
     }
 
     @Override
-    protected void recalculate() {
+    protected void recalculatePointsAndNormals() {
 
+    }
+
+    @Override
+    protected void recalculateColors() {
+
+    }
+
+    @Override
+    protected void recalculateTexCoords() {
+
+    }
+
+    public enum Points {
+        TopLeftFront,
+        TopRightFront,
+        TopLeftBack,
+        TopRightBack,
+        BottomLeftFront,
+        BottomRightFront,
+        BottomLeftBack,
+        BottomRightBack,
     }
 }

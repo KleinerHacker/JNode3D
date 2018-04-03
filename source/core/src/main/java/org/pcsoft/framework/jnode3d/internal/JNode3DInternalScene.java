@@ -1,16 +1,13 @@
 package org.pcsoft.framework.jnode3d.internal;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.joml.Matrix4f;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
-import org.pcsoft.framework.jnode3d.camera.PerspectiveCamera;
-import org.pcsoft.framework.jnode3d.camera.PerspectiveLookAtCamera;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.node.Renderable;
+import org.pcsoft.framework.jnode3d.node.RenderNode;
+import org.pcsoft.framework.jnode3d.node.TransformableNode;
 import org.pcsoft.framework.jnode3d.type.Color;
-import org.pcsoft.framework.jnode3d.type.Rectangle;
 
 public final class JNode3DInternalScene implements JNode3DScene {
     private Node root;
@@ -20,7 +17,6 @@ public final class JNode3DInternalScene implements JNode3DScene {
 
     private final GL gl;
     private boolean initialized = false;
-    private float counter = 0f;
 
     public JNode3DInternalScene(GL gl, int width, int height) {
         this.gl = gl;
@@ -86,50 +82,37 @@ public final class JNode3DInternalScene implements JNode3DScene {
     }
 
     public void loop() {
-        counter += 0.01f;
-
-        gl.glMatrixMode(GL.GL_PROJECTION);
-        gl.glLoadIdentity();
-        if (camera instanceof OrthographicCamera) {
-            gl.glOrtho((Rectangle) ObjectUtils.defaultIfNull(((OrthographicCamera) camera).getViewport(), new Rectangle(0, 0, width, height)),
-                    camera.getNear(), camera.getFar());
-        } else if (camera instanceof PerspectiveCamera) {
-            gl.glFrustum(new Rectangle(0, 0, width, height), -1, 1);
-        } else
-            throw new IllegalStateException("No camera was set for scene");
-        gl.glMatrixMode(GL.GL_MODELVIEW);
-        if (camera instanceof PerspectiveCamera) {
-            final PerspectiveCamera perspectiveCamera = (PerspectiveCamera) this.camera;
-
-            Matrix4f matrix4f = new Matrix4f();
-            matrix4f.perspective((float) Math.toRadians(perspectiveCamera.getAngle()), perspectiveCamera.getAspect(), camera.getNear(), camera.getFar());
-            if (perspectiveCamera instanceof PerspectiveLookAtCamera) {
-                matrix4f.lookAt(perspectiveCamera.getPosition(), ((PerspectiveLookAtCamera) perspectiveCamera).getLookAt(), ((PerspectiveLookAtCamera) perspectiveCamera).getUpDirection());
-            }
-            gl.glLoadMatrix(matrix4f);
-        }
+        camera.apply(gl, width, height);
 
         // Set the clear color
         gl.glClearColor(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA());
-
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
 
-        renderChildren(root);
+        renderChildren(root, new Matrix4f().identity());
     }
 
-    private void renderChildren(Node root) {
+    private void renderChildren(Node root, Matrix4f rootMatrix) {
         if (root == null)
             return;
 
-        if (root instanceof Renderable) {
-            ((Renderable) root).render(gl);
+        //Transformation
+        final Matrix4f childRootMatrix; //Store for child
+        if (root instanceof TransformableNode) {
+            childRootMatrix = ((TransformableNode) root).transform(gl, rootMatrix);
+        } else {
+            childRootMatrix = rootMatrix;
+        }
+
+        //Rendering
+        if (root instanceof RenderNode) {
+            ((RenderNode) root).render(gl);
         }
 
         for (final Node child : root.getChildren()) {
-            if (!(child instanceof Renderable))
+            if (!(child instanceof RenderNode))
                 continue;
 
-            renderChildren(child);
+            renderChildren(child, childRootMatrix);
         }
     }
 }
