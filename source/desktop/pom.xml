@@ -61,6 +61,10 @@
             <artifactId>lwjgl-glfw</artifactId>
             <classifier>natives-windows</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.slick2d</groupId>
+            <artifactId>slick2d-core</artifactId>
+        </dependency>
 
     </dependencies>
 

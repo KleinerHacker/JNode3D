@@ -6,6 +6,8 @@ import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.internal.NGL;
 import org.pcsoft.framework.jnode3d.type.*;
 
+import java.nio.ByteBuffer;
+
 public final class OGL {
     /**
      * AttribMask
@@ -112,13 +114,26 @@ public final class OGL {
         ngl.glTextureBorder(r, g, b, a);
     }
 
-    public void glMinMagFilter(TextureDistanceFilter filter) {
-        glMinMagFilter(filter, filter);
+    public void glTextureMinMagFilter(TextureDistanceFilter filter) {
+        glTextureMinMagFilter(filter, filter);
     }
 
-    public void glMinMagFilter(TextureDistanceFilter minFilter, TextureDistanceFilter magFilter) {
-        ngl.glMinMagFilter(minFilter.getValue(), magFilter.getValue());
+    public void glTextureMinMagFilter(TextureDistanceFilter minFilter, TextureDistanceFilter magFilter) {
+        ngl.glTextureMinMagFilter(minFilter.getValue(), magFilter.getValue());
     }
+
+    public int glLoadTexture(ByteBuffer buffer, int width, int height, TextureStack textureStack) {
+        return ngl.glLoadTexture(buffer, width, height, textureStack.getValue());
+    }
+
+    public void glBindTexture(int textureIdentifier, TextureStack textureStack) {
+        ngl.glBindTexture(textureIdentifier, textureStack.getValue());
+    }
+
+    public void glDeleteTexture(int textureIdentifier) {
+        ngl.glDeleteTexture(textureIdentifier);
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Matrix">

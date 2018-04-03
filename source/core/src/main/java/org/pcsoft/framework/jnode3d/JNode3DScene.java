@@ -3,6 +3,7 @@ package org.pcsoft.framework.jnode3d;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.node.Node;
+import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public interface JNode3DScene {
@@ -22,4 +23,5 @@ public interface JNode3DScene {
     void setHeight(int height);
 
     JNode3DConfiguration getConfiguration();
+    OGL getOpenGL();
 }

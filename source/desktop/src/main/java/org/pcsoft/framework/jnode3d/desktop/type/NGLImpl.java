@@ -1,8 +1,12 @@
 package org.pcsoft.framework.jnode3d.desktop.type;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 import org.pcsoft.framework.jnode3d.internal.NGL;
 import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
+
+import java.nio.ByteBuffer;
 
 public class NGLImpl implements NGL {
     //<editor-fold desc="Clean Up">
@@ -63,11 +67,37 @@ public class NGLImpl implements NGL {
     }
 
     @Override
-    public void glMinMagFilter(int minFilter, int magFilter) {
+    public void glTextureMinMagFilter(int minFilter, int magFilter) {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minFilter);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, magFilter);
     }
-    //</editor-fold>
+
+    @Override
+    public int glLoadTexture(ByteBuffer buffer, int width, int height, int textureStack) {
+        final int identifier = GL11.glGenTextures();
+        GL13.glActiveTexture(textureStack);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, identifier);
+
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, width, height, 0,
+                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+
+        return identifier;
+    }
+
+    @Override
+    public void glBindTexture(int textureIdentifier, int textureStack) {
+        GL13.glActiveTexture(textureStack);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdentifier);
+    }
+
+    @Override
+    public void glDeleteTexture(int textureIdentifier) {
+        GL11.glDeleteTextures(textureIdentifier);
+    }
+//</editor-fold>
 
     //<editor-fold desc="Matrix">
     @Override

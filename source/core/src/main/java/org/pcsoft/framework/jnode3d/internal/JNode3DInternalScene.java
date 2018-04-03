@@ -82,6 +82,11 @@ public final class JNode3DInternalScene implements JNode3DScene {
         return configuration;
     }
 
+    @Override
+    public OGL getOpenGL() {
+        return ogl;
+    }
+
     public void initialize() {
         if (initialized)
             throw new IllegalStateException("Already initialized");

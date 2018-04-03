@@ -197,6 +197,11 @@
                 <version>3.1.6</version>
                 <classifier>natives-windows</classifier>
             </dependency>
+            <dependency>
+                <groupId>org.slick2d</groupId>
+                <artifactId>slick2d-core</artifactId>
+                <version>1.0.2</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.joml</groupId>

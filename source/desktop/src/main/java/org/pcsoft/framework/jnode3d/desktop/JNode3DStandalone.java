@@ -104,6 +104,11 @@ public abstract class JNode3DStandalone implements JNode3DScene {
         return internalScene.getConfiguration();
     }
 
+    @Override
+    public OGL getOpenGL() {
+        return internalScene.getOpenGL();
+    }
+
     public final void showAndWait() {
         init();
 
