@@ -10,11 +10,11 @@ import java.nio.IntBuffer;
 
 public class JNode3DWindow extends JNode3DStandalone {
     private boolean resizable = true;
-    private int width = 300, height = 300;
+    private int width = DEF_WIDTH, height = DEF_HEIGHT;
     private boolean centerWindow = true;
 
     public JNode3DWindow(JNode3DConfiguration configuration) {
-        super(configuration);
+        super(configuration, DEF_WIDTH, DEF_HEIGHT);
 
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
     }

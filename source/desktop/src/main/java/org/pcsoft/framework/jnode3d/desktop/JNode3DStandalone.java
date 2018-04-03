@@ -8,22 +8,27 @@ import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.desktop.type.GLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
-import org.pcsoft.framework.jnode3d.node.Camera;
-import org.pcsoft.framework.jnode3d.node.Node3D;
+import org.pcsoft.framework.jnode3d.camera.Camera;
+import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 import java.awt.*;
 
 public abstract class JNode3DStandalone implements JNode3DScene {
+    protected static final int DEF_WIDTH = 800;
+    protected static final int DEF_HEIGHT = 600;
+
     protected String title = "";
     protected boolean autoExit = true;
 
     protected final JNode3DConfiguration configuration;
 
     protected long windowPtr;
-    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(new GLImpl());
+    private final JNode3DInternalScene internalScene;
 
-    protected JNode3DStandalone(JNode3DConfiguration configuration) {
+    protected JNode3DStandalone(JNode3DConfiguration configuration, int width, int height) {
+        internalScene = new JNode3DInternalScene(new GLImpl(), width, height);
+
         this.configuration = configuration;
 
         if (!LWJGL.isInitialized()) {
@@ -48,12 +53,12 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     }
 
     @Override
-    public Node3D getRoot() {
+    public Node getRoot() {
         return internalScene.getRoot();
     }
 
     @Override
-    public void setRoot(Node3D root) {
+    public void setRoot(Node root) {
         internalScene.setRoot(root);
     }
 
@@ -75,6 +80,26 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     @Override
     public void setCamera(Camera camera) {
         internalScene.setCamera(camera);
+    }
+
+    @Override
+    public int getWidth() {
+        return internalScene.getWidth();
+    }
+
+    @Override
+    public void setWidth(int width) {
+        internalScene.setWidth(width);
+    }
+
+    @Override
+    public int getHeight() {
+        return internalScene.getHeight();
+    }
+
+    @Override
+    public void setHeight(int height) {
+        internalScene.setHeight(height);
     }
 
     public final void showAndWait() {

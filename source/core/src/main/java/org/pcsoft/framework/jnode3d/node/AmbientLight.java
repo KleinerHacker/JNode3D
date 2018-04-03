@@ -3,21 +3,21 @@ package org.pcsoft.framework.jnode3d.node;
 import org.pcsoft.framework.jnode3d.internal.GL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public final class AmbientLight3D extends Light3D {
+public final class AmbientLight extends Light {
     private float direction;
 
-    public AmbientLight3D() {
+    public AmbientLight() {
     }
 
-    public AmbientLight3D(Color color) {
+    public AmbientLight(Color color) {
         super(color);
     }
 
-    public AmbientLight3D(float direction) {
+    public AmbientLight(float direction) {
         this.direction = direction;
     }
 
-    public AmbientLight3D(Color color, float direction) {
+    public AmbientLight(Color color, float direction) {
         super(color);
         this.direction = direction;
     }

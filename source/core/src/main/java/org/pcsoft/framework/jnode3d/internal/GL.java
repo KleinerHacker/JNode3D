@@ -73,6 +73,12 @@ public abstract class GL {
         glVertex(vector3D.x(), vector3D.y(), vector3D.z());
     }
 
+    public abstract void glVertex(float x, float y);
+
+    public final void glVertex(Vector2f vector2D) {
+        glVertex(vector2D.x(), vector2D.y());
+    }
+
     public abstract void glColor(float r, float g, float b);
 
     public final void glColor(Color color) {

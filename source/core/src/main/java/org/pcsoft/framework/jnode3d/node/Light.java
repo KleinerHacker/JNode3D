@@ -2,13 +2,13 @@ package org.pcsoft.framework.jnode3d.node;
 
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public abstract class Light3D extends Renderable3D {
+public abstract class Light extends Renderable {
     private Color color = Color.WHITE;
 
-    public Light3D() {
+    public Light() {
     }
 
-    public Light3D(Color color) {
+    public Light(Color color) {
         this.color = color;
     }
 

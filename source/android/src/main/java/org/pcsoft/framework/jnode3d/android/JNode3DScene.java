@@ -1,20 +1,20 @@
 package org.pcsoft.framework.jnode3d.android;
 
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
-import org.pcsoft.framework.jnode3d.node.Camera;
-import org.pcsoft.framework.jnode3d.node.Node3D;
+import org.pcsoft.framework.jnode3d.camera.Camera;
+import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
-    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(null);//TODO
+    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(null, 800, 600);//TODO
 
     @Override
-    public Node3D getRoot() {
+    public Node getRoot() {
         return internalScene.getRoot();
     }
 
     @Override
-    public void setRoot(Node3D root) {
+    public void setRoot(Node root) {
         internalScene.setRoot(root);
     }
 
@@ -36,5 +36,25 @@ public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
     @Override
     public void setCamera(Camera camera) {
         internalScene.setCamera(camera);
+    }
+
+    @Override
+    public int getWidth() {
+        return internalScene.getWidth();
+    }
+
+    @Override
+    public void setWidth(int width) {
+        internalScene.setWidth(width);
+    }
+
+    @Override
+    public int getHeight() {
+        return internalScene.getHeight();
+    }
+
+    @Override
+    public void setHeight(int height) {
+        internalScene.setHeight(height);
     }
 }

@@ -4,15 +4,17 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.pcsoft.framework.jnode3d.desktop.type.GLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
-import org.pcsoft.framework.jnode3d.node.Camera;
-import org.pcsoft.framework.jnode3d.node.Node3D;
+import org.pcsoft.framework.jnode3d.camera.Camera;
+import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 
 public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
-    private final JNode3DInternalScene JNode3DInternalScene = new JNode3DInternalScene(new GLImpl());
+    private final JNode3DInternalScene JNode3DInternalScene;
 
-    public JNode3DAwtScene() {
+    public JNode3DAwtScene(int width, int height) {
+        JNode3DInternalScene = new JNode3DInternalScene(new GLImpl(), width, height);
+
         GLFWErrorCallback.createPrint(System.err).set();
 
         if (!GLFW.glfwInit())
@@ -20,12 +22,12 @@ public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScen
     }
 
     @Override
-    public Node3D getRoot() {
+    public Node getRoot() {
         return JNode3DInternalScene.getRoot();
     }
 
     @Override
-    public void setRoot(Node3D root) {
+    public void setRoot(Node root) {
         JNode3DInternalScene.setRoot(root);
     }
 
@@ -47,5 +49,25 @@ public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScen
     @Override
     public void setCamera(Camera camera) {
         JNode3DInternalScene.setCamera(camera);
+    }
+
+    @Override
+    public int getWidth() {
+        return JNode3DInternalScene.getWidth();
+    }
+
+    @Override
+    public void setWidth(int width) {
+        JNode3DInternalScene.setWidth(width);
+    }
+
+    @Override
+    public int getHeight() {
+        return JNode3DInternalScene.getHeight();
+    }
+
+    @Override
+    public void setHeight(int height) {
+        JNode3DInternalScene.setHeight(height);
     }
 }

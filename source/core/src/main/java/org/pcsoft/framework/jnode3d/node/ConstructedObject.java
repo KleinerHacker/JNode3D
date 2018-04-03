@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.internal.GL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public abstract class ConstructedObject3D extends Object3D {
+public abstract class ConstructedObject extends VertexObject {
     protected Vector3f[] points = new Vector3f[0];
     protected Vector2f[] texCoords = new Vector2f[0];
     protected Color[] colors = new Color[0];
@@ -20,11 +20,11 @@ public abstract class ConstructedObject3D extends Object3D {
             for (int i = 0; i < points.length; i++) {
                 gl.glVertex(points[i]);
                 gl.glColor(colors[i]);
-                gl.glTexCoord(texCoords[i]);
-                gl.glNormal(normals[i]);
+                //gl.glTexCoord(texCoords[i]);
+                //gl.glNormal(normals[i]);
             }
         }
         gl.glEnd();
-        gl.glFlush();
+        //gl.glFlush();
     }
 }

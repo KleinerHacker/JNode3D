@@ -1,6 +1,6 @@
-package org.pcsoft.framework.jnode3d.node;
+package org.pcsoft.framework.jnode3d.camera;
 
-public abstract class Camera extends Node3D {
+public abstract class Camera {
     private float near = 0.001f, far = 100.0f;
 
     public Camera() {

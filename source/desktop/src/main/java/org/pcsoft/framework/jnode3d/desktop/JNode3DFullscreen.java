@@ -6,27 +6,28 @@ import org.pcsoft.framework.jnode3d.desktop.config.JNode3DConfiguration;
 import java.awt.*;
 
 public final class JNode3DFullscreen extends JNode3DStandalone {
-    private Dimension dimension = new Dimension(800, 600);
-
     public JNode3DFullscreen(JNode3DConfiguration configuration) {
-        super(configuration);
-    }
-
-    public Dimension getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(Dimension dimension) {
-        this.dimension = dimension;
+        super(configuration, DEF_WIDTH, DEF_HEIGHT);
     }
 
     @Override
     protected Dimension getGraphicDimension() {
-        return dimension;
+        return new Dimension(getWidth(), getHeight());
+    }
+
+    public Dimension getDimension() {
+        return new Dimension(getWidth(), getHeight());
+    }
+
+    public void setDimension(Dimension dimension) {
+        setWidth(dimension.width);
+        setHeight(dimension.height);
     }
 
     @Override
     protected long getGraphicMonitor() {
         return GLFW.glfwGetPrimaryMonitor();
     }
+
+
 }

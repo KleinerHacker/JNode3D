@@ -1,32 +1,40 @@
 package org.pcsoft.framework.jnode3d.internal;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.joml.Matrix4f;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
-import org.pcsoft.framework.jnode3d.node.Camera;
-import org.pcsoft.framework.jnode3d.node.Node3D;
-import org.pcsoft.framework.jnode3d.node.Renderable3D;
+import org.pcsoft.framework.jnode3d.camera.Camera;
+import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
+import org.pcsoft.framework.jnode3d.camera.PerspectiveCamera;
+import org.pcsoft.framework.jnode3d.camera.PerspectiveLookAtCamera;
+import org.pcsoft.framework.jnode3d.node.Node;
+import org.pcsoft.framework.jnode3d.node.Renderable;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.Rectangle;
 
 public final class JNode3DInternalScene implements JNode3DScene {
-    private Node3D root;
+    private Node root;
     private Color backColor = Color.BLACK;
-    private Camera camera;
+    private Camera camera = new OrthographicCamera();
+    private int width, height;
 
     private final GL gl;
     private boolean initialized = false;
     private float counter = 0f;
 
-    public JNode3DInternalScene(GL gl) {
+    public JNode3DInternalScene(GL gl, int width, int height) {
         this.gl = gl;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
-    public Node3D getRoot() {
+    public Node getRoot() {
         return root;
     }
 
     @Override
-    public void setRoot(Node3D root) {
+    public void setRoot(Node root) {
         this.root = root;
     }
 
@@ -50,6 +58,26 @@ public final class JNode3DInternalScene implements JNode3DScene {
         this.camera = camera;
     }
 
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public void initialize() {
         if (initialized)
             throw new IllegalStateException("Already initialized");
@@ -58,31 +86,47 @@ public final class JNode3DInternalScene implements JNode3DScene {
     }
 
     public void loop() {
-        counter += 0.1f;
+        counter += 0.01f;
+
+        gl.glMatrixMode(GL.GL_PROJECTION);
+        gl.glLoadIdentity();
+        if (camera instanceof OrthographicCamera) {
+            gl.glOrtho((Rectangle) ObjectUtils.defaultIfNull(((OrthographicCamera) camera).getViewport(), new Rectangle(0, 0, width, height)),
+                    camera.getNear(), camera.getFar());
+        } else if (camera instanceof PerspectiveCamera) {
+            gl.glFrustum(new Rectangle(0, 0, width, height), -1, 1);
+        } else
+            throw new IllegalStateException("No camera was set for scene");
+        gl.glMatrixMode(GL.GL_MODELVIEW);
+        if (camera instanceof PerspectiveCamera) {
+            final PerspectiveCamera perspectiveCamera = (PerspectiveCamera) this.camera;
+
+            Matrix4f matrix4f = new Matrix4f();
+            matrix4f.perspective((float) Math.toRadians(perspectiveCamera.getAngle()), perspectiveCamera.getAspect(), camera.getNear(), camera.getFar());
+            if (perspectiveCamera instanceof PerspectiveLookAtCamera) {
+                matrix4f.lookAt(perspectiveCamera.getPosition(), ((PerspectiveLookAtCamera) perspectiveCamera).getLookAt(), ((PerspectiveLookAtCamera) perspectiveCamera).getUpDirection());
+            }
+            gl.glLoadMatrix(matrix4f);
+        }
 
         // Set the clear color
         gl.glClearColor(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA());
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
 
-        final Matrix4f matrix4f = new Matrix4f()
-                .perspective((float) Math.toRadians(45.0), 1f, 0.001f, 100.0f)
-                .lookAt((float) Math.sin(counter) * 10f, -10f, (float) Math.cos(counter) * 10f, 0f, 0f, 0f, 0f, 1f, 0f);
-        gl.glLoadMatrix(matrix4f);
-
         renderChildren(root);
     }
 
-    private void renderChildren(Node3D root) {
+    private void renderChildren(Node root) {
         if (root == null)
             return;
 
-        if (root instanceof Renderable3D) {
-            ((Renderable3D) root).render(gl);
+        if (root instanceof Renderable) {
+            ((Renderable) root).render(gl);
         }
 
-        for (final Node3D child : root.getChildren()) {
-            if (!(child instanceof Renderable3D))
+        for (final Node child : root.getChildren()) {
+            if (!(child instanceof Renderable))
                 continue;
 
             renderChildren(child);

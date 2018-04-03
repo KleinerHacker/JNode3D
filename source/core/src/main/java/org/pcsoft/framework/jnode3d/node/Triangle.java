@@ -4,22 +4,27 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public final class Triangle3D extends ConstructedObject3D {
+public final class Triangle extends ConstructedObject {
     private float width = 1f, height = 1f;
     private float topPercentage = 0.5f;
 
-    public Triangle3D() {
+    public Triangle() {
+        recalculate();
     }
 
-    public Triangle3D(float width, float height) {
+    public Triangle(float width, float height) {
         this.width = width;
         this.height = height;
+
+        recalculate();
     }
 
-    public Triangle3D(float width, float height, float topPercentage) {
+    public Triangle(float width, float height, float topPercentage) {
         this.width = width;
         this.height = height;
         this.topPercentage = topPercentage;
+
+        recalculate();
     }
 
     public float getWidth() {
@@ -52,14 +57,14 @@ public final class Triangle3D extends ConstructedObject3D {
     @Override
     protected void recalculate() {
         this.points = new Vector3f[]{
-                new Vector3f(-width / 2f, height / 2f, 0f),
-                new Vector3f(topPercentage * width, -height / 2f, 0f),
-                new Vector3f(width / 2f, height / 2f, 0f)
+                new Vector3f(-width / 2f, -height / 2f, 0f),
+                new Vector3f(topPercentage * width -width / 2f, height / 2f, 0f),
+                new Vector3f(width / 2f, -height / 2f, 0f)
         };
         this.colors = new Color[] {
-                Color.WHITE,
-                Color.WHITE,
-                Color.WHITE
+                Color.RED,
+                Color.GREEN,
+                Color.BLUE
         };
         this.texCoords = new Vector2f[] {
                 new Vector2f(0f, 1f),

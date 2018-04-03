@@ -23,6 +23,11 @@ public class GLImpl extends GL {
     }
 
     @Override
+    public void glVertex(float x, float y) {
+        GL11.glVertex2f(x, y);
+    }
+
+    @Override
     public void glColor(float r, float g, float b) {
         GL11.glColor3f(r, g, b);
     }
@@ -53,7 +58,6 @@ public class GLImpl extends GL {
     }
 
     //</editor-fold>
-
 
     //<editor-fold desc="Matrix">
     @Override
