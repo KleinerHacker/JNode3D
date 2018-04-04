@@ -1,10 +1,9 @@
 package org.pcsoft.framework.jnode3d.android;
 
+import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
-import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
@@ -63,10 +62,5 @@ public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
     @Override
     public JNode3DConfiguration getConfiguration() {
         return internalScene.getConfiguration();
-    }
-
-    @Override
-    public OGL getOpenGL() {
-        return internalScene.getOpenGL();
     }
 }

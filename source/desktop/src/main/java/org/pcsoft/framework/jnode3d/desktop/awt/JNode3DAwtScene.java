@@ -77,9 +77,4 @@ public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScen
     public JNode3DConfiguration getConfiguration() {
         return JNode3DInternalScene.getConfiguration();
     }
-
-    @Override
-    public OGL getOpenGL() {
-        return JNode3DInternalScene.getOpenGL();
-    }
 }

@@ -54,18 +54,20 @@ public interface NGL {
             GL_NEAREST_MIPMAP_LINEAR = 0x2702,
             GL_LINEAR_MIPMAP_LINEAR = 0x2703;
 
-    /** Accepted by the {@code texture} parameter of ActiveTexture and MultiTexCoord. */
+    /**
+     * Accepted by the {@code texture} parameter of ActiveTexture and MultiTexCoord.
+     */
     int
-            GL_TEXTURE0  = 0x84C0,
-            GL_TEXTURE1  = 0x84C1,
-            GL_TEXTURE2  = 0x84C2,
-            GL_TEXTURE3  = 0x84C3,
-            GL_TEXTURE4  = 0x84C4,
-            GL_TEXTURE5  = 0x84C5,
-            GL_TEXTURE6  = 0x84C6,
-            GL_TEXTURE7  = 0x84C7,
-            GL_TEXTURE8  = 0x84C8,
-            GL_TEXTURE9  = 0x84C9,
+            GL_TEXTURE0 = 0x84C0,
+            GL_TEXTURE1 = 0x84C1,
+            GL_TEXTURE2 = 0x84C2,
+            GL_TEXTURE3 = 0x84C3,
+            GL_TEXTURE4 = 0x84C4,
+            GL_TEXTURE5 = 0x84C5,
+            GL_TEXTURE6 = 0x84C6,
+            GL_TEXTURE7 = 0x84C7,
+            GL_TEXTURE8 = 0x84C8,
+            GL_TEXTURE9 = 0x84C9,
             GL_TEXTURE10 = 0x84CA,
             GL_TEXTURE11 = 0x84CB,
             GL_TEXTURE12 = 0x84CC,
@@ -88,6 +90,10 @@ public interface NGL {
             GL_TEXTURE29 = 0x84DD,
             GL_TEXTURE30 = 0x84DE,
             GL_TEXTURE31 = 0x84DF;
+
+    int
+            GL_VERTEX_SHADER = 0x8B31,
+            GL_FRAGMENT_SHADER = 0x8B30;
 
     //<editor-fold desc="Clear">
 
@@ -133,5 +139,15 @@ public interface NGL {
     void glOrtho(float left, float top, float right, float bottom, float near, float far);
 
     void glFrustum(float left, float top, float right, float bottom, float near, float far);
+    //</editor-fold>
+
+    //<editor-fold desc="Shaders">
+    int glCreateShader(int shaderType, String script);
+    void glDeleteShader(int shaderIdentifier);
+
+    int glCreateProgram(int... shaderIdentifiers);
+    void glDeleteProgram(int programIdentifier);
+
+    void glUseProgram(int programIdentifier);
     //</editor-fold>
 }

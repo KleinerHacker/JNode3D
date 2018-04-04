@@ -5,6 +5,7 @@ import org.pcsoft.framework.jnode3d.camera.PerspectiveLookAtCamera;
 import org.pcsoft.framework.jnode3d.desktop.type.ImageLoader;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Triangle;
+import org.pcsoft.framework.jnode3d.shader.SnowShader;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.Color;
 
@@ -30,6 +31,7 @@ public abstract class JNode3DTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        triangle.setShaderInstance(SnowShader.get().buildInstance());
 
         return triangle;
     }

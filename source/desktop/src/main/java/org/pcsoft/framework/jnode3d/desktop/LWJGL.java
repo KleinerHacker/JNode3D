@@ -9,7 +9,6 @@ final class LWJGL {
 
     static {
         System.out.println("LWJGL Version: " + Version.getVersion());
-        GLFWErrorCallback.createPrint(System.err).set();
     }
 
     public static void initialize() {
@@ -18,6 +17,8 @@ final class LWJGL {
 
         if (!GLFW.glfwInit())
             throw new IllegalStateException("Unable to initialize OpenGL");
+
+        GLFWErrorCallback.createPrint(System.err).set();
 
         initialized = true;
     }

@@ -1,11 +1,17 @@
 package org.pcsoft.framework.jnode3d.ogl;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.internal.NGL;
 import org.pcsoft.framework.jnode3d.type.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.nio.ByteBuffer;
 
 public final class OGL {
@@ -168,5 +174,49 @@ public final class OGL {
     public void glFrustum(Bounds2D bounds2D, float near, float far) {
         glFrustum(bounds2D.getLeft(), bounds2D.getTop(), bounds2D.getRight(), bounds2D.getBottom(), near, far);
     }
+    //</editor-fold>
+
+
+    //<editor-fold desc="Shaders">
+    public int glCreateShader(ShaderType shaderType, File file) throws IOException {
+        return glCreateShader(shaderType, FileUtils.readFileToString(file));
+    }
+
+    public int glCreateShader(ShaderType shaderType, File file, String encoding) throws IOException {
+        return glCreateShader(shaderType, FileUtils.readFileToString(file, encoding));
+    }
+
+    public int glCreateShader(ShaderType shaderType, Reader in) throws IOException {
+        return glCreateShader(shaderType, IOUtils.toString(in));
+    }
+
+    public int glCreateShader(ShaderType shaderType, InputStream in) throws IOException {
+        return glCreateShader(shaderType, IOUtils.toString(in));
+    }
+
+    public int glCreateShader(ShaderType shaderType, InputStream in, String encoding) throws IOException {
+        return glCreateShader(shaderType, IOUtils.toString(in, encoding));
+    }
+
+    public int glCreateShader(ShaderType shaderType, String script) {
+        return ngl.glCreateShader(shaderType.getValue(), script);
+    }
+
+    public int glCreateProgram(int... shaderIdentifiers) {
+        return ngl.glCreateProgram(shaderIdentifiers);
+    }
+
+    public void glUseProgram(int programIdentifier) {
+        ngl.glUseProgram(programIdentifier);
+    }
+
+    public void glDeleteShader(int shaderIdentifier) {
+        ngl.glDeleteShader(shaderIdentifier);
+    }
+
+    public void glDeleteProgram(int programIdentifier) {
+        ngl.glDeleteProgram(programIdentifier);
+    }
+
     //</editor-fold>
 }

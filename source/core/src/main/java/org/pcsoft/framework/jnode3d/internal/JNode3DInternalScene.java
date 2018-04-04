@@ -5,6 +5,8 @@ import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
+import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
+import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
 import org.pcsoft.framework.jnode3d.node.*;
 import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
 import org.pcsoft.framework.jnode3d.ogl.OGL;
@@ -19,7 +21,7 @@ public final class JNode3DInternalScene implements JNode3DScene {
 
     private final OGL ogl;
     private final JNode3DConfiguration configuration;
-    private boolean initialized = false;
+    private boolean initialized = false, destroyed = false;
 
     public JNode3DInternalScene(JNode3DConfiguration configuration, OGL ogl, int width, int height) {
         this.configuration = configuration;
@@ -83,19 +85,22 @@ public final class JNode3DInternalScene implements JNode3DScene {
         return configuration;
     }
 
-    @Override
-    public OGL getOpenGL() {
-        return ogl;
-    }
-
     public void initialize() {
-        if (initialized)
+        if (isInitialized())
             throw new IllegalStateException("Already initialized");
 
-        initialized = true;
+        ShaderManager.getInstance().initialize(ogl);
+        TextureManager.getInstance().initialize(ogl);
+
+        this.initialized = true;
     }
 
     public void loop() {
+        if (!isInitialized())
+            throw new IllegalStateException("Not initialized yet");
+        if (isDestroyed())
+            throw new IllegalStateException("Already destroyed");
+
         camera.apply(ogl, width, height);
 
         ogl.glMatrixMode(MatrixMode.ModelView);
@@ -106,6 +111,26 @@ public final class JNode3DInternalScene implements JNode3DScene {
                 OGL.GL_COLOR_BUFFER_BIT | OGL.GL_DEPTH_BUFFER_BIT | OGL.GL_STENCIL_BUFFER_BIT);
 
         handleNode(root, new Matrix4f().identity());
+    }
+
+    public void destroy() {
+        if (!isInitialized())
+            throw new IllegalStateException("Not initialized yet");
+        if (isDestroyed())
+            throw new IllegalStateException("Already destroyed");
+
+        ShaderManager.getInstance().destroy(ogl);
+        TextureManager.getInstance().destroy(ogl);
+
+        this.destroyed = true;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     @SuppressWarnings("unchecked")

@@ -1,6 +1,9 @@
 package org.pcsoft.framework.jnode3d.texture;
 
+import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
+
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 public final class Texture {
     private final ByteBuffer buffer;
@@ -14,6 +17,8 @@ public final class Texture {
         this.buffer = buffer;
         this.width = width;
         this.height = height;
+
+        TextureManager.getInstance().registerTexture(this);
     }
 
     public int getWidth() {
@@ -26,5 +31,18 @@ public final class Texture {
 
     public ByteBuffer getBuffer() {
         return buffer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Texture texture = (Texture) o;
+        return Objects.equals(buffer, texture.buffer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(buffer.hashCode());
     }
 }

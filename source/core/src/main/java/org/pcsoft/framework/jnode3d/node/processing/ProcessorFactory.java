@@ -1,11 +1,9 @@
 package org.pcsoft.framework.jnode3d.node.processing;
 
-import org.pcsoft.framework.jnode3d.node.ConstructedObjectNode;
-import org.pcsoft.framework.jnode3d.node.RenderNode;
-import org.pcsoft.framework.jnode3d.node.TransformableNode;
-import org.pcsoft.framework.jnode3d.node.Triangle;
+import org.pcsoft.framework.jnode3d.node.*;
 import org.pcsoft.framework.jnode3d.node.processing.render.BasicRenderProcessor;
 import org.pcsoft.framework.jnode3d.node.processing.transform.BasicTransformProcessor;
+import org.pcsoft.framework.jnode3d.node.processing.vert_calc.RectangleVertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.node.processing.vert_calc.TriangleVertexCalculationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +28,7 @@ public final class ProcessorFactory {
     static {
         //Vertex Calculation
         registerVertexCalculationProcessor(Triangle.class, new TriangleVertexCalculationProcessor());
+        registerVertexCalculationProcessor(Rectangle.class, new RectangleVertexCalculationProcessor());
     }
 
     //<editor-fold desc="Renderer">
@@ -115,7 +114,6 @@ public final class ProcessorFactory {
         return VERTEX_CALCULATION_PROCESSOR_MAP.containsKey(clazz);
     }
     //</editor-fold>
-
 
     private ProcessorFactory() {
     }

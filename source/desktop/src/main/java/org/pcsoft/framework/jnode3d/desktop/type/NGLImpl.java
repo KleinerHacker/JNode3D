@@ -1,8 +1,6 @@
 package org.pcsoft.framework.jnode3d.desktop.type;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 import org.pcsoft.framework.jnode3d.internal.NGL;
 import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
 
@@ -75,12 +73,13 @@ public class NGLImpl implements NGL {
     @Override
     public int glLoadTexture(ByteBuffer buffer, int width, int height, int textureStack) {
         final int identifier = GL11.glGenTextures();
-        //GL13.glActiveTexture(textureStack);
+        GL13.glActiveTexture(1);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, identifier);
+        GL42.glBindImageTexture(1, identifier, 0, true, 0, GL15.GL_READ_WRITE, GL11.GL_RGBA);
 
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 
-        //GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
 
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, width, height, 0,
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
@@ -95,8 +94,9 @@ public class NGLImpl implements NGL {
 
     @Override
     public void glBindTexture(int textureIdentifier, int textureStack) {
-        GL13.glActiveTexture(textureStack);
+        GL13.glActiveTexture(1);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdentifier);
+        GL42.glBindImageTexture(1, textureIdentifier, 0, true, 0, GL15.GL_READ_WRITE, GL11.GL_RGBA);
     }
 
     @Override
@@ -129,6 +129,44 @@ public class NGLImpl implements NGL {
     @Override
     public void glLoadMatrix(float[] matrix) {
         GL11.glLoadMatrixf(matrix);
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Shaders">
+    @Override
+    public int glCreateShader(int shaderType, String script) {
+        final int identifier = GL20.glCreateShader(shaderType);
+        GL20.glShaderSource(identifier, script);
+        GL20.glCompileShader(identifier);
+
+        return identifier;
+    }
+
+    @Override
+    public int glCreateProgram(int... shaderIdentifiers) {
+        final int identifier = GL20.glCreateProgram();
+        for (final int shaderIdentifier : shaderIdentifiers) {
+            GL20.glAttachShader(identifier, shaderIdentifier);
+        }
+
+        return identifier;
+    }
+
+    @Override
+    public void glUseProgram(int programIdentifier) {
+        GL20.glLinkProgram(programIdentifier);
+        GL20.glUseProgram(programIdentifier);
+    }
+
+    @Override
+    public void glDeleteShader(int shaderIdentifier) {
+        GL20.glDeleteShader(shaderIdentifier);
+    }
+
+    @Override
+    public void glDeleteProgram(int programIdentifier) {
+        GL20.glDeleteProgram(programIdentifier);
     }
 
     //</editor-fold>

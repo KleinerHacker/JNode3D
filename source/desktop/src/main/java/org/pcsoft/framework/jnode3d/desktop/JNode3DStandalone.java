@@ -4,11 +4,12 @@ import org.apache.commons.lang.StringUtils;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
+import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.desktop.type.NGLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
-import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
@@ -104,11 +105,6 @@ public abstract class JNode3DStandalone implements JNode3DScene {
         return internalScene.getConfiguration();
     }
 
-    @Override
-    public OGL getOpenGL() {
-        return internalScene.getOpenGL();
-    }
-
     public final void showAndWait() {
         init();
 
@@ -142,12 +138,23 @@ public abstract class JNode3DStandalone implements JNode3DScene {
             GLFW.glfwSwapInterval(1);
         }
 
+        // This line is critical for LWJGL's interoperation with GLFW's
+        // OpenGL context, or any context that is managed externally.
+        // LWJGL detects the context that is current in the current thread,
+        // creates the GLCapabilities instance and makes the OpenGL
+        // bindings available for use.
+        GL.createCapabilities();
+
         internalScene.initialize();
+
+        System.out.println(">>> OGL Version: " + GL11.glGetString(GL11.GL_VERSION));
 
         onInit();
     }
 
     private void done() {
+        internalScene.destroy();
+
         // Free the window callbacks and destroy the window
         Callbacks.glfwFreeCallbacks(windowPtr);
         GLFW.glfwDestroyWindow(windowPtr);
@@ -156,17 +163,12 @@ public abstract class JNode3DStandalone implements JNode3DScene {
         GLFW.glfwTerminate();
         GLFW.glfwSetErrorCallback(null).free();
 
+        GL.destroy();
+
         onDone();
     }
 
     private void loop() {
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GL.createCapabilities();
-
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!GLFW.glfwWindowShouldClose(windowPtr)) {
