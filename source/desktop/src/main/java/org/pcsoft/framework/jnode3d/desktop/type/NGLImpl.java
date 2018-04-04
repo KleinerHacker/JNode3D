@@ -75,14 +75,20 @@ public class NGLImpl implements NGL {
     @Override
     public int glLoadTexture(ByteBuffer buffer, int width, int height, int textureStack) {
         final int identifier = GL11.glGenTextures();
-        GL13.glActiveTexture(textureStack);
+        //GL13.glActiveTexture(textureStack);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, identifier);
 
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+
+        //GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
 
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, width, height, 0,
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+        /*final float pixels[] = {
+                0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f
+        };
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 2, 2, 0, GL11.GL_RGB, GL11.GL_FLOAT, pixels);*/
 
         return identifier;
     }

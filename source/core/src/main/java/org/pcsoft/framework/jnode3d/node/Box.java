@@ -17,7 +17,7 @@ public final class Box extends ConstructedObjectNode<Box.Points> {
         this.height = height;
         this.depth = depth;
 
-        recalcualteAll();
+        fireValueChangedForAll();
     }
 
     public float getWidth() {
@@ -26,7 +26,7 @@ public final class Box extends ConstructedObjectNode<Box.Points> {
 
     public void setWidth(float width) {
         this.width = width;
-        recalculatePointsAndNormals();
+        fireValueChangedForPositionAndNormals();
     }
 
     public float getHeight() {
@@ -35,7 +35,7 @@ public final class Box extends ConstructedObjectNode<Box.Points> {
 
     public void setHeight(float height) {
         this.height = height;
-        recalculatePointsAndNormals();
+        fireValueChangedForPositionAndNormals();
     }
 
     public float getDepth() {
@@ -44,22 +44,7 @@ public final class Box extends ConstructedObjectNode<Box.Points> {
 
     public void setDepth(float depth) {
         this.depth = depth;
-        recalculatePointsAndNormals();
-    }
-
-    @Override
-    protected void recalculatePointsAndNormals() {
-
-    }
-
-    @Override
-    protected void recalculateColors() {
-
-    }
-
-    @Override
-    protected void recalculateTexCoords() {
-
+        fireValueChangedForPositionAndNormals();
     }
 
     public enum Points {

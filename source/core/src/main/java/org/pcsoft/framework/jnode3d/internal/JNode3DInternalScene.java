@@ -6,6 +6,7 @@ import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.node.*;
+import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
 import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.MatrixMode;
@@ -104,42 +105,41 @@ public final class JNode3DInternalScene implements JNode3DScene {
         ogl.glClear(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA(),
                 OGL.GL_COLOR_BUFFER_BIT | OGL.GL_DEPTH_BUFFER_BIT | OGL.GL_STENCIL_BUFFER_BIT);
 
-        renderChildren(root, new Matrix4f().identity());
+        handleNode(root, new Matrix4f().identity());
     }
 
-    private void renderChildren(Node root, Matrix4f rootMatrix) {
+    @SuppressWarnings("unchecked")
+    private void handleNode(Node root, Matrix4f rootMatrix) {
         if (root == null)
             return;
 
-        if (root instanceof ManuelNode) { //Manuel rendering
-            ((ManuelNode) root).getCallback().process(ogl);
+        //Transformation
+        final Matrix4f childRootMatrix; //Store for child
+        if (root instanceof TransformableNode) {
+            childRootMatrix = ProcessorFactory.getTransformProcessor((Class<TransformableNode>) root.getClass())
+                    .transform(ogl, (TransformableNode) root, rootMatrix);
         } else {
-            //Transformation
-            final Matrix4f childRootMatrix; //Store for child
-            if (root instanceof TransformableNode) {
-                childRootMatrix = ((TransformableNode) root).transform(ogl, rootMatrix);
-            } else {
-                childRootMatrix = rootMatrix;
-            }
+            childRootMatrix = rootMatrix;
+        }
 
-            //Texture
-            if (root instanceof TexturedNode) {
-                ((TexturedNode) root).setupTextureAttributes(configuration, ogl);
-            }
+        //Texture
+        if (root instanceof TexturedNode) {
+            ((TexturedNode) root).setupTextureAttributes(configuration, ogl);
+        }
 
-            //Rendering
-            if (root instanceof RenderNode) {
-                ((RenderNode) root).render(ogl);
-            }
+        //Rendering
+        if (root instanceof RenderNode) {
+            ProcessorFactory.getRenderProcessor((Class<RenderNode>) root.getClass())
+                    .render(ogl, (RenderNode) root);
+        }
 
-            //Sub elements
-            if (root instanceof Group) {
-                for (final Node child : ((Group) root).getChildren()) {
-                    if (!(child instanceof RenderNode))
-                        continue;
+        //Sub elements
+        if (root instanceof Group) {
+            for (final Node child : ((Group) root).getChildren()) {
+                if (!(child instanceof RenderNode))
+                    continue;
 
-                    renderChildren(child, childRootMatrix);
-                }
+                handleNode(child, childRootMatrix);
             }
         }
     }

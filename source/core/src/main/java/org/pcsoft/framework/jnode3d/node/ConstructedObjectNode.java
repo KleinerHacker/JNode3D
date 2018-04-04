@@ -2,39 +2,42 @@ package org.pcsoft.framework.jnode3d.node;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
-import org.pcsoft.framework.jnode3d.texture.Texture2D;
+import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
+import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
+import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.Color;
-import org.pcsoft.framework.jnode3d.type.RenderMode;
+import org.pcsoft.framework.jnode3d.type.Vertex;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
-    protected Vector3f[] points = new Vector3f[0];
-    protected Vector2f[] texCoords = new Vector2f[0];
-    protected Color[] colors = new Color[0];
-    protected Vector3f[] normals = new Vector3f[0];
-
     private final Class<CK> colorKeyClass;
     private final Map<CK, Color> colorMap = new HashMap<>();
 
     private float textureWidth = 1f, textureHeight = 1f;
     private float textureTranslationX = 0f, textureTranslationY = 0f;
-    private Texture2D texture = null;
+    private Texture texture = null;
 
     protected ConstructedObjectNode(Class<CK> colorKeyClass) {
         if (!colorKeyClass.isEnum())
             throw new IllegalArgumentException("colorKeyClass must be an enumeration");
 
+        final int countOfVertices = ProcessorFactory.getVertexCalculationProcessor(this.getClass()).getCountOfVertices();
+        vertices = new Vertex[countOfVertices];
+        for (int i=0; i<countOfVertices; i++) {
+            vertices[i] = new Vertex();
+        }
+
         this.colorKeyClass = colorKeyClass;
-        setAllColors(Color.WHITE);
+        for (final CK key : colorKeyClass.getEnumConstants()) {
+            colorMap.put(key, Color.WHITE);
+        }
     }
 
     public void setColorAt(CK key, Color color) {
         colorMap.put(key, color);
-        recalculateColors();
+        fireValueChangedForColors();
     }
 
     public Color getColorAt(CK key) {
@@ -45,7 +48,7 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
         for (final CK key : colorKeyClass.getEnumConstants()) {
             colorMap.put(key, color);
         }
-        recalculateColors();
+        fireValueChangedForColors();
     }
 
     public float getTextureWidth() {
@@ -54,7 +57,7 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
 
     public void setTextureWidth(float textureWidth) {
         this.textureWidth = textureWidth;
-        recalculateTexCoords();
+        fireValueChangedForTextureCoordinates();
     }
 
     public float getTextureHeight() {
@@ -63,7 +66,7 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
 
     public void setTextureHeight(float textureHeight) {
         this.textureHeight = textureHeight;
-        recalculateTexCoords();
+        fireValueChangedForTextureCoordinates();
     }
 
     public float getTextureTranslationX() {
@@ -72,7 +75,7 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
 
     public void setTextureTranslationX(float textureTranslationX) {
         this.textureTranslationX = textureTranslationX;
-        recalculateTexCoords();
+        fireValueChangedForTextureCoordinates();
     }
 
     public float getTextureTranslationY() {
@@ -81,45 +84,62 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
 
     public void setTextureTranslationY(float textureTranslationY) {
         this.textureTranslationY = textureTranslationY;
-        recalculateTexCoords();
+        fireValueChangedForTextureCoordinates();
     }
 
-    public Texture2D getTexture() {
+    public Texture getTexture() {
         return texture;
     }
 
-    public void setTexture(Texture2D texture) {
+    public void setTexture(Texture texture) {
         this.texture = texture;
     }
 
-    protected abstract void recalculatePointsAndNormals();
+    //<editor-fold desc="Value Changed">
+    @SuppressWarnings("unchecked")
+    protected final void fireValueChangedForPositionAndNormals() {
+        final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
+        final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this);
+        final Vector3f[] normals = vertexCalculationProcessor.recalculateNormals(this);
 
-    protected abstract void recalculateColors();
-
-    protected abstract void recalculateTexCoords();
-
-    protected final void recalcualteAll() {
-        recalculatePointsAndNormals();
-        recalculateColors();
-        recalculateTexCoords();
-    }
-
-    @Override
-    public void render(final OGL ogl) {
-        if (texture != null) {
-            texture.bind();
+        for (int i=0; i<vertexCalculationProcessor.getCountOfVertices(); i++) {
+            vertices[i].setPosition(points[i]);
+            vertices[i].setNormal(normals[i]);
         }
-
-        ogl.glDraw(RenderMode.Triangles, new DrawingCallback() {
-            @Override
-            public void draw() {
-                for (int i = 0; i < points.length; i++) {
-                    ogl.glVertex(points[i]);
-                    ogl.glColor(colors[i]);
-                    ogl.glTexCoord(texCoords[i]);
-                    ogl.glNormal(normals[i]);
-                }
-            }
-        });
     }
+
+    @SuppressWarnings("unchecked")
+    protected final void fireValueChangedForTextureCoordinates() {
+        final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
+        final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this);
+
+        for (int i=0; i<vertexCalculationProcessor.getCountOfVertices(); i++) {
+            vertices[i].setTextureCoordinate(textureCoordinates[i]);
+        }
+    }
+
+    protected final void fireValueChangedForColors() {
+        final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
+        final Color[] colors = vertexCalculationProcessor.recalculateColors(this);
+
+        for (int i=0; i<vertexCalculationProcessor.getCountOfVertices(); i++) {
+            vertices[i].setColor(colors[i]);
+        }
+    }
+
+    protected final void fireValueChangedForAll() {
+        final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
+        final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this);
+        final Vector3f[] normals = vertexCalculationProcessor.recalculateNormals(this);
+        final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this);
+        final Color[] colors = vertexCalculationProcessor.recalculateColors(this);
+
+        for (int i=0; i<vertexCalculationProcessor.getCountOfVertices(); i++) {
+            vertices[i].setPosition(points[i]);
+            vertices[i].setNormal(normals[i]);
+            vertices[i].setTextureCoordinate(textureCoordinates[i]);
+            vertices[i].setColor(colors[i]);
+        }
+    }
+    //</editor-fold>
 }

@@ -1,6 +1,5 @@
 package org.pcsoft.framework.jnode3d.node;
 
-import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public final class AmbientLight extends LightNode {
@@ -28,10 +27,5 @@ public final class AmbientLight extends LightNode {
 
     public void setDirection(float direction) {
         this.direction = direction;
-    }
-
-    @Override
-    public void render(OGL OGL) {
-
     }
 }
