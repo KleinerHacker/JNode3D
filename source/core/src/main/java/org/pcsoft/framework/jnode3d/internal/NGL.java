@@ -3,6 +3,7 @@ package org.pcsoft.framework.jnode3d.internal;
 import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 public interface NGL {
     /**
@@ -95,6 +96,15 @@ public interface NGL {
             GL_VERTEX_SHADER = 0x8B31,
             GL_FRAGMENT_SHADER = 0x8B30;
 
+    /** Accepted by {@code stages} parameter to UseProgramStages. */
+    int
+            GL_VERTEX_SHADER_BIT          = 0x1,
+            GL_FRAGMENT_SHADER_BIT        = 0x2,
+            GL_GEOMETRY_SHADER_BIT        = 0x4,
+            GL_TESS_CONTROL_SHADER_BIT    = 0x8,
+            GL_TESS_EVALUATION_SHADER_BIT = 0x10,
+            GL_ALL_SHADER_BITS            = 0xFFFFFFFF;
+
     //<editor-fold desc="Clear">
 
     void glClear(float r, float g, float b, float a, int mask);
@@ -142,12 +152,62 @@ public interface NGL {
     //</editor-fold>
 
     //<editor-fold desc="Shaders">
-    int glCreateShader(int shaderType, String script);
+    int glCreateShader(int shaderType, String... script);
     void glDeleteShader(int shaderIdentifier);
+    String glShaderLog(int shaderIdentifier);
 
     int glCreateProgram(int... shaderIdentifiers);
     void glDeleteProgram(int programIdentifier);
+    String glProgramLog(int programIdentifier);
 
     void glUseProgram(int programIdentifier);
+
+    int glCreateShaderProgram(int shaderType, String script);
+    int glCreateProgramPipeline(ShaderProgramReference... references);
+    void glActivateShaderProgram(int pipelineIdentifier, ShaderProgramReference reference);
+    void glDeleteProgramPipeline(int pipelineIdentifier);
+
+    void glSetProgramVar(int programIdentifier, String varName, boolean value);
+    void glSetProgramVar(int programIdentifier, String varName, float value);
+    void glSetProgramVar(int programIdentifier, String varName, int value);
     //</editor-fold>
+
+    final class ShaderProgramReference {
+        private final int identifier;
+        private final int stages;
+
+        public ShaderProgramReference(int identifier, int stages) {
+            this.identifier = identifier;
+            this.stages = stages;
+        }
+
+        public int getIdentifier() {
+            return identifier;
+        }
+
+        public int getStages() {
+            return stages;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ShaderProgramReference that = (ShaderProgramReference) o;
+            return identifier == that.identifier;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(identifier);
+        }
+
+        @Override
+        public String toString() {
+            return "ShaderProgramReference{" +
+                    "identifier=" + identifier +
+                    ", stages=" + stages +
+                    '}';
+        }
+    }
 }

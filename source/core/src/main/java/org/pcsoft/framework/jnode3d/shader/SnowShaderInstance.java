@@ -1,7 +1,10 @@
 package org.pcsoft.framework.jnode3d.shader;
 
 public final class SnowShaderInstance extends ShaderInstance<SnowShader> {
+    @ShaderProperty
     private boolean colored = true;
+    @ShaderProperty(name = "r_mod")
+    private float seed = -15.4457f;
 
     SnowShaderInstance(SnowShader shader) {
         super(shader);
@@ -15,10 +18,19 @@ public final class SnowShaderInstance extends ShaderInstance<SnowShader> {
         this.colored = colored;
     }
 
+    public float getSeed() {
+        return seed;
+    }
+
+    public void setSeed(float seed) {
+        this.seed = seed;
+    }
+
     @Override
     public String toString() {
         return "SnowShaderInstance{" +
                 "colored=" + colored +
+                ", seed=" + seed +
                 "} " + super.toString();
     }
 }

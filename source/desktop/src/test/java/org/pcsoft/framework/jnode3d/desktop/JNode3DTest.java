@@ -31,7 +31,7 @@ public abstract class JNode3DTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        triangle.setShaderInstance(SnowShader.get().buildInstance());
+        triangle.setShaderInstance(SnowShader.get().buildInstance(false));
 
         return triangle;
     }

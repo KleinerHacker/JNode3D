@@ -3,6 +3,8 @@ package org.pcsoft.framework.jnode3d.internal.manager;
 import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.TextureStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class TextureManager implements Manager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TextureManager.class);
     private static final TextureManager instance = new TextureManager();
 
     public static TextureManager getInstance() {
@@ -26,6 +29,8 @@ public final class TextureManager implements Manager {
 
     @Override
     public void initialize(OGL ogl) {
+        LOGGER.info("Initialize Texture Manager");
+
         for (final Texture texture : textureIdentifierMap.keySet()) {
             if (textureIdentifierMap.get(texture) != null)
                 continue;
@@ -41,6 +46,8 @@ public final class TextureManager implements Manager {
 
     @Override
     public void destroy(OGL ogl) {
+        LOGGER.info("Destroy Texture Manager");
+
         for (final Texture texture : new HashSet<>(textureIdentifierMap.keySet())) {
             final TextureIdentifier textureIdentifier = textureIdentifierMap.get(texture);
             if (textureIdentifier == null)
@@ -61,6 +68,8 @@ public final class TextureManager implements Manager {
     }
 
     public void registerTexture(Texture texture) {
+        LOGGER.debug("Register texture (initialized: " + isInitialized() + ")");
+
         if (isInitialized()) {
             final TextureIdentifier textureIdentifier = buildTexture(ogl, texture);
             textureIdentifierMap.put(texture, textureIdentifier);
@@ -79,6 +88,8 @@ public final class TextureManager implements Manager {
     }
 
     private TextureIdentifier buildTexture(OGL ogl, Texture texture) {
+        LOGGER.debug("Build texture");
+        
         final int textureId = ogl.glLoadTexture(texture.getBuffer(), texture.getWidth(), texture.getHeight(), TextureStack.Texture0);
         return new TextureIdentifier(textureId);
     }

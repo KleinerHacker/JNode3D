@@ -13,10 +13,13 @@ import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 
 public abstract class JNode3DStandalone implements JNode3DScene {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JNode3DStandalone.class);
     protected static final int DEF_WIDTH = 800;
     protected static final int DEF_HEIGHT = 600;
 
@@ -118,6 +121,8 @@ public abstract class JNode3DStandalone implements JNode3DScene {
 
     //<editor-fold desc="Natives">
     protected final void init() {
+        LOGGER.info("Initialize standalone OpenGL system");
+
         final Dimension graphicDimension = getGraphicDimension();
         final long graphicMonitor = getGraphicMonitor();
 
@@ -147,12 +152,14 @@ public abstract class JNode3DStandalone implements JNode3DScene {
 
         internalScene.initialize();
 
-        System.out.println(">>> OGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+        LOGGER.info(">>> OGL Version: " + GL11.glGetString(GL11.GL_VERSION));
 
         onInit();
     }
 
     private void done() {
+        LOGGER.info("Destroy standalone OpenGL system");
+
         internalScene.destroy();
 
         // Free the window callbacks and destroy the window
@@ -169,6 +176,8 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     }
 
     private void loop() {
+        LOGGER.debug("Start standalone OpenGL system LOOP");
+
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!GLFW.glfwWindowShouldClose(windowPtr)) {

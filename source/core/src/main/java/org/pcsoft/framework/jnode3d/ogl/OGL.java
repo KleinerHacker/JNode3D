@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 public final class OGL {
     /**
@@ -40,6 +41,15 @@ public final class OGL {
             GL_TEXTURE_BIT = 0x40000,
             GL_SCISSOR_BIT = 0x80000,
             GL_ALL_ATTRIB_BITS = 0xFFFFF;
+
+    /** Accepted by {@code stages} parameter to UseProgramStages. */
+    public static final int
+            GL_VERTEX_SHADER_BIT          = 0x1,
+            GL_FRAGMENT_SHADER_BIT        = 0x2,
+            GL_GEOMETRY_SHADER_BIT        = 0x4,
+            GL_TESS_CONTROL_SHADER_BIT    = 0x8,
+            GL_TESS_EVALUATION_SHADER_BIT = 0x10,
+            GL_ALL_SHADER_BITS            = 0xFFFFFFFF;
 
     private final NGL ngl;
 
@@ -198,7 +208,7 @@ public final class OGL {
         return glCreateShader(shaderType, IOUtils.toString(in, encoding));
     }
 
-    public int glCreateShader(ShaderType shaderType, String script) {
+    public int glCreateShader(ShaderType shaderType, String... script) {
         return ngl.glCreateShader(shaderType.getValue(), script);
     }
 
@@ -218,5 +228,89 @@ public final class OGL {
         ngl.glDeleteProgram(programIdentifier);
     }
 
+    public String glShaderLog(int shaderIdentifier) {
+        return ngl.glShaderLog(shaderIdentifier);
+    }
+
+    public String glProgramLog(int programIdentifier) {
+        return ngl.glProgramLog(programIdentifier);
+    }
+
+    public void glSetProgramVar(int programIdentifier, String varName, boolean value) {
+        ngl.glSetProgramVar(programIdentifier, varName, value);
+    }
+
+    public void glSetProgramVar(int programIdentifier, String varName, float value) {
+        ngl.glSetProgramVar(programIdentifier, varName, value);
+    }
+
+    public void glSetProgramVar(int programIdentifier, String varName, int value) {
+        ngl.glSetProgramVar(programIdentifier, varName, value);
+    }
+
+    public int glCreateShaderProgram(ShaderType shaderType, String script) {
+        return ngl.glCreateShaderProgram(shaderType.getValue(), script);
+    }
+
+    public int glCreateProgramPipeline(ShaderProgramReference... references) {
+        final NGL.ShaderProgramReference[] array = new NGL.ShaderProgramReference[references.length];
+        for (int i=0; i<references.length; i++) {
+            array[i] = new NGL.ShaderProgramReference(references[i].identifier, references[i].stages);
+        }
+
+        return ngl.glCreateProgramPipeline(array);
+    }
+
+    public void glActivateShaderProgram(int pipelineIdentifier, ShaderProgramReference reference) {
+        ngl.glActivateShaderProgram(pipelineIdentifier, new NGL.ShaderProgramReference(reference.identifier, reference.stages));
+    }
+
+    public void glDeleteProgramPipeline(int pipelineIdentifier) {
+        ngl.glDeleteProgramPipeline(pipelineIdentifier);
+    }
+
     //</editor-fold>
+
+    public static final class ShaderProgramReference {
+        private final int identifier;
+        private final int stages;
+
+        private ShaderProgramReference(NGL.ShaderProgramReference reference) {
+            this(reference.getIdentifier(), reference.getStages());
+        }
+
+        public ShaderProgramReference(int identifier, int stages) {
+            this.identifier = identifier;
+            this.stages = stages;
+        }
+
+        public int getIdentifier() {
+            return identifier;
+        }
+
+        public int getStages() {
+            return stages;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ShaderProgramReference that = (ShaderProgramReference) o;
+            return identifier == that.identifier;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(identifier);
+        }
+
+        @Override
+        public String toString() {
+            return "ShaderProgramReference{" +
+                    "identifier=" + identifier +
+                    ", stages=" + stages +
+                    '}';
+        }
+    }
 }

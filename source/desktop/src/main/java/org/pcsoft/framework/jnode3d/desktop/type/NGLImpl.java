@@ -135,7 +135,7 @@ public class NGLImpl implements NGL {
 
     //<editor-fold desc="Shaders">
     @Override
-    public int glCreateShader(int shaderType, String script) {
+    public int glCreateShader(int shaderType, String... script) {
         final int identifier = GL20.glCreateShader(shaderType);
         GL20.glShaderSource(identifier, script);
         GL20.glCompileShader(identifier);
@@ -149,13 +149,13 @@ public class NGLImpl implements NGL {
         for (final int shaderIdentifier : shaderIdentifiers) {
             GL20.glAttachShader(identifier, shaderIdentifier);
         }
+        GL20.glLinkProgram(identifier);
 
         return identifier;
     }
 
     @Override
     public void glUseProgram(int programIdentifier) {
-        GL20.glLinkProgram(programIdentifier);
         GL20.glUseProgram(programIdentifier);
     }
 
@@ -167,6 +167,60 @@ public class NGLImpl implements NGL {
     @Override
     public void glDeleteProgram(int programIdentifier) {
         GL20.glDeleteProgram(programIdentifier);
+    }
+
+    @Override
+    public String glShaderLog(int shaderIdentifier) {
+        return GL20.glGetShaderInfoLog(shaderIdentifier);
+    }
+
+    @Override
+    public String glProgramLog(int programIdentifier) {
+        return GL20.glGetProgramInfoLog(programIdentifier);
+    }
+
+    @Override
+    public void glSetProgramVar(int programIdentifier, String varName, boolean value) {
+        final int location = GL20.glGetUniformLocation(programIdentifier, varName);
+        GL41.glProgramUniform1i(programIdentifier, location, value ? 1 : 0);
+    }
+
+    @Override
+    public void glSetProgramVar(int programIdentifier, String varName, float value) {
+        final int location = GL20.glGetUniformLocation(programIdentifier, varName);
+        GL41.glProgramUniform1f(programIdentifier, location, value);
+    }
+
+    @Override
+    public void glSetProgramVar(int programIdentifier, String varName, int value) {
+        final int location = GL20.glGetUniformLocation(programIdentifier, varName);
+        GL41.glProgramUniform1i(programIdentifier, location, value);
+    }
+
+    @Override
+    public int glCreateShaderProgram(int shaderType, String script) {
+        return GL41.glCreateShaderProgramv(shaderType, script);
+    }
+
+    @Override
+    public int glCreateProgramPipeline(ShaderProgramReference... references) {
+        final int identifier = GL41.glGenProgramPipelines();
+        for (final ShaderProgramReference reference : references) {
+            GL41.glUseProgramStages(identifier, reference.getStages(), reference.getIdentifier());
+        }
+
+        return identifier;
+    }
+
+    @Override
+    public void glActivateShaderProgram(int pipelineIdentifier, ShaderProgramReference reference) {
+        GL41.glBindProgramPipeline(pipelineIdentifier);
+        GL41.glUseProgramStages(pipelineIdentifier, reference.getStages(), reference.getIdentifier());
+    }
+
+    @Override
+    public void glDeleteProgramPipeline(int pipelineIdentifier) {
+        GL41.glDeleteProgramPipelines(pipelineIdentifier);
     }
 
     //</editor-fold>

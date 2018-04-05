@@ -3,12 +3,15 @@ package org.pcsoft.framework.jnode3d.desktop;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class LWJGL {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LWJGL.class);
     private static boolean initialized = false;
 
     static {
-        System.out.println("LWJGL Version: " + Version.getVersion());
+        LOGGER.info("LWJGL Version: " + Version.getVersion());
     }
 
     public static void initialize() {
@@ -17,6 +20,7 @@ final class LWJGL {
 
         if (!GLFW.glfwInit())
             throw new IllegalStateException("Unable to initialize OpenGL");
+
 
         GLFWErrorCallback.createPrint(System.err).set();
 

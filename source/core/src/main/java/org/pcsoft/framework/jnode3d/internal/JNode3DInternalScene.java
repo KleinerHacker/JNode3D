@@ -5,10 +5,10 @@ import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
+import org.pcsoft.framework.jnode3d.internal.handler.JNode3DHandler;
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
 import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
-import org.pcsoft.framework.jnode3d.node.*;
-import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
+import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.MatrixMode;
@@ -110,7 +110,7 @@ public final class JNode3DInternalScene implements JNode3DScene {
         ogl.glClear(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA(),
                 OGL.GL_COLOR_BUFFER_BIT | OGL.GL_DEPTH_BUFFER_BIT | OGL.GL_STENCIL_BUFFER_BIT);
 
-        handleNode(root, new Matrix4f().identity());
+        JNode3DHandler.handleNode(root, new Matrix4f().identity(), ogl, configuration);
     }
 
     public void destroy() {
@@ -131,41 +131,5 @@ public final class JNode3DInternalScene implements JNode3DScene {
 
     public boolean isDestroyed() {
         return destroyed;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void handleNode(Node root, Matrix4f rootMatrix) {
-        if (root == null)
-            return;
-
-        //Transformation
-        final Matrix4f childRootMatrix; //Store for child
-        if (root instanceof TransformableNode) {
-            childRootMatrix = ProcessorFactory.getTransformProcessor((Class<TransformableNode>) root.getClass())
-                    .transform(ogl, (TransformableNode) root, rootMatrix);
-        } else {
-            childRootMatrix = rootMatrix;
-        }
-
-        //Texture
-        if (root instanceof TexturedNode) {
-            ((TexturedNode) root).setupTextureAttributes(configuration, ogl);
-        }
-
-        //Rendering
-        if (root instanceof RenderNode) {
-            ProcessorFactory.getRenderProcessor((Class<RenderNode>) root.getClass())
-                    .render(ogl, (RenderNode) root);
-        }
-
-        //Sub elements
-        if (root instanceof Group) {
-            for (final Node child : ((Group) root).getChildren()) {
-                if (!(child instanceof RenderNode))
-                    continue;
-
-                handleNode(child, childRootMatrix);
-            }
-        }
     }
 }

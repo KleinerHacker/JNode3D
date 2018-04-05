@@ -8,12 +8,20 @@ public final class SnowShader extends Shader<SnowShaderInstance> {
     }
 
     private SnowShader() {
-        super(loadShader(SnowShader.class.getResourceAsStream("/shader/snow.vert")), loadShader(SnowShader.class.getResourceAsStream("/shader/snow.frag")));
+        super(SnowShaderInstance.class, loadShader(SnowShader.class.getResourceAsStream("/shader/snow.vert")),
+                loadShader(SnowShader.class.getResourceAsStream("/shader/snow.frag")));
     }
 
     @Override
     public SnowShaderInstance buildInstance() {
         return new SnowShaderInstance(this);
+    }
+
+    public SnowShaderInstance buildInstance(boolean colored, float seed) {
+        final SnowShaderInstance instance = buildInstance(colored);
+        instance.setSeed(seed);
+
+        return instance;
     }
 
     public SnowShaderInstance buildInstance(boolean colored) {
