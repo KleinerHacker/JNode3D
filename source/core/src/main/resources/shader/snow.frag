@@ -4,10 +4,10 @@ uniform bool colored = true;
 
 float rand(float s, float r)
 {
-    return mod(mod(s, r + r_mod) * 112341, 1);
+    return mod(mod(s, r + r_mod) * 112341.0, 1.0);
 }
 
-void main()
+void snow_fs()
 {
     float r, g, b;
     if (colored)

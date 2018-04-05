@@ -1,5 +1,6 @@
 package org.pcsoft.framework.jnode3d.shader;
 
+@ShaderDescriptor(fragmentMain = "snow_fs", vertexMain = "snow_vs")
 public final class SnowShader extends Shader<SnowShaderInstance> {
     public static final SnowShader instance = new SnowShader();
 

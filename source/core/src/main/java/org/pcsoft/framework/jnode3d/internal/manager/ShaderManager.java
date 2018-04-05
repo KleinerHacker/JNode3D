@@ -93,7 +93,7 @@ public final class ShaderManager implements Manager {
     private ShaderIdentifier buildShader(OGL ogl, Shader shader) {
         LOGGER.debug("Build shader: " + shader.getClass().getName());
 
-        final int fragId = ogl.glCreateShader(ShaderType.FragmentShader, shader.getFragmentShader());
+        final int fragId = ogl.glCreateShader(ShaderType.FragmentShader, shader.getFragmentShader(), "void main() { " + shader.getDescriptor().fragmentMain() + "(); }");
         final String fragLog = ogl.glShaderLog(fragId);
         if (StringUtils.isEmpty(fragLog)) {
             LOGGER.info("Fragment Shader of " + shader.getClass().getName() + " was compiled successfully");
@@ -101,7 +101,7 @@ public final class ShaderManager implements Manager {
             LOGGER.warn("Fragment Shader of " + shader.getClass().getName() + " contains warnings and/or errors:" + SystemUtils.LINE_SEPARATOR + fragLog);
         }
 
-        final int vertId = ogl.glCreateShader(ShaderType.VertexShader, shader.getVertexShader());
+        final int vertId = ogl.glCreateShader(ShaderType.VertexShader, shader.getVertexShader(), "void main() { " + shader.getDescriptor().vertexMain() + "(); }");
         final String vertLog = ogl.glShaderLog(vertId);
         if (StringUtils.isEmpty(vertLog)) {
             LOGGER.info("Vertex Shader of " + shader.getClass().getName() + " was compiled successfully");

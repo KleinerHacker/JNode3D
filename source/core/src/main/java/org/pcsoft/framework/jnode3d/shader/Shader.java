@@ -22,8 +22,10 @@ public abstract class Shader<T extends ShaderInstance> {
 
     private final String vertexShader, fragmentShader;
     private final List<PropertyInfo> propertyInfoList = new ArrayList<>();
+    private final ShaderDescriptor descriptor;
 
     protected Shader(Class<T> instanceClass, String vertexShader, String fragmentShader) {
+        this.descriptor = findDescriptor();
         buildPropertyInfoList(instanceClass);
 
         this.vertexShader = vertexShader;
@@ -44,7 +46,24 @@ public abstract class Shader<T extends ShaderInstance> {
         return propertyInfoList;
     }
 
+    public ShaderDescriptor getDescriptor() {
+        return descriptor;
+    }
+
     public abstract T buildInstance();
+
+    private ShaderDescriptor findDescriptor() {
+        Class current = this.getClass();
+        while (current != null) {
+            final ShaderDescriptor shaderDescriptor = (ShaderDescriptor) current.getAnnotation(ShaderDescriptor.class);
+            if (shaderDescriptor != null)
+                return shaderDescriptor;
+
+            current = current.getSuperclass();
+        }
+
+        throw new IllegalStateException("Unable to find annotation " + ShaderDescriptor.class.getName() + " on shader " + this.getClass().getName());
+    }
 
     private void buildPropertyInfoList(Class<T> instanceClass) {
         Class current = instanceClass;
