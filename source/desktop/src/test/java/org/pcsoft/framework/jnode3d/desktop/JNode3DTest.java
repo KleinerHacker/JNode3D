@@ -5,11 +5,13 @@ import org.pcsoft.framework.jnode3d.camera.PerspectiveLookAtCamera;
 import org.pcsoft.framework.jnode3d.desktop.type.ImageLoader;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Triangle;
+import org.pcsoft.framework.jnode3d.shader.OpacityShader;
 import org.pcsoft.framework.jnode3d.shader.SnowShader;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public abstract class JNode3DTest {
     protected static void buildScene(JNode3DStandalone standalone) {
@@ -31,7 +33,10 @@ public abstract class JNode3DTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        triangle.setShaderInstance(SnowShader.get().buildInstance(false));
+        triangle.getShaderList().addAll(Arrays.asList(
+                SnowShader.get().buildInstance(false),
+                OpacityShader.get().buildInstance(0.1f)
+        ));
 
         return triangle;
     }

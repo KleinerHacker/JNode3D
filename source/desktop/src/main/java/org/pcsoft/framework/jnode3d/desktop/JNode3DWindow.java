@@ -5,7 +5,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 
-import java.awt.*;
 import java.nio.IntBuffer;
 
 public class JNode3DWindow extends JNode3DStandalone {
@@ -14,7 +13,7 @@ public class JNode3DWindow extends JNode3DStandalone {
     private boolean centerWindow = true;
 
     public JNode3DWindow(JNode3DConfiguration configuration) {
-        super(configuration, DEF_WIDTH, DEF_HEIGHT);
+        super(configuration);
 
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
     }
@@ -25,7 +24,6 @@ public class JNode3DWindow extends JNode3DStandalone {
 
     public void setResizable(boolean resizable) {
         this.resizable = resizable;
-        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
     }
 
     public int getWidth() {
@@ -53,17 +51,13 @@ public class JNode3DWindow extends JNode3DStandalone {
     }
 
     @Override
-    protected Dimension getGraphicDimension() {
-        return new Dimension(width, height);
-    }
-
-    @Override
     protected long getGraphicMonitor() {
         return 0;
     }
 
     @Override
-    protected void onInit() {
+    protected void onShowing() {
+        GLFW.glfwSetWindowAttrib(windowPtr, GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
         if (centerWindow) {
             // Get the thread stack and push a new frame
             try (MemoryStack stack = MemoryStack.stackPush()) {

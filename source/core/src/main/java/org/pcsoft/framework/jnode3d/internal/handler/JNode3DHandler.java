@@ -5,11 +5,11 @@ import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.node.RenderNode;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 
 public final class JNode3DHandler {
     @SuppressWarnings("unchecked")
-    public static void handleNode(Node root, Matrix4f rootMatrix, final OGL ogl, JNode3DConfiguration configuration) {
+    public static void handleNode(Node root, Matrix4f rootMatrix, final OpenGL ogl, JNode3DConfiguration configuration) {
         if (root == null)
             return;
 
@@ -26,7 +26,7 @@ public final class JNode3DHandler {
         handleNodeChildren(root, ogl, configuration, childRootMatrix);
     }
 
-    private static void handleNodeChildren(Node root, OGL ogl, JNode3DConfiguration configuration, Matrix4f childRootMatrix) {
+    private static void handleNodeChildren(Node root, OpenGL ogl, JNode3DConfiguration configuration, Matrix4f childRootMatrix) {
         if (root instanceof Group) {
             for (final Node child : ((Group) root).getChildren()) {
                 if (!(child instanceof RenderNode))

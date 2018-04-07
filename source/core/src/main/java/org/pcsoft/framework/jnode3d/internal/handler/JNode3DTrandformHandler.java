@@ -3,14 +3,14 @@ package org.pcsoft.framework.jnode3d.internal.handler;
 import org.joml.Matrix4f;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.node.TransformableNode;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.transformation.Rotation;
 import org.pcsoft.framework.jnode3d.transformation.Scaling;
 import org.pcsoft.framework.jnode3d.transformation.Transformation;
 import org.pcsoft.framework.jnode3d.transformation.Translation;
 
 final class JNode3DTrandformHandler {
-    public static Matrix4f handleNode(Node root, Matrix4f rootMatrix, OGL ogl) {
+    public static Matrix4f handleNode(Node root, Matrix4f rootMatrix, OpenGL ogl) {
         if (!(root instanceof TransformableNode))
             return rootMatrix;
 

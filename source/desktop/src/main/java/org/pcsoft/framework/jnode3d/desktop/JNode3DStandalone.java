@@ -8,15 +8,13 @@ import org.lwjgl.opengl.GL11;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
-import org.pcsoft.framework.jnode3d.desktop.type.NGLImpl;
+import org.pcsoft.framework.jnode3d.desktop.type.NativeGLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
+import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
 
 public abstract class JNode3DStandalone implements JNode3DScene {
     private static final Logger LOGGER = LoggerFactory.getLogger(JNode3DStandalone.class);
@@ -29,12 +27,19 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     protected long windowPtr;
     private final JNode3DInternalScene internalScene;
 
-    protected JNode3DStandalone(JNode3DConfiguration configuration, int width, int height) {
-        internalScene = new JNode3DInternalScene(configuration, new OGL(new NGLImpl()), width, height);
-
+    protected JNode3DStandalone(JNode3DConfiguration configuration) {
         if (!LWJGL.isInitialized()) {
             LWJGL.initialize();
         }
+
+        this.init(configuration);
+
+        if (!GLFactory.isInitialized()) {
+            GLFactory.initialize(new NativeGLImpl());
+        }
+
+        this.internalScene = new JNode3DInternalScene(configuration, DEF_WIDTH, DEF_HEIGHT);
+        this.internalScene.initialize();
     }
 
     public String getTitle() {
@@ -109,24 +114,45 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     }
 
     public final void showAndWait() {
-        init();
+        if (!internalScene.isInitialized()) {
+            internalScene.initialize();
+        }
+
+        GLFW.glfwSetWindowShouldClose(windowPtr, false);
+        GLFW.glfwSetWindowSize(windowPtr, internalScene.getWidth(), internalScene.getHeight());
+        GLFW.glfwSetWindowTitle(windowPtr, StringUtils.isEmpty(title) ? "" : title);
+        onShowing();
 
         // Make the window visible
         GLFW.glfwShowWindow(windowPtr);
 
         loop();
-
         done();
     }
 
+    public final void terminate() {
+        GL.destroy();
+
+        // Free the window callbacks and destroy the window
+        Callbacks.glfwFreeCallbacks(windowPtr);
+        GLFW.glfwDestroyWindow(windowPtr);
+
+        if (LWJGL.isInitialized()) {
+            LWJGL.terminate();
+        }
+        if (GLFactory.isInitialized()) {
+            GLFactory.terminate();
+        }
+    }
+
     //<editor-fold desc="Natives">
-    protected final void init() {
+    protected final void init(JNode3DConfiguration configuration) {
         LOGGER.info("Initialize standalone OpenGL system");
 
-        final Dimension graphicDimension = getGraphicDimension();
         final long graphicMonitor = getGraphicMonitor();
 
-        windowPtr = GLFW.glfwCreateWindow(graphicDimension.width, graphicDimension.height, StringUtils.isEmpty(title) ? "" : title, graphicMonitor, 0);
+        GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
+        windowPtr = GLFW.glfwCreateWindow(DEF_WIDTH, DEF_HEIGHT, "", graphicMonitor, 0);
         if (windowPtr == 0L)
             throw new IllegalStateException("Unable to create OpenGL window");
 
@@ -138,8 +164,16 @@ public abstract class JNode3DStandalone implements JNode3DScene {
 
         // Make the OpenGL context current
         GLFW.glfwMakeContextCurrent(windowPtr);
+        setupConfiguration(configuration);
+
+        LOGGER.info(">>> OGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+
+        onInit();
+    }
+
+    private void setupConfiguration(JNode3DConfiguration configuration) {
         // Enable v-sync
-        if (getConfiguration().isUseVSync()) {
+        if (configuration.isUseVSync()) {
             GLFW.glfwSwapInterval(1);
         }
 
@@ -149,28 +183,12 @@ public abstract class JNode3DStandalone implements JNode3DScene {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
-
-        internalScene.initialize();
-
-        LOGGER.info(">>> OGL Version: " + GL11.glGetString(GL11.GL_VERSION));
-
-        onInit();
     }
 
     private void done() {
         LOGGER.info("Destroy standalone OpenGL system");
 
         internalScene.destroy();
-
-        // Free the window callbacks and destroy the window
-        Callbacks.glfwFreeCallbacks(windowPtr);
-        GLFW.glfwDestroyWindow(windowPtr);
-
-        // Terminate GLFW and free the error callback
-        GLFW.glfwTerminate();
-        GLFW.glfwSetErrorCallback(null).free();
-
-        GL.destroy();
 
         onDone();
     }
@@ -194,8 +212,6 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     }
     //</editor-fold>
 
-    protected abstract Dimension getGraphicDimension();
-
     protected abstract long getGraphicMonitor();
 
     protected void onInit() {
@@ -207,6 +223,14 @@ public abstract class JNode3DStandalone implements JNode3DScene {
     }
 
     protected void onDone() {
+        //Empty
+    }
+
+    protected void onShowing() {
+        //Empty
+    }
+
+    protected void onTerminate() {
         //Empty
     }
 }

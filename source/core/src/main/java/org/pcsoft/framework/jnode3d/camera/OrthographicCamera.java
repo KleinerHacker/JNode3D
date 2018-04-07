@@ -1,7 +1,7 @@
 package org.pcsoft.framework.jnode3d.camera;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Bounds2D;
 
 public final class OrthographicCamera extends Camera {
@@ -32,7 +32,7 @@ public final class OrthographicCamera extends Camera {
     }
 
     @Override
-    protected void applyTransformation(OGL OGL, int width, int height) {
+    protected void applyTransformation(OpenGL OGL, int width, int height) {
         OGL.glOrtho((Bounds2D) ObjectUtils.defaultIfNull(viewport, new Bounds2D(0, 0, width, height)),
                 getNear(), getFar());
     }

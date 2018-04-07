@@ -1,12 +1,12 @@
 package org.pcsoft.framework.jnode3d.desktop.type;
 
 import org.lwjgl.opengl.*;
-import org.pcsoft.framework.jnode3d.internal.NGL;
-import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
+import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.DrawingCallback;
 
 import java.nio.ByteBuffer;
 
-public class NGLImpl implements NGL {
+public class NativeGLImpl implements NativeGL {
     //<editor-fold desc="Clean Up">
 
     @Override
@@ -29,8 +29,8 @@ public class NGLImpl implements NGL {
     }
 
     @Override
-    public void glColor(float r, float g, float b) {
-        GL11.glColor3f(r, g, b);
+    public void glColor(float r, float g, float b, float a) {
+        GL11.glColor4f(r, g, b, a);
     }
 
     @Override
@@ -195,32 +195,6 @@ public class NGLImpl implements NGL {
     public void glSetProgramVar(int programIdentifier, String varName, int value) {
         final int location = GL20.glGetUniformLocation(programIdentifier, varName);
         GL41.glProgramUniform1i(programIdentifier, location, value);
-    }
-
-    @Override
-    public int glCreateShaderProgram(int shaderType, String script) {
-        return GL41.glCreateShaderProgramv(shaderType, script);
-    }
-
-    @Override
-    public int glCreateProgramPipeline(ShaderProgramReference... references) {
-        final int identifier = GL41.glGenProgramPipelines();
-        for (final ShaderProgramReference reference : references) {
-            GL41.glUseProgramStages(identifier, reference.getStages(), reference.getIdentifier());
-        }
-
-        return identifier;
-    }
-
-    @Override
-    public void glActivateShaderProgram(int pipelineIdentifier, ShaderProgramReference reference) {
-        GL41.glBindProgramPipeline(pipelineIdentifier);
-        GL41.glUseProgramStages(pipelineIdentifier, reference.getStages(), reference.getIdentifier());
-    }
-
-    @Override
-    public void glDeleteProgramPipeline(int pipelineIdentifier) {
-        GL41.glDeleteProgramPipelines(pipelineIdentifier);
     }
 
     //</editor-fold>

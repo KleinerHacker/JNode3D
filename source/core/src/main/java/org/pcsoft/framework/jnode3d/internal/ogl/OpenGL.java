@@ -1,11 +1,10 @@
-package org.pcsoft.framework.jnode3d.ogl;
+package org.pcsoft.framework.jnode3d.internal.ogl;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.internal.NGL;
 import org.pcsoft.framework.jnode3d.type.*;
 
 import java.io.File;
@@ -15,7 +14,7 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-public final class OGL {
+public final class OpenGL {
     /**
      * AttribMask
      */
@@ -51,9 +50,9 @@ public final class OGL {
             GL_TESS_EVALUATION_SHADER_BIT = 0x10,
             GL_ALL_SHADER_BITS            = 0xFFFFFFFF;
 
-    private final NGL ngl;
+    private final NativeGL ngl;
 
-    public OGL(NGL ngl) {
+    OpenGL(NativeGL ngl) {
         this.ngl = ngl;
     }
 
@@ -84,12 +83,12 @@ public final class OGL {
         glVertex(vector2D.x(), vector2D.y());
     }
 
-    public void glColor(float r, float g, float b) {
-        ngl.glColor(r, g, b);
+    public void glColor(float r, float g, float b, float a) {
+        ngl.glColor(r, g, b, a);
     }
 
     public void glColor(Color color) {
-        glColor(color.getR(), color.getG(), color.getB());
+        glColor(color.getR(), color.getG(), color.getB(), color.getA());
     }
 
     public void glTexCoord(float x, float y) {
@@ -248,34 +247,13 @@ public final class OGL {
         ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    public int glCreateShaderProgram(ShaderType shaderType, String script) {
-        return ngl.glCreateShaderProgram(shaderType.getValue(), script);
-    }
-
-    public int glCreateProgramPipeline(ShaderProgramReference... references) {
-        final NGL.ShaderProgramReference[] array = new NGL.ShaderProgramReference[references.length];
-        for (int i=0; i<references.length; i++) {
-            array[i] = new NGL.ShaderProgramReference(references[i].identifier, references[i].stages);
-        }
-
-        return ngl.glCreateProgramPipeline(array);
-    }
-
-    public void glActivateShaderProgram(int pipelineIdentifier, ShaderProgramReference reference) {
-        ngl.glActivateShaderProgram(pipelineIdentifier, new NGL.ShaderProgramReference(reference.identifier, reference.stages));
-    }
-
-    public void glDeleteProgramPipeline(int pipelineIdentifier) {
-        ngl.glDeleteProgramPipeline(pipelineIdentifier);
-    }
-
     //</editor-fold>
 
     public static final class ShaderProgramReference {
         private final int identifier;
         private final int stages;
 
-        private ShaderProgramReference(NGL.ShaderProgramReference reference) {
+        private ShaderProgramReference(NativeGL.ShaderProgramReference reference) {
             this(reference.getIdentifier(), reference.getStages());
         }
 

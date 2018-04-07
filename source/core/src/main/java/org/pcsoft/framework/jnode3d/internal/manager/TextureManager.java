@@ -1,6 +1,7 @@
 package org.pcsoft.framework.jnode3d.internal.manager;
 
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.TextureStack;
 import org.slf4j.Logger;
@@ -22,56 +23,48 @@ public final class TextureManager implements Manager {
     private final Map<Texture, TextureIdentifier> textureIdentifierMap = new HashMap<>();
     private boolean initialized = false;
 
-    private OGL ogl;
-
     private TextureManager() {
     }
 
     @Override
-    public void initialize(OGL ogl) {
+    public void initialize() {
         LOGGER.info("Initialize Texture Manager");
 
         for (final Texture texture : textureIdentifierMap.keySet()) {
-            if (textureIdentifierMap.get(texture) != null)
+            final TextureIdentifier textureIdentifier = buildTexture(texture);
+            if (textureIdentifier == null)
                 continue;
-
-            final TextureIdentifier textureIdentifier = buildTexture(ogl, texture);
 
             textureIdentifierMap.put(texture, textureIdentifier);
         }
 
-        this.ogl = ogl;
         this.initialized = true;
     }
 
     @Override
-    public void destroy(OGL ogl) {
+    public void destroy() {
         LOGGER.info("Destroy Texture Manager");
 
         for (final Texture texture : new HashSet<>(textureIdentifierMap.keySet())) {
-            final TextureIdentifier textureIdentifier = textureIdentifierMap.get(texture);
-            if (textureIdentifier == null)
+            if (!deleteTexture(texture))
                 continue;
-
-            ogl.glDeleteTexture(textureIdentifier.getTextureId());
 
             textureIdentifierMap.put(texture, null);
         }
 
-        this.ogl = null;
         this.initialized = false;
     }
 
     @Override
     public boolean isInitialized() {
-        return initialized && ogl != null;
+        return initialized;
     }
 
     public void registerTexture(Texture texture) {
         LOGGER.debug("Register texture (initialized: " + isInitialized() + ")");
 
         if (isInitialized()) {
-            final TextureIdentifier textureIdentifier = buildTexture(ogl, texture);
+            final TextureIdentifier textureIdentifier = buildTexture(texture);
             textureIdentifierMap.put(texture, textureIdentifier);
         } else {
             textureIdentifierMap.put(texture, null);
@@ -87,11 +80,28 @@ public final class TextureManager implements Manager {
         return textureIdentifierMap.get(texture).getTextureId();
     }
 
-    private TextureIdentifier buildTexture(OGL ogl, Texture texture) {
+    private TextureIdentifier buildTexture(Texture texture) {
+        if (textureIdentifierMap.get(texture) != null)
+            return null;
+
         LOGGER.debug("Build texture");
-        
+        final OpenGL ogl = GLFactory.getOpenGL();
+
         final int textureId = ogl.glLoadTexture(texture.getBuffer(), texture.getWidth(), texture.getHeight(), TextureStack.Texture0);
         return new TextureIdentifier(textureId);
+    }
+
+    private boolean deleteTexture(Texture texture) {
+        final TextureIdentifier textureIdentifier = textureIdentifierMap.get(texture);
+        if (textureIdentifier == null)
+            return false;
+
+        LOGGER.debug("Delete Texture");
+        final OpenGL ogl = GLFactory.getOpenGL();
+
+        ogl.glDeleteTexture(textureIdentifier.getTextureId());
+
+        return true;
     }
 
     private static final class TextureIdentifier {

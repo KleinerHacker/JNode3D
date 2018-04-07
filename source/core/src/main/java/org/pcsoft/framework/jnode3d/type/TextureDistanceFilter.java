@@ -1,10 +1,10 @@
 package org.pcsoft.framework.jnode3d.type;
 
-import org.pcsoft.framework.jnode3d.internal.NGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
 
 public enum TextureDistanceFilter {
-    Linear(NGL.GL_LINEAR),
-    Nearest(NGL.GL_NEAREST),
+    Linear(NativeGL.GL_LINEAR),
+    Nearest(NativeGL.GL_NEAREST),
     ;
 
     private final int value;

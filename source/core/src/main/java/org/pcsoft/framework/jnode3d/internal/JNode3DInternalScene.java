@@ -8,8 +8,9 @@ import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.internal.handler.JNode3DHandler;
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
 import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
+import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.MatrixMode;
 
@@ -19,13 +20,11 @@ public final class JNode3DInternalScene implements JNode3DScene {
     private Camera camera = new OrthographicCamera();
     private int width, height;
 
-    private final OGL ogl;
     private final JNode3DConfiguration configuration;
-    private boolean initialized = false, destroyed = false;
+    private boolean initialized = false;
 
-    public JNode3DInternalScene(JNode3DConfiguration configuration, OGL ogl, int width, int height) {
+    public JNode3DInternalScene(JNode3DConfiguration configuration, int width, int height) {
         this.configuration = configuration;
-        this.ogl = ogl;
         this.width = width;
         this.height = height;
     }
@@ -89,8 +88,8 @@ public final class JNode3DInternalScene implements JNode3DScene {
         if (isInitialized())
             throw new IllegalStateException("Already initialized");
 
-        ShaderManager.getInstance().initialize(ogl);
-        TextureManager.getInstance().initialize(ogl);
+        ShaderManager.getInstance().initialize();
+        TextureManager.getInstance().initialize();
 
         this.initialized = true;
     }
@@ -98,8 +97,8 @@ public final class JNode3DInternalScene implements JNode3DScene {
     public void loop() {
         if (!isInitialized())
             throw new IllegalStateException("Not initialized yet");
-        if (isDestroyed())
-            throw new IllegalStateException("Already destroyed");
+
+        final OpenGL ogl = GLFactory.getOpenGL();
 
         camera.apply(ogl, width, height);
 
@@ -108,7 +107,7 @@ public final class JNode3DInternalScene implements JNode3DScene {
 
         // Set the clear color
         ogl.glClear(backColor.getR(), backColor.getG(), backColor.getB(), backColor.getA(),
-                OGL.GL_COLOR_BUFFER_BIT | OGL.GL_DEPTH_BUFFER_BIT | OGL.GL_STENCIL_BUFFER_BIT);
+                OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT | OpenGL.GL_STENCIL_BUFFER_BIT);
 
         JNode3DHandler.handleNode(root, new Matrix4f().identity(), ogl, configuration);
     }
@@ -116,20 +115,14 @@ public final class JNode3DInternalScene implements JNode3DScene {
     public void destroy() {
         if (!isInitialized())
             throw new IllegalStateException("Not initialized yet");
-        if (isDestroyed())
-            throw new IllegalStateException("Already destroyed");
 
-        ShaderManager.getInstance().destroy(ogl);
-        TextureManager.getInstance().destroy(ogl);
+        ShaderManager.getInstance().destroy();
+        TextureManager.getInstance().destroy();
 
-        this.destroyed = true;
+        this.initialized = false;
     }
 
     public boolean isInitialized() {
         return initialized;
-    }
-
-    public boolean isDestroyed() {
-        return destroyed;
     }
 }

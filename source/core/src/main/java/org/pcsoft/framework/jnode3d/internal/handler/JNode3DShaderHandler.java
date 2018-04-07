@@ -1,31 +1,34 @@
 package org.pcsoft.framework.jnode3d.internal.handler;
 
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.shader.Shader;
 import org.pcsoft.framework.jnode3d.shader.ShaderInstance;
+import org.pcsoft.framework.jnode3d.type.collection.ObservableCollection;
 
 import java.util.List;
 
 final class JNode3DShaderHandler {
-    public static void activateShader(ShaderInstance shaderInstance, OGL ogl) {
-        final ShaderManager.ShaderIdentifier shaderIdentifier = ShaderManager.getInstance().getShaderIdentifier(shaderInstance.getShader());
+    public static void activateShader(ObservableCollection<ShaderInstance> shaderCollection, OpenGL ogl) {
+        final ShaderManager.ShaderIdentifier shaderIdentifier = ShaderManager.getInstance().getShaderIdentifier(shaderCollection);
 
         ogl.glUseProgram(shaderIdentifier.getProgramId());
-        setupShaderPropertyVariables(shaderIdentifier.getProgramId(), shaderInstance, ogl);
+        setupShaderPropertyVariables(shaderIdentifier.getProgramId(), shaderCollection, ogl);
     }
 
-    private static void setupShaderPropertyVariables(int shaderIdentifier, ShaderInstance shaderInstance, OGL ogl) {
-        for (final Shader.PropertyInfo propertyInfo : (List<Shader.PropertyInfo>)shaderInstance.getShader().getPropertyInfoList()) {
-            try {
-                setupShaderPropertyVariable(shaderInstance, ogl, shaderIdentifier, propertyInfo);
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException("No access for field " + propertyInfo.getName(), e);
+    private static void setupShaderPropertyVariables(int shaderIdentifier, ObservableCollection<ShaderInstance> shaderCollection, OpenGL ogl) {
+        for (final ShaderInstance shaderInstance : shaderCollection) {
+            for (final Shader.PropertyInfo propertyInfo : (List<Shader.PropertyInfo>) shaderInstance.getShader().getPropertyInfoList()) {
+                try {
+                    setupShaderPropertyVariable(shaderInstance, ogl, shaderIdentifier, propertyInfo);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException("No access for field " + propertyInfo.getName(), e);
+                }
             }
         }
     }
 
-    private static void setupShaderPropertyVariable(ShaderInstance shaderInstance, OGL ogl, int shaderIdentifier, Shader.PropertyInfo propertyInfo) throws IllegalAccessException {
+    private static void setupShaderPropertyVariable(ShaderInstance shaderInstance, OpenGL ogl, int shaderIdentifier, Shader.PropertyInfo propertyInfo) throws IllegalAccessException {
         if (propertyInfo.getType() == int.class || propertyInfo.getType() == Integer.class ||
                 propertyInfo.getType() == byte.class || propertyInfo.getType() == Byte.class ||
                 propertyInfo.getType() == short.class || propertyInfo.getType() == Short.class ||

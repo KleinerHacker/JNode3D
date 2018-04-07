@@ -31,7 +31,7 @@
     <!-- ######### Logger configuration -->
 
     <logger name="org.pcsoft.framework.jnode3d" additivity="false">
-        <level value="debug"/>
+        <level value="trace"/>
         <appender-ref ref="file"/>
         <appender-ref ref="stdout"/>
     </logger>

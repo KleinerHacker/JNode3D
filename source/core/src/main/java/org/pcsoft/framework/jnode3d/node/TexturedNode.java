@@ -2,7 +2,7 @@ package org.pcsoft.framework.jnode3d.node;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.TextureBorderFilter;
 import org.pcsoft.framework.jnode3d.type.TextureDistanceFilter;
@@ -62,7 +62,7 @@ public abstract class TexturedNode extends RenderNode {
         this.textureBorderColor = textureBorderColor;
     }
 
-    public void setupTextureAttributes(JNode3DConfiguration configuration, OGL ogl) {
+    public void setupTextureAttributes(JNode3DConfiguration configuration, OpenGL ogl) {
         final TextureDistanceFilter textureMinifying = (TextureDistanceFilter) ObjectUtils.defaultIfNull(this.textureDistanceMinifying, configuration.getTextureMinifying());
         final TextureDistanceFilter textureMagnifying = (TextureDistanceFilter) ObjectUtils.defaultIfNull(this.textureDistanceMagnifying, configuration.getTextureMagnifying());
 

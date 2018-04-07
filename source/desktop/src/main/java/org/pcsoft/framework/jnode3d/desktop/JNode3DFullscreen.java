@@ -7,12 +7,7 @@ import java.awt.*;
 
 public final class JNode3DFullscreen extends JNode3DStandalone {
     public JNode3DFullscreen(JNode3DConfiguration configuration) {
-        super(configuration, DEF_WIDTH, DEF_HEIGHT);
-    }
-
-    @Override
-    protected Dimension getGraphicDimension() {
-        return new Dimension(getWidth(), getHeight());
+        super(configuration);
     }
 
     public Dimension getDimension() {

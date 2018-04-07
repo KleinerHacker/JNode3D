@@ -1,18 +1,18 @@
 package org.pcsoft.framework.jnode3d.type;
 
-import org.pcsoft.framework.jnode3d.internal.NGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
 
 public enum RenderMode {
-    Points(NGL.GL_POINTS),
-    Lines(NGL.GL_LINES),
-    LineLoop(NGL.GL_LINE_LOOP),
-    LineStrip(NGL.GL_LINE_STRIP),
-    Triangles(NGL.GL_TRIANGLES),
-    TriangleStrip(NGL.GL_TRIANGLE_STRIP),
-    TriangleFan(NGL.GL_TRIANGLE_FAN),
-    Quads(NGL.GL_QUADS),
-    QuadStrip(NGL.GL_QUAD_STRIP),
-    Polygon(NGL.GL_POLYGON),;
+    Points(NativeGL.GL_POINTS),
+    Lines(NativeGL.GL_LINES),
+    LineLoop(NativeGL.GL_LINE_LOOP),
+    LineStrip(NativeGL.GL_LINE_STRIP),
+    Triangles(NativeGL.GL_TRIANGLES),
+    TriangleStrip(NativeGL.GL_TRIANGLE_STRIP),
+    TriangleFan(NativeGL.GL_TRIANGLE_FAN),
+    Quads(NativeGL.GL_QUADS),
+    QuadStrip(NativeGL.GL_QUAD_STRIP),
+    Polygon(NativeGL.GL_POLYGON),;
 
     private final int value;
 

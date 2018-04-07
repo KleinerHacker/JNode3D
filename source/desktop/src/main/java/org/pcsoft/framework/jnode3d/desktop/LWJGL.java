@@ -9,22 +9,35 @@ import org.slf4j.LoggerFactory;
 final class LWJGL {
     private static final Logger LOGGER = LoggerFactory.getLogger(LWJGL.class);
     private static boolean initialized = false;
+    private static GLFWErrorCallback errorCallback;
 
     static {
         LOGGER.info("LWJGL Version: " + Version.getVersion());
     }
 
-    public static void initialize() {
+    public synchronized static void initialize() {
         if (initialized)
             return;
 
         if (!GLFW.glfwInit())
             throw new IllegalStateException("Unable to initialize OpenGL");
 
-
-        GLFWErrorCallback.createPrint(System.err).set();
+        errorCallback = GLFWErrorCallback.createPrint(System.err);
+        errorCallback.set();
 
         initialized = true;
+    }
+
+    public synchronized static void terminate() {
+        if (!initialized)
+            return;
+
+        GLFW.glfwTerminate();
+
+        errorCallback.free();
+        errorCallback = null;
+
+        initialized = false;
     }
 
     public static boolean isInitialized() {

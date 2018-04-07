@@ -1,11 +1,9 @@
-package org.pcsoft.framework.jnode3d.internal;
-
-import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
+package org.pcsoft.framework.jnode3d.internal.ogl;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-public interface NGL {
+public interface NativeGL {
     /**
      * BeginMode
      */
@@ -116,7 +114,7 @@ public interface NGL {
 
     void glVertex(float x, float y);
 
-    void glColor(float r, float g, float b);
+    void glColor(float r, float g, float b, float a);
 
     void glTexCoord(float x, float y);
 
@@ -161,11 +159,6 @@ public interface NGL {
     String glProgramLog(int programIdentifier);
 
     void glUseProgram(int programIdentifier);
-
-    int glCreateShaderProgram(int shaderType, String script);
-    int glCreateProgramPipeline(ShaderProgramReference... references);
-    void glActivateShaderProgram(int pipelineIdentifier, ShaderProgramReference reference);
-    void glDeleteProgramPipeline(int pipelineIdentifier);
 
     void glSetProgramVar(int programIdentifier, String varName, boolean value);
     void glSetProgramVar(int programIdentifier, String varName, float value);

@@ -3,11 +3,12 @@ package org.pcsoft.framework.jnode3d.desktop.awt;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
-import org.pcsoft.framework.jnode3d.desktop.type.NGLImpl;
+import org.pcsoft.framework.jnode3d.desktop.type.NativeGLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.camera.Camera;
+import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 
@@ -15,7 +16,8 @@ public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScen
     private final JNode3DInternalScene JNode3DInternalScene;
 
     public JNode3DAwtScene(JNode3DConfiguration configuration, int width, int height) {
-        JNode3DInternalScene = new JNode3DInternalScene(configuration, new OGL(new NGLImpl()), width, height);
+        GLFactory.initialize(new NativeGLImpl());
+        JNode3DInternalScene = new JNode3DInternalScene(configuration, width, height);
 
         GLFWErrorCallback.createPrint(System.err).set();
 

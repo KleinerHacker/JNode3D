@@ -7,7 +7,7 @@ import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
-    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(null,null, 800, 600);//TODO
+    private final JNode3DInternalScene internalScene = new JNode3DInternalScene(null,800, 600);//TODO
 
     @Override
     public Node getRoot() {

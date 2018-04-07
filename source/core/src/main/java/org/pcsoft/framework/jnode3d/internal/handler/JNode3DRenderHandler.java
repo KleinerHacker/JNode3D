@@ -4,13 +4,13 @@ import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
 import org.pcsoft.framework.jnode3d.node.ConstructedObjectNode;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.node.RenderNode;
-import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
-import org.pcsoft.framework.jnode3d.ogl.OGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.DrawingCallback;
+import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.RenderMode;
 import org.pcsoft.framework.jnode3d.type.TextureStack;
 
 final class JNode3DRenderHandler {
-    public static void handleNode(Node root, final OGL ogl) {
+    public static void handleNode(Node root, final OpenGL ogl) {
         if (root instanceof RenderNode) {
             if (root instanceof ConstructedObjectNode) {
                 handleNodeConstructed(ogl, (ConstructedObjectNode) root);
@@ -18,13 +18,13 @@ final class JNode3DRenderHandler {
         }
     }
 
-    private static void handleNodeConstructed(final OGL ogl, final ConstructedObjectNode constructedObjectNode) {
+    private static void handleNodeConstructed(final OpenGL ogl, final ConstructedObjectNode constructedObjectNode) {
         if (constructedObjectNode.getTexture() != null) {
             ogl.glBindTexture(TextureManager.getInstance().getTextureIdentifier(constructedObjectNode.getTexture()), TextureStack.Texture0);
         }
 
-        if (constructedObjectNode.getShaderInstance() != null) {
-            JNode3DShaderHandler.activateShader(constructedObjectNode.getShaderInstance(), ogl);
+        if (constructedObjectNode.getShaderList() != null) {
+            JNode3DShaderHandler.activateShader(constructedObjectNode.getShaderList(), ogl);
         }
 
         ogl.glDraw(RenderMode.Triangles, new DrawingCallback() {

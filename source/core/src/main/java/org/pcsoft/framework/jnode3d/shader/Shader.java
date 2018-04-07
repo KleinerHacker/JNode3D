@@ -2,7 +2,6 @@ package org.pcsoft.framework.jnode3d.shader;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,16 +29,22 @@ public abstract class Shader<T extends ShaderInstance> {
 
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
-
-        ShaderManager.getInstance().registerShader(this);
     }
 
     public String getVertexShader() {
         return vertexShader;
     }
 
+    public boolean hasVertexShader() {
+        return !StringUtils.isEmpty(vertexShader);
+    }
+
     public String getFragmentShader() {
         return fragmentShader;
+    }
+
+    public boolean hasFragmentShader() {
+        return !StringUtils.isEmpty(fragmentShader);
     }
 
     public List<PropertyInfo> getPropertyInfoList() {

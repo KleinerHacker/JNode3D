@@ -1,11 +1,11 @@
 package org.pcsoft.framework.jnode3d.type;
 
-import org.pcsoft.framework.jnode3d.internal.NGL;
+import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
 
 public enum MatrixMode {
-    ModelView(NGL.GL_MODELVIEW),
-    Projection(NGL.GL_PROJECTION),
-    Texture(NGL.GL_TEXTURE),
+    ModelView(NativeGL.GL_MODELVIEW),
+    Projection(NativeGL.GL_PROJECTION),
+    Texture(NativeGL.GL_TEXTURE),
     ;
 
     private final int value;
