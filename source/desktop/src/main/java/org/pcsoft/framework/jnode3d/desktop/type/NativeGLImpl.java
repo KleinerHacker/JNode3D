@@ -1,10 +1,13 @@
 package org.pcsoft.framework.jnode3d.desktop.type;
 
 import org.lwjgl.opengl.*;
-import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
 import org.pcsoft.framework.jnode3d.internal.ogl.DrawingCallback;
+import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
+import org.pcsoft.framework.jnode3d.type.Vertex;
+import org.pcsoft.framework.jnode3d.type.reference.BufferReference;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 public class NativeGLImpl implements NativeGL {
     //<editor-fold desc="Clean Up">
@@ -48,6 +51,46 @@ public class NativeGLImpl implements NativeGL {
         GL11.glBegin(mode);
         drawingCallback.draw();
         GL11.glEnd();
+    }
+
+    @Override
+    public BufferReference glCreateBuffer(Vertex[] vertices, int[] indices) {
+        final int size = vertices.length * Vertex.RAW_COUNT;
+
+        final FloatBuffer floatBuffer = FloatBuffer.allocate(size);
+        for (final Vertex vertex : vertices) {
+            floatBuffer.put(vertex.getRawVertex());
+        }
+
+        final int vertexIdentifier = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexIdentifier);
+        GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, floatBuffer.array(), GL15.GL_STATIC_DRAW);
+
+        final int indexIdentifier = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexIdentifier);
+        GL11.glEnableClientState(GL11.GL_INDEX_ARRAY);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indices, GL15.GL_STATIC_DRAW);
+
+        return new BufferReference(vertexIdentifier, indexIdentifier, vertices.length, indices.length);
+    }
+
+    @Override
+    public void glDrawBuffer(int mode, BufferReference reference) {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, reference.getVertexIdentifier());
+        GL11.glInterleavedArrays(GL11.GL_T2F_C4F_N3F_V3F, Vertex.RAW_COUNT * Float.BYTES, 0);
+
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, reference.getIndexIdentifier());
+        GL11.glDrawElements(mode, reference.getIndicesCount(), GL11.GL_UNSIGNED_INT, 0);
+
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    @Override
+    public void glDeleteBuffer(BufferReference reference) {
+        GL15.glDeleteBuffers(reference.getVertexIdentifier());
+        GL15.glDeleteBuffers(reference.getIndexIdentifier());
     }
 
     //</editor-fold>

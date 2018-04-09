@@ -23,12 +23,6 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
         if (!colorKeyClass.isEnum())
             throw new IllegalArgumentException("colorKeyClass must be an enumeration");
 
-        final int countOfVertices = ProcessorFactory.getVertexCalculationProcessor(this.getClass()).getCountOfVertices();
-        vertices = new Vertex[countOfVertices];
-        for (int i=0; i<countOfVertices; i++) {
-            vertices[i] = new Vertex();
-        }
-
         this.colorKeyClass = colorKeyClass;
         for (final CK key : colorKeyClass.getEnumConstants()) {
             colorMap.put(key, Color.WHITE);
@@ -118,6 +112,7 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected final void fireValueChangedForColors() {
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
         final Color[] colors = vertexCalculationProcessor.recalculateColors(this);
@@ -127,6 +122,7 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected final void fireValueChangedForAll() {
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
         final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this);
@@ -134,12 +130,11 @@ public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
         final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this);
         final Color[] colors = vertexCalculationProcessor.recalculateColors(this);
 
+        vertices = new Vertex[vertexCalculationProcessor.getCountOfVertices()];
         for (int i=0; i<vertexCalculationProcessor.getCountOfVertices(); i++) {
-            vertices[i].setPosition(points[i]);
-            vertices[i].setNormal(normals[i]);
-            vertices[i].setTextureCoordinate(textureCoordinates[i]);
-            vertices[i].setColor(colors[i]);
+            vertices[i] = new Vertex(points[i], textureCoordinates[i], colors[i], normals[i]);
         }
+        this.indices = vertexCalculationProcessor.recalculateIndices(this);
     }
     //</editor-fold>
 }

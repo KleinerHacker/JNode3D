@@ -45,7 +45,19 @@ public final class TriangleVertexCalculationProcessor implements VertexCalculati
     }
 
     @Override
+    public int[] recalculateIndices(Triangle node) {
+        return new int[] {
+                0, 1, 2
+        };
+    }
+
+    @Override
     public int getCountOfVertices() {
+        return 3;
+    }
+
+    @Override
+    public int getCountOfIndices() {
         return 3;
     }
 }

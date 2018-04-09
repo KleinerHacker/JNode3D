@@ -13,8 +13,6 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
                 new Vector3f(-node.getWidth() / 2f, -node.getHeight() / 2f, 0f),
                 new Vector3f(node.getWidth() / 2f, -node.getHeight() / 2f, 0f),
                 new Vector3f(-node.getWidth() / 2f, node.getHeight() / 2f, 0f),
-                new Vector3f(-node.getWidth() / 2f, node.getHeight() / 2f, 0f),
-                new Vector3f(node.getWidth() / 2f, -node.getHeight() / 2f, 0f),
                 new Vector3f(node.getWidth() / 2f, node.getHeight() / 2f, 0f),
         };
 
@@ -23,8 +21,6 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
     @Override
     public Vector3f[] recalculateNormals(Rectangle node) {
         return new Vector3f[]{ //TODO
-                new Vector3f(),
-                new Vector3f(),
                 new Vector3f(),
                 new Vector3f(),
                 new Vector3f(),
@@ -38,8 +34,6 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
                 node.getColorAt(Rectangle.Points.LeftTopCorner),
                 node.getColorAt(Rectangle.Points.RightTopCorner),
                 node.getColorAt(Rectangle.Points.LeftBottomCorner),
-                node.getColorAt(Rectangle.Points.LeftBottomCorner),
-                node.getColorAt(Rectangle.Points.RightTopCorner),
                 node.getColorAt(Rectangle.Points.RightBottomCorner),
         };
     }
@@ -50,14 +44,25 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
                 new Vector2f(0f, 0f),
                 new Vector2f(1f, 0f),
                 new Vector2f(0f, 1f),
-                new Vector2f(0f, 1f),
-                new Vector2f(1f, 0f),
                 new Vector2f(1f, 1f),
         };
     }
 
     @Override
+    public int[] recalculateIndices(Rectangle node) {
+        return new int[] {
+                0, 1, 2,
+                2, 1, 3
+        };
+    }
+
+    @Override
     public int getCountOfVertices() {
+        return 4;
+    }
+
+    @Override
+    public int getCountOfIndices() {
         return 6;
     }
 }

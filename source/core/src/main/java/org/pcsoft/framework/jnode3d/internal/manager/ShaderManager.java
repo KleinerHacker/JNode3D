@@ -121,6 +121,7 @@ public final class ShaderManager implements Manager {
     private int buildShaderOfType(ShaderType shaderType, ObservableCollection<ShaderInstance> shaderCollection, OpenGL ogl) {
         final List<String> scriptList = new ArrayList<>();
         final StringBuilder mainMethodCallString = new StringBuilder();
+        mainMethodCallString.append(SystemUtils.LINE_SEPARATOR).append("\t");
         for (final ShaderInstance shaderInstance : shaderCollection) {
             switch (shaderType) {
                 case FragmentShader:
@@ -138,6 +139,7 @@ public final class ShaderManager implements Manager {
                 default:
                     throw new RuntimeException();
             }
+            mainMethodCallString.append(SystemUtils.LINE_SEPARATOR).append("\t");
         }
 
         switch (shaderType) {
@@ -145,18 +147,20 @@ public final class ShaderManager implements Manager {
                 scriptList.add("void main() { " + mainMethodCallString.toString() + " }");
                 break;
             case VertexShader:
-                scriptList.add("void main() { gl_Position = ftransform(); " + mainMethodCallString.toString() + " }");
+                scriptList.add("void main() { " + SystemUtils.LINE_SEPARATOR + " \tgl_Position = ftransform(); " + mainMethodCallString.toString() + " }");
                 break;
             default:
                 throw new RuntimeException();
         }
 
+        final String fullProgram = StringUtils.join(scriptList, StringUtils.repeat(SystemUtils.LINE_SEPARATOR, 2));
+
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Script Generation of " + shaderType.name() + ": " + SystemUtils.LINE_SEPARATOR +
-                    StringUtils.join(scriptList, SystemUtils.LINE_SEPARATOR + StringUtils.repeat("*", 50) + SystemUtils.LINE_SEPARATOR));
+                    fullProgram);
         }
 
-        final int shaderId = ogl.glCreateShader(shaderType, scriptList.toArray(new String[scriptList.size()]));
+        final int shaderId = ogl.glCreateShader(shaderType, fullProgram);
         final String shaderLog = ogl.glShaderLog(shaderId);
         if (StringUtils.isEmpty(shaderLog)) {
             LOGGER.info(shaderType.name() + " was compiled successfully");

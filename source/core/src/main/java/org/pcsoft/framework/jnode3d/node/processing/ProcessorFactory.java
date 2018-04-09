@@ -1,8 +1,10 @@
 package org.pcsoft.framework.jnode3d.node.processing;
 
+import org.pcsoft.framework.jnode3d.node.Box;
 import org.pcsoft.framework.jnode3d.node.ConstructedObjectNode;
 import org.pcsoft.framework.jnode3d.node.Rectangle;
 import org.pcsoft.framework.jnode3d.node.Triangle;
+import org.pcsoft.framework.jnode3d.node.processing.vert_calc.BoxVertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.node.processing.vert_calc.RectangleVertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.node.processing.vert_calc.TriangleVertexCalculationProcessor;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ public final class ProcessorFactory {
         //Vertex Calculation
         registerVertexCalculationProcessor(Triangle.class, new TriangleVertexCalculationProcessor());
         registerVertexCalculationProcessor(Rectangle.class, new RectangleVertexCalculationProcessor());
+        registerVertexCalculationProcessor(Box.class, new BoxVertexCalculationProcessor());
     }
 
     //<editor-fold desc="Vertex Calculation">

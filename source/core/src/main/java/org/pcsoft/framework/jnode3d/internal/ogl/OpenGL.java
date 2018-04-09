@@ -6,13 +6,13 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.*;
+import org.pcsoft.framework.jnode3d.type.reference.BufferReference;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.ByteBuffer;
-import java.util.Objects;
 
 public final class OpenGL {
     /**
@@ -110,6 +110,19 @@ public final class OpenGL {
     public void glDraw(RenderMode mode, DrawingCallback drawingCallback) {
         ngl.glDraw(mode.getValue(), drawingCallback);
     }
+
+    public BufferReference glCreateBuffer(Vertex[] vertices, int[] indices) {
+        return ngl.glCreateBuffer(vertices, indices);
+    }
+
+    public void glDrawBuffer(RenderMode mode, BufferReference reference) {
+        ngl.glDrawBuffer(mode.getValue(), reference);
+    }
+
+    public void glDeleteBuffer(BufferReference reference) {
+        ngl.glDeleteBuffer(reference);
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Texture">
@@ -185,7 +198,6 @@ public final class OpenGL {
     }
     //</editor-fold>
 
-
     //<editor-fold desc="Shaders">
     public int glCreateShader(ShaderType shaderType, File file) throws IOException {
         return glCreateShader(shaderType, FileUtils.readFileToString(file));
@@ -248,47 +260,4 @@ public final class OpenGL {
     }
 
     //</editor-fold>
-
-    public static final class ShaderProgramReference {
-        private final int identifier;
-        private final int stages;
-
-        private ShaderProgramReference(NativeGL.ShaderProgramReference reference) {
-            this(reference.getIdentifier(), reference.getStages());
-        }
-
-        public ShaderProgramReference(int identifier, int stages) {
-            this.identifier = identifier;
-            this.stages = stages;
-        }
-
-        public int getIdentifier() {
-            return identifier;
-        }
-
-        public int getStages() {
-            return stages;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ShaderProgramReference that = (ShaderProgramReference) o;
-            return identifier == that.identifier;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(identifier);
-        }
-
-        @Override
-        public String toString() {
-            return "ShaderProgramReference{" +
-                    "identifier=" + identifier +
-                    ", stages=" + stages +
-                    '}';
-        }
-    }
 }

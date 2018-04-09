@@ -7,6 +7,7 @@ import org.pcsoft.framework.jnode3d.type.collection.ObservableCollection;
 
 public abstract class VertexObjectNode extends TexturedNode {
     protected Vertex[] vertices = new Vertex[0];
+    protected int[] indices = new int[0];
     protected final ObservableCollection<ShaderInstance> shaderList = new ObservableCollection<>();
 
     public VertexObjectNode() {
@@ -20,6 +21,10 @@ public abstract class VertexObjectNode extends TexturedNode {
 
     public Vertex[] getVertices() {
         return vertices;
+    }
+
+    public int[] getIndices() {
+        return indices;
     }
 
     public ObservableCollection<ShaderInstance> getShaderList() {

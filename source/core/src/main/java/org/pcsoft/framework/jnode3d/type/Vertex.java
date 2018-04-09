@@ -4,6 +4,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public final class Vertex {
+    public static final int RAW_COUNT = 3 + 2 + 4 + 3;
+
     private Vector3f position;
     private Vector2f textureCoordinate;
     private Color color;
@@ -65,6 +67,15 @@ public final class Vertex {
 
     public void setNormal(Vector3f normal) {
         this.normal = normal;
+    }
+
+    public float[] getRawVertex() {
+        return new float[]{
+                textureCoordinate.x, textureCoordinate.y,
+                color.getR(), color.getG(), color.getB(), color.getA(),
+                normal.x, normal.y, normal.z,
+                position.x, position.y, position.z
+        };
     }
 
     @Override

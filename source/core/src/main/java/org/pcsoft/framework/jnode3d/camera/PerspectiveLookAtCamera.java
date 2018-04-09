@@ -38,7 +38,7 @@ public final class PerspectiveLookAtCamera extends PerspectiveCamera {
 
         Matrix4f matrix4f = new Matrix4f();
         matrix4f.perspective((float) Math.toRadians(getAngle()), getAspect(), getNear(), getFar());
-            matrix4f.lookAt(getPosition(),lookAt, upDirection);
+        matrix4f.lookAt(getPosition(), lookAt, upDirection);
         OGL.glLoadMatrix(matrix4f);
     }
 }

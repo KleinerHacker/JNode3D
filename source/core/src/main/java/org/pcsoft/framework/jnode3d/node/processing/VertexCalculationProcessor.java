@@ -14,5 +14,9 @@ public interface VertexCalculationProcessor<T extends ConstructedObjectNode> {
 
     Vector2f[] recalculateTextureCoordinates(T node);
 
+    int[] recalculateIndices(T node);
+
     int getCountOfVertices();
+
+    int getCountOfIndices();
 }
