@@ -1,7 +1,10 @@
 package org.pcsoft.framework.jnode3d.internal.ogl;
 
+import org.joml.Vector3f;
+import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.Vertex;
 import org.pcsoft.framework.jnode3d.type.reference.BufferReference;
+import org.pcsoft.framework.jnode3d.type.reference.ShaderProgramReference;
 
 import java.nio.ByteBuffer;
 
@@ -127,6 +130,9 @@ public interface NativeGL {
     BufferReference glCreateBuffer(Vertex[] vertices, int[] indices);
     void glDrawBuffer(int mode, BufferReference reference);
     void glDeleteBuffer(BufferReference reference);
+
+    void glEnableDepthTest();
+    void glDisableDepthTest();
     //</editor-fold>
 
     //<editor-fold desc="Textures">
@@ -160,14 +166,16 @@ public interface NativeGL {
     void glDeleteShader(int shaderIdentifier);
     String glShaderLog(int shaderIdentifier);
 
-    int glCreateProgram(int... shaderIdentifiers);
-    void glDeleteProgram(int programIdentifier);
-    String glProgramLog(int programIdentifier);
+    ShaderProgramReference glCreateProgram(int... shaderIdentifiers);
+    void glDeleteProgram(ShaderProgramReference programIdentifier);
+    String glProgramLog(ShaderProgramReference programIdentifier);
 
-    void glUseProgram(int programIdentifier);
+    void glUseProgram(ShaderProgramReference programIdentifier);
 
-    void glSetProgramVar(int programIdentifier, String varName, boolean value);
-    void glSetProgramVar(int programIdentifier, String varName, float value);
-    void glSetProgramVar(int programIdentifier, String varName, int value);
+    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, boolean value);
+    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, float value);
+    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, int value);
+    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Vector3f value);
+    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value);
     //</editor-fold>
 }

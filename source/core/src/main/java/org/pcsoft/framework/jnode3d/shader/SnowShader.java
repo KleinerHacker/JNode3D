@@ -1,34 +1,35 @@
 package org.pcsoft.framework.jnode3d.shader;
 
 @ShaderDescriptor(fragmentMain = "snow_fs", vertexMain = "snow_vs")
-public final class SnowShader extends Shader<SnowShaderInstance> {
-    public static final SnowShader instance = new SnowShader();
+public final class SnowShader extends Shader {
+    private static final String SNOW_COLORED = "snow_colored";
+    private static final String SNOW_R_MOD = "snow_r_mod";
 
-    public static SnowShader get() {
-        return instance;
+    @ShaderProperty(name = SNOW_COLORED)
+    private boolean colored = true;
+    @ShaderProperty(name = SNOW_R_MOD)
+    private float seed = -15.4457f;
+
+    public SnowShader() {
+        super(loadShader(SnowShader.class.getResourceAsStream("/shader/effect/snow.vert")),
+                loadShader(SnowShader.class.getResourceAsStream("/shader/effect/snow.frag")));
     }
 
-    private SnowShader() {
-        super(SnowShaderInstance.class, loadShader(SnowShader.class.getResourceAsStream("/shader/snow.vert")),
-                loadShader(SnowShader.class.getResourceAsStream("/shader/snow.frag")));
+    public boolean isColored() {
+        return colored;
     }
 
-    @Override
-    public SnowShaderInstance buildInstance() {
-        return new SnowShaderInstance(this);
+    public void setColored(boolean colored) {
+        this.colored = colored;
+        updateUniformValue(SNOW_COLORED);
     }
 
-    public SnowShaderInstance buildInstance(boolean colored, float seed) {
-        final SnowShaderInstance instance = buildInstance(colored);
-        instance.setSeed(seed);
-
-        return instance;
+    public float getSeed() {
+        return seed;
     }
 
-    public SnowShaderInstance buildInstance(boolean colored) {
-        final SnowShaderInstance instance = buildInstance();
-        instance.setColored(colored);
-
-        return instance;
+    public void setSeed(float seed) {
+        this.seed = seed;
+        updateUniformValue(SNOW_R_MOD);
     }
 }

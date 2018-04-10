@@ -2,10 +2,12 @@ package org.pcsoft.framework.jnode3d.internal;
 
 import org.joml.Matrix4f;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
+import org.pcsoft.framework.jnode3d.anim.AnimationBase;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.internal.handler.JNode3DHandler;
+import org.pcsoft.framework.jnode3d.internal.manager.AnimationManager;
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
 import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
 import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
@@ -97,6 +99,10 @@ public final class JNode3DInternalScene implements JNode3DScene {
     public void loop() {
         if (!isInitialized())
             throw new IllegalStateException("Not initialized yet");
+
+        for (final AnimationBase animation : AnimationManager.getInstance().getAnimationList()) {
+            animation.callLoop();
+        }
 
         final OpenGL ogl = GLFactory.getOpenGL();
 

@@ -20,11 +20,11 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
 
     @Override
     public Vector3f[] recalculateNormals(Rectangle node) {
-        return new Vector3f[]{ //TODO
-                new Vector3f(),
-                new Vector3f(),
-                new Vector3f(),
-                new Vector3f(),
+        return new Vector3f[]{
+                new Vector3f(0, 0, 1),
+                new Vector3f(0, 0, 1),
+                new Vector3f(0, 0, 1),
+                new Vector3f(0, 0, 1),
         };
     }
 

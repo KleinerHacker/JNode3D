@@ -1,10 +1,13 @@
 package org.pcsoft.framework.jnode3d.desktop.type;
 
+import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
 import org.pcsoft.framework.jnode3d.internal.ogl.DrawingCallback;
 import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
+import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.Vertex;
 import org.pcsoft.framework.jnode3d.type.reference.BufferReference;
+import org.pcsoft.framework.jnode3d.type.reference.ShaderProgramReference;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -93,7 +96,16 @@ public class NativeGLImpl implements NativeGL {
         GL15.glDeleteBuffers(reference.getIndexIdentifier());
     }
 
-    //</editor-fold>
+    @Override
+    public void glEnableDepthTest() {
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+    }
+
+    @Override
+    public void glDisableDepthTest() {
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+    }
+//</editor-fold>
 
     //<editor-fold desc="Texture">
     @Override
@@ -187,19 +199,19 @@ public class NativeGLImpl implements NativeGL {
     }
 
     @Override
-    public int glCreateProgram(int... shaderIdentifiers) {
+    public ShaderProgramReference glCreateProgram(int... shaderIdentifiers) {
         final int identifier = GL20.glCreateProgram();
         for (final int shaderIdentifier : shaderIdentifiers) {
             GL20.glAttachShader(identifier, shaderIdentifier);
         }
         GL20.glLinkProgram(identifier);
 
-        return identifier;
+        return new ShaderProgramReference(identifier);
     }
 
     @Override
-    public void glUseProgram(int programIdentifier) {
-        GL20.glUseProgram(programIdentifier);
+    public void glUseProgram(ShaderProgramReference programReference) {
+        GL20.glUseProgram(programReference.getProgramId());
     }
 
     @Override
@@ -208,8 +220,8 @@ public class NativeGLImpl implements NativeGL {
     }
 
     @Override
-    public void glDeleteProgram(int programIdentifier) {
-        GL20.glDeleteProgram(programIdentifier);
+    public void glDeleteProgram(ShaderProgramReference programReference) {
+        GL20.glDeleteProgram(programReference.getProgramId());
     }
 
     @Override
@@ -218,26 +230,38 @@ public class NativeGLImpl implements NativeGL {
     }
 
     @Override
-    public String glProgramLog(int programIdentifier) {
-        return GL20.glGetProgramInfoLog(programIdentifier);
+    public String glProgramLog(ShaderProgramReference programReference) {
+        return GL20.glGetProgramInfoLog(programReference.getProgramId());
     }
 
     @Override
-    public void glSetProgramVar(int programIdentifier, String varName, boolean value) {
-        final int location = GL20.glGetUniformLocation(programIdentifier, varName);
-        GL41.glProgramUniform1i(programIdentifier, location, value ? 1 : 0);
+    public void glSetProgramVar(ShaderProgramReference programReference, String varName, boolean value) {
+        final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        GL41.glProgramUniform1i(programReference.getProgramId(), location, value ? 1 : 0);
     }
 
     @Override
-    public void glSetProgramVar(int programIdentifier, String varName, float value) {
-        final int location = GL20.glGetUniformLocation(programIdentifier, varName);
-        GL41.glProgramUniform1f(programIdentifier, location, value);
+    public void glSetProgramVar(ShaderProgramReference programReference, String varName, float value) {
+        final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        GL41.glProgramUniform1f(programReference.getProgramId(), location, value);
     }
 
     @Override
-    public void glSetProgramVar(int programIdentifier, String varName, int value) {
-        final int location = GL20.glGetUniformLocation(programIdentifier, varName);
-        GL41.glProgramUniform1i(programIdentifier, location, value);
+    public void glSetProgramVar(ShaderProgramReference programReference, String varName, int value) {
+        final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        GL41.glProgramUniform1i(programReference.getProgramId(), location, value);
+    }
+
+    @Override
+    public void glSetProgramVar(ShaderProgramReference programReference, String varName, Vector3f value) {
+        final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        GL41.glProgramUniform3f(programReference.getProgramId(), location, value.x, value.y, value.z);
+    }
+
+    @Override
+    public void glSetProgramVar(ShaderProgramReference programReference, String varName, Color value) {
+        final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        GL41.glProgramUniform4f(programReference.getProgramId(), location, value.getR(), value.getG(), value.getB(), value.getA());
     }
 
     //</editor-fold>

@@ -1,16 +1,20 @@
 package org.pcsoft.framework.jnode3d.desktop;
 
 import org.joml.Vector3f;
+import org.pcsoft.framework.jnode3d.anim.AnimationBase;
 import org.pcsoft.framework.jnode3d.camera.PerspectiveLookAtCamera;
 import org.pcsoft.framework.jnode3d.desktop.type.ImageLoader;
 import org.pcsoft.framework.jnode3d.node.Box;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Rectangle;
 import org.pcsoft.framework.jnode3d.node.Triangle;
+import org.pcsoft.framework.jnode3d.shader.AmbientLightShader;
+import org.pcsoft.framework.jnode3d.shader.DirectionalLightShader;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public abstract class JNode3DTest {
     protected static void buildScene(JNode3DStandalone standalone) {
@@ -18,7 +22,18 @@ public abstract class JNode3DTest {
         root.getChildren().add(buildBox());
 
         standalone.setRoot(root);
-        standalone.setCamera(buildCamera());
+        final PerspectiveLookAtCamera camera = buildCamera();
+        standalone.setCamera(camera);
+
+        new AnimationBase() {
+            private long counter = 0L;
+
+            @Override
+            protected void loop(long timeDelta) {
+                counter += timeDelta;
+                camera.setPosition(new Vector3f((float) (Math.sin(counter * 0.000000001) * -2d), 2f, (float) (Math.cos(counter * 0.000000001) * -2d)));
+            }
+        }.start();
     }
 
     private static Rectangle buildRectangle() {
@@ -76,10 +91,8 @@ public abstract class JNode3DTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*box.getShaderList().addAll(Arrays.asList(
-                SnowShader.get().buildInstance(false),
-                OpacityShader.get().buildInstance(0.5f)
-        ));*/
+        box.addShader(new AmbientLightShader());
+        box.addShader(new DirectionalLightShader());
 
         return box;
     }
@@ -87,7 +100,7 @@ public abstract class JNode3DTest {
     private static PerspectiveLookAtCamera buildCamera() {
         final PerspectiveLookAtCamera camera = new PerspectiveLookAtCamera();
         camera.setPosition(new Vector3f(-2f, 2f, -2f));
-        
+
         return camera;
     }
 }

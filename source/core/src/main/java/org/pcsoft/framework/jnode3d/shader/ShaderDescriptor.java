@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ShaderDescriptor {
-    String vertexMain();
-    String fragmentMain();
+    String vertexMain() default "";
+    String fragmentMain() default "";
 }

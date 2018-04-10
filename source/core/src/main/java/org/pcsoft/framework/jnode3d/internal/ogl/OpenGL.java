@@ -7,6 +7,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.*;
 import org.pcsoft.framework.jnode3d.type.reference.BufferReference;
+import org.pcsoft.framework.jnode3d.type.reference.ShaderProgramReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,6 +124,14 @@ public final class OpenGL {
         ngl.glDeleteBuffer(reference);
     }
 
+    public void glEnableDepthTest() {
+        ngl.glEnableDepthTest();
+    }
+
+    public void glDisableDepthTest() {
+        ngl.glDisableDepthTest();
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Texture">
@@ -223,11 +232,11 @@ public final class OpenGL {
         return ngl.glCreateShader(shaderType.getValue(), script);
     }
 
-    public int glCreateProgram(int... shaderIdentifiers) {
+    public ShaderProgramReference glCreateProgram(int... shaderIdentifiers) {
         return ngl.glCreateProgram(shaderIdentifiers);
     }
 
-    public void glUseProgram(int programIdentifier) {
+    public void glUseProgram(ShaderProgramReference programIdentifier) {
         ngl.glUseProgram(programIdentifier);
     }
 
@@ -235,7 +244,7 @@ public final class OpenGL {
         ngl.glDeleteShader(shaderIdentifier);
     }
 
-    public void glDeleteProgram(int programIdentifier) {
+    public void glDeleteProgram(ShaderProgramReference programIdentifier) {
         ngl.glDeleteProgram(programIdentifier);
     }
 
@@ -243,21 +252,28 @@ public final class OpenGL {
         return ngl.glShaderLog(shaderIdentifier);
     }
 
-    public String glProgramLog(int programIdentifier) {
+    public String glProgramLog(ShaderProgramReference programIdentifier) {
         return ngl.glProgramLog(programIdentifier);
     }
 
-    public void glSetProgramVar(int programIdentifier, String varName, boolean value) {
+    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, boolean value) {
         ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    public void glSetProgramVar(int programIdentifier, String varName, float value) {
+    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, float value) {
         ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    public void glSetProgramVar(int programIdentifier, String varName, int value) {
+    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, int value) {
         ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    //</editor-fold>
+    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Vector3f value) {
+        ngl.glSetProgramVar(programIdentifier, varName, value);
+    }
+
+    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value) {
+        ngl.glSetProgramVar(programIdentifier, varName, value);
+    }
+//</editor-fold>
 }
