@@ -1,7 +1,7 @@
-varying float snow_x, snow_y, snow_z;
+varying float snow_Position;
 
 void snow_vs()
 {
-    snow_x = gl_Position.x; snow_y = gl_Position.y; snow_z = gl_Position.z;
-    snow_x += snow_y; snow_y -= snow_x; snow_z += snow_x - snow_y;
+    snow_Position.x = gl_Position.x; snow_Position.y = gl_Position.y; snow_Position.z = gl_Position.z;
+    snow_Position.x += snow_Position.y; snow_Position.y -= snow_Position.x; snow_Position.z += snow_Position.x - snow_Position.y;
 }

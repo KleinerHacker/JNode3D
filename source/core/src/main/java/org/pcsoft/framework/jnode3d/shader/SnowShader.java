@@ -2,8 +2,8 @@ package org.pcsoft.framework.jnode3d.shader;
 
 @ShaderDescriptor(fragmentMain = "snow_fs", vertexMain = "snow_vs")
 public final class SnowShader extends Shader {
-    private static final String SNOW_COLORED = "snow_colored";
-    private static final String SNOW_R_MOD = "snow_r_mod";
+    private static final String SNOW_COLORED = "snow_Colored";
+    private static final String SNOW_R_MOD = "snow_Seed";
 
     @ShaderProperty(name = SNOW_COLORED)
     private boolean colored = true;

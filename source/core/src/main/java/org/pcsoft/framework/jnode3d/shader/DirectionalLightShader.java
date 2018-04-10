@@ -3,11 +3,11 @@ package org.pcsoft.framework.jnode3d.shader;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-@ShaderDescriptor(vertexMain = "dir_light_vs", fragmentMain = "dir_light_fs")
+@ShaderDescriptor(vertexMain = "dirLight_vs", fragmentMain = "dirLight_fs")
 public final class DirectionalLightShader extends Shader {
-    private static final String DIR_LIGHT_DIRECTION = "dir_light_direction";
-    private static final String DIR_LIGHT_COLOR = "dir_light_color";
-    private static final String DIR_LIGHT_POWER = "dir_light_power";
+    private static final String DIR_LIGHT_DIRECTION = "dirLight_Direction";
+    private static final String DIR_LIGHT_COLOR = "dirLight_Color";
+    private static final String DIR_LIGHT_POWER = "dirLight_Power";
 
     @ShaderProperty(name = DIR_LIGHT_DIRECTION)
     private Vector3f direction = new Vector3f(-0.5f, -1f, -1f);
@@ -17,8 +17,8 @@ public final class DirectionalLightShader extends Shader {
     private float power = 1f;
 
     public DirectionalLightShader() {
-        super(loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dir_light.vert")),
-                loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dir_light.frag")));
+        super(loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dirLight.vert")),
+                loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dirLight.frag")));
     }
 
     public Vector3f getDirection() {
