@@ -8,13 +8,11 @@ import org.pcsoft.framework.jnode3d.node.Box;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Rectangle;
 import org.pcsoft.framework.jnode3d.node.Triangle;
-import org.pcsoft.framework.jnode3d.shader.AmbientLightShader;
-import org.pcsoft.framework.jnode3d.shader.DirectionalLightShader;
+import org.pcsoft.framework.jnode3d.shader.SnowShader;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public abstract class JNode3DTest {
     protected static void buildScene(JNode3DStandalone standalone) {
@@ -91,8 +89,7 @@ public abstract class JNode3DTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        box.addShader(new AmbientLightShader());
-        box.addShader(new DirectionalLightShader());
+        box.addShader(new SnowShader());
 
         return box;
     }

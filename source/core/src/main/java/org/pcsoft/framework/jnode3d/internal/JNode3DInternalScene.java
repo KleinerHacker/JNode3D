@@ -1,6 +1,7 @@
 package org.pcsoft.framework.jnode3d.internal;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.anim.AnimationBase;
 import org.pcsoft.framework.jnode3d.camera.Camera;
@@ -10,9 +11,11 @@ import org.pcsoft.framework.jnode3d.internal.handler.JNode3DHandler;
 import org.pcsoft.framework.jnode3d.internal.manager.AnimationManager;
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
 import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
-import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
+import org.pcsoft.framework.jnode3d.ogl.GLFactory;
+import org.pcsoft.framework.jnode3d.internal.shader.AmbientLightShader;
+import org.pcsoft.framework.jnode3d.internal.shader.DirectionalLightShader;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.MatrixMode;
 
@@ -24,6 +27,9 @@ public final class JNode3DInternalScene implements JNode3DScene {
 
     private final JNode3DConfiguration configuration;
     private boolean initialized = false;
+
+    private final AmbientLightShader ambientLightShader = new AmbientLightShader();
+    private final DirectionalLightShader directionalLightShader = new DirectionalLightShader();
 
     public JNode3DInternalScene(JNode3DConfiguration configuration, int width, int height) {
         this.configuration = configuration;
@@ -38,7 +44,15 @@ public final class JNode3DInternalScene implements JNode3DScene {
 
     @Override
     public void setRoot(Node root) {
+        if (this.root != null) {
+            this.root.setScene(null);
+        }
+
         this.root = root;
+
+        if (this.root != null) {
+            this.root.setScene(this);
+        }
     }
 
     @Override
@@ -80,6 +94,71 @@ public final class JNode3DInternalScene implements JNode3DScene {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    @Override
+    public Color getAmbientLightColor() {
+        return ambientLightShader.getColor();
+    }
+
+    @Override
+    public void setAmbientLightColor(Color color) {
+        ambientLightShader.setColor(color);
+        ShaderManager.getInstance().updateGlobalUniformValues(root, AmbientLightShader.AMBI_LIGHT_COLOR);
+    }
+
+    @Override
+    public float getAmbientLightPower() {
+        return ambientLightShader.getPower();
+    }
+
+    @Override
+    public void setAmbientLightPower(float value) {
+        ambientLightShader.setPower(value);
+        ShaderManager.getInstance().updateGlobalUniformValues(root, AmbientLightShader.AMBI_LIGHT_POWER);
+    }
+
+    @Override
+    public Vector3f getDirectionalLightDirection() {
+        return directionalLightShader.getDirection();
+    }
+
+    @Override
+    public void setDirectionalLightDirection(Vector3f direction) {
+        directionalLightShader.setDirection(direction);
+        ShaderManager.getInstance().updateGlobalUniformValues(root, DirectionalLightShader.DIR_LIGHT_DIRECTION);
+    }
+
+    @Override
+    public Color getDirectionalLightColor() {
+        return directionalLightShader.getColor();
+    }
+
+    @Override
+    public void setDirectionalLightColor(Color color) {
+        directionalLightShader.setColor(color);
+        ShaderManager.getInstance().updateGlobalUniformValues(root, DirectionalLightShader.DIR_LIGHT_COLOR);
+    }
+
+    @Override
+    public float getDirectionalLightPower() {
+        return directionalLightShader.getPower();
+    }
+
+    @Override
+    public void setDirectionalLightPower(float value) {
+        directionalLightShader.setPower(value);
+        ShaderManager.getInstance().updateGlobalUniformValues(root, DirectionalLightShader.DIR_LIGHT_POWER);
+    }
+
+    //<editor-fold desc="Internal use only">
+    public AmbientLightShader getAmbientLightShader() {
+        return ambientLightShader;
+    }
+
+    public DirectionalLightShader getDirectionalLightShader() {
+        return directionalLightShader;
+    }
+    //</editor-fold>
 
     @Override
     public JNode3DConfiguration getConfiguration() {

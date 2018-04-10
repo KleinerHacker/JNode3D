@@ -4,9 +4,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.node.Group;
+import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.node.VertexObjectNode;
+import org.pcsoft.framework.jnode3d.ogl.GLFactory;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.shader.Shader;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.ShaderType;
@@ -29,6 +31,7 @@ public final class ShaderManager implements Manager {
     private boolean initialized = false;
 
     private final ShaderUpdateListener shaderUpdateListener = new ShaderUpdateListener();
+    private final SceneUpdateListener sceneUpdateListener = new SceneUpdateListener();
 
     private ShaderManager() {
     }
@@ -81,6 +84,7 @@ public final class ShaderManager implements Manager {
         }
 
         node.addShaderListChangedListener(shaderUpdateListener);
+        node.addSceneChangedListener(sceneUpdateListener);
     }
 
     public void unregisterShaderCollection(VertexObjectNode node) {
@@ -91,8 +95,22 @@ public final class ShaderManager implements Manager {
         }
         shaderProgramMap.remove(node);
         node.removeListShaderChangedListener(shaderUpdateListener);
+        node.removeSceneChangedListener(sceneUpdateListener);
     }
     //</editor-fold>
+
+    public void updateGlobalUniformValues(Node node, String propertyName) {
+        if (!isInitialized())
+            throw new IllegalStateException("Unable to update uniform values yet: not initialized");
+
+        if (node instanceof VertexObjectNode) {
+            updateUniformValues((VertexObjectNode) node, propertyName);
+        } else if (node instanceof Group) {
+            for (final Node child : ((Group) node).getChildren()) {
+                updateGlobalUniformValues(child, propertyName);
+            }
+        }
+    }
 
     public void updateUniformValues(VertexObjectNode node, String propertyName) {
         if (!isInitialized())
@@ -151,6 +169,8 @@ public final class ShaderManager implements Manager {
     private ShaderProgramReference buildShader(VertexObjectNode node, boolean overwrite) {
         if (!overwrite && shaderProgramMap.get(node) != null)
             return null;
+        if (node.getScene() == null)
+            return null;
 
         LOGGER.debug("Build shader of node " + node.getClass().getName());
         final OpenGL ogl = GLFactory.getOpenGL();
@@ -198,13 +218,18 @@ public final class ShaderManager implements Manager {
             mainMethodCallString.append(SystemUtils.LINE_SEPARATOR).append("\t");
         }
 
+        final String fullProgram;
         try {
             switch (shaderType) {
                 case FragmentShader:
-                    scriptList.add(IOUtils.toString(getClass().getResourceAsStream("/shader/base/base.frag")).replace("$CONTENT$", mainMethodCallString.toString()));
+                    fullProgram = IOUtils.toString(getClass().getResourceAsStream("/shader/base/base.frag"))
+                            .replace("___CONTENT___;", mainMethodCallString.toString())
+                            .replace("___METHOD___;", StringUtils.join(scriptList, StringUtils.repeat(SystemUtils.LINE_SEPARATOR, 2)));
                     break;
                 case VertexShader:
-                    scriptList.add(IOUtils.toString(getClass().getResourceAsStream("/shader/base/base.vert")).replace("$CONTENT$", mainMethodCallString.toString()));
+                    fullProgram = IOUtils.toString(getClass().getResourceAsStream("/shader/base/base.vert"))
+                            .replace("___CONTENT___;", mainMethodCallString.toString())
+                            .replace("___METHOD___;", StringUtils.join(scriptList, StringUtils.repeat(SystemUtils.LINE_SEPARATOR, 2)));
                     break;
                 default:
                     throw new RuntimeException();
@@ -212,8 +237,6 @@ public final class ShaderManager implements Manager {
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load base shader!", e);
         }
-
-        final String fullProgram = StringUtils.join(scriptList, StringUtils.repeat(SystemUtils.LINE_SEPARATOR, 2));
 
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Script Generation of " + shaderType.name() + ": " + SystemUtils.LINE_SEPARATOR +
@@ -242,18 +265,43 @@ public final class ShaderManager implements Manager {
 
         return true;
     }
+
+    private void rebuildAndUpdateShaderProgram(VertexObjectNode node) {
+        deleteShader(node);
+        final ShaderProgramReference shaderProgramReference = buildShader(node, true);
+        shaderProgramMap.put(node, shaderProgramReference);//Overwrite
+    }
     //</editor-fold>
 
-    private final class ShaderUpdateListener implements VertexObjectNode.ChangedListener {
+    //<editor-fold desc="Listeners">
+    private final class ShaderUpdateListener implements VertexObjectNode.ChangedListener<VertexObjectNode> {
         @Override
         public void onChanged(VertexObjectNode node) {
             if (!shaderProgramMap.containsKey(node))
                 return;
             if (!isInitialized())
                 return;
+            if (node.getScene() == null)
+                return;
 
-            deleteShader(node);
-            buildShader(node, true);
+            rebuildAndUpdateShaderProgram(node);
         }
     }
+
+    private final class SceneUpdateListener implements Node.ChangedListener<Node> {
+        @Override
+        public void onChanged(Node node) {
+            if (!(node instanceof VertexObjectNode))
+                return;
+            if (!shaderProgramMap.containsKey(node))
+                return;
+            if (!isInitialized())
+                return;
+            if (node.getScene() == null)
+                return;
+
+            rebuildAndUpdateShaderProgram((VertexObjectNode) node);
+        }
+    }
+    //</editor-fold>
 }

@@ -1,5 +1,7 @@
 uniform int base_CullMode = 3;
 
+___METHOD___;
+
 void main() {
 	gl_Position = ftransform();
 
@@ -12,5 +14,5 @@ void main() {
 	    gl_BackColor = gl_Color;
 	}
 
-	$CONTENT$
+	___CONTENT___;
 }

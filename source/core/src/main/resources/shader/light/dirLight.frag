@@ -9,10 +9,10 @@ void dirLight_fs()
 
     if (intensity > 0.0)
     {
-        gl_FragColor = vec4(
-            gl_FragColor.r + dirLight_Color.r * gl_Color.r * intensity * dirLight_Power,
-            gl_FragColor.g + dirLight_Color.g * gl_Color.g * intensity * dirLight_Power,
-            gl_FragColor.b + dirLight_Color.b * gl_Color.b * intensity * dirLight_Power,
+        base_Light = vec4(
+            base_Light.r + dirLight_Color.r * gl_FragColor.r * intensity * dirLight_Power,
+            base_Light.g + dirLight_Color.g * gl_FragColor.g * intensity * dirLight_Power,
+            base_Light.b + dirLight_Color.b * gl_FragColor.b * intensity * dirLight_Power,
             gl_Color.a
         );
     }

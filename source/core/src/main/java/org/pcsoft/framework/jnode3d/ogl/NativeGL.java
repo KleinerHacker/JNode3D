@@ -1,4 +1,4 @@
-package org.pcsoft.framework.jnode3d.internal.ogl;
+package org.pcsoft.framework.jnode3d.ogl;
 
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.Color;

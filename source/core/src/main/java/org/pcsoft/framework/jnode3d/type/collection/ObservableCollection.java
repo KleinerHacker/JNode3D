@@ -112,6 +112,10 @@ public final class ObservableCollection<T> implements Iterable<T> {
         return result;
     }
 
+    public Collection<T> toCollection() {
+        return Collections.unmodifiableCollection(list);
+    }
+
     public ListIterator<T> listIterator() {
         return list.listIterator();
     }

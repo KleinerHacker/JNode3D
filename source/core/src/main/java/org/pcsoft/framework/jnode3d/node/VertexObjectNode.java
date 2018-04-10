@@ -1,5 +1,6 @@
 package org.pcsoft.framework.jnode3d.node;
 
+import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
 import org.pcsoft.framework.jnode3d.shader.Shader;
 import org.pcsoft.framework.jnode3d.type.Vertex;
@@ -14,7 +15,7 @@ public abstract class VertexObjectNode extends TexturedNode {
     protected final ObservableCollection<Shader> shaderList = new ObservableCollection<>();
     protected boolean depthTestActive = true;
 
-    private final List<ChangedListener> shaderListChangedListenerList = new ArrayList<>();
+    private final List<ChangedListener<VertexObjectNode>> shaderListChangedListenerList = new ArrayList<>();
 
     public VertexObjectNode() {
         ShaderManager.getInstance().registerShaderCollection(this);
@@ -35,7 +36,13 @@ public abstract class VertexObjectNode extends TexturedNode {
     }
 
     public Shader[] getShaders() {
-        return shaderList.toArray(new Shader[shaderList.size()]);
+        final List<Shader> list = new ArrayList<>(shaderList.toCollection());
+        if (getScene() != null) {
+            list.add(((JNode3DInternalScene)getScene()).getAmbientLightShader());
+            list.add(((JNode3DInternalScene)getScene()).getDirectionalLightShader());
+        }
+
+        return list.toArray(new Shader[list.size()]);
     }
 
     public void addShader(Shader shader) {
@@ -58,16 +65,16 @@ public abstract class VertexObjectNode extends TexturedNode {
         this.depthTestActive = depthTestActive;
     }
 
-    public void addShaderListChangedListener(ChangedListener listener) {
+    public void addShaderListChangedListener(ChangedListener<VertexObjectNode> listener) {
         shaderListChangedListenerList.add(listener);
     }
 
-    public void removeListShaderChangedListener(ChangedListener listener) {
+    public void removeListShaderChangedListener(ChangedListener<VertexObjectNode> listener) {
         shaderListChangedListenerList.remove(listener);
     }
 
     protected final void fireShaderListChanged() {
-        for (final ChangedListener listener : shaderListChangedListenerList) {
+        for (final ChangedListener<VertexObjectNode> listener : shaderListChangedListenerList) {
             listener.onChanged(this);
         }
     }
@@ -76,9 +83,5 @@ public abstract class VertexObjectNode extends TexturedNode {
     protected void _dispose() {
         super._dispose();
         ShaderManager.getInstance().unregisterShaderCollection(this);
-    }
-
-    public interface ChangedListener {
-        void onChanged(VertexObjectNode node);
     }
 }

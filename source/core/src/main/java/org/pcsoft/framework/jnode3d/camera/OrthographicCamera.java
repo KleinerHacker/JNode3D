@@ -1,7 +1,7 @@
 package org.pcsoft.framework.jnode3d.camera;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Bounds2D;
 
 public final class OrthographicCamera extends Camera {

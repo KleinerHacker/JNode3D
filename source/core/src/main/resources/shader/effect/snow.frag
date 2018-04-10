@@ -1,4 +1,4 @@
-varying float snow_Position;
+varying vec3 snow_Position;
 uniform float snow_Seed = -15.4457;
 uniform bool snow_Colored = true;
 

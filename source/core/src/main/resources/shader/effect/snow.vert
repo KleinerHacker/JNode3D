@@ -1,4 +1,4 @@
-varying float snow_Position;
+varying vec3 snow_Position;
 
 void snow_vs()
 {

@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.type;
 
-import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
+import org.pcsoft.framework.jnode3d.ogl.NativeGL;
 
 public enum TextureStack {
     Texture0(NativeGL.GL_TEXTURE0),

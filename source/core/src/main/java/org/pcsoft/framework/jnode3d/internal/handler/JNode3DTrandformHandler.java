@@ -3,7 +3,7 @@ package org.pcsoft.framework.jnode3d.internal.handler;
 import org.joml.Matrix4f;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.node.TransformableNode;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.transformation.Rotation;
 import org.pcsoft.framework.jnode3d.transformation.Scaling;
 import org.pcsoft.framework.jnode3d.transformation.Transformation;

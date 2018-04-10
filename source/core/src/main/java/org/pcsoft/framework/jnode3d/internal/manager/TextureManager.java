@@ -1,7 +1,7 @@
 package org.pcsoft.framework.jnode3d.internal.manager;
 
-import org.pcsoft.framework.jnode3d.internal.ogl.GLFactory;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.GLFactory;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.TextureStack;
 import org.slf4j.Logger;

@@ -2,7 +2,7 @@ package org.pcsoft.framework.jnode3d.camera;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 
 public final class PerspectiveLookAtCamera extends PerspectiveCamera {
     private Vector3f lookAt = new Vector3f();

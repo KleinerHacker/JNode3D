@@ -1,5 +1,6 @@
 package org.pcsoft.framework.jnode3d.android;
 
+import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
@@ -57,6 +58,56 @@ public class JNode3DScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
     @Override
     public void setHeight(int height) {
         internalScene.setHeight(height);
+    }
+
+    @Override
+    public Color getAmbientLightColor() {
+        return internalScene.getAmbientLightColor();
+    }
+
+    @Override
+    public void setAmbientLightColor(Color color) {
+        internalScene.setAmbientLightColor(color);
+    }
+
+    @Override
+    public float getAmbientLightPower() {
+        return internalScene.getAmbientLightPower();
+    }
+
+    @Override
+    public void setAmbientLightPower(float value) {
+        internalScene.setAmbientLightPower(value);
+    }
+
+    @Override
+    public Vector3f getDirectionalLightDirection() {
+        return internalScene.getDirectionalLightDirection();
+    }
+
+    @Override
+    public void setDirectionalLightDirection(Vector3f direction) {
+        internalScene.setDirectionalLightDirection(direction);
+    }
+
+    @Override
+    public Color getDirectionalLightColor() {
+        return internalScene.getDirectionalLightColor();
+    }
+
+    @Override
+    public void setDirectionalLightColor(Color color) {
+        internalScene.setDirectionalLightColor(color);
+    }
+
+    @Override
+    public float getDirectionalLightPower() {
+        return internalScene.getDirectionalLightPower();
+    }
+
+    @Override
+    public void setDirectionalLightPower(float value) {
+        internalScene.setDirectionalLightPower(value);
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.pcsoft.framework.jnode3d.node;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.TextureBorderFilter;
 import org.pcsoft.framework.jnode3d.type.TextureDistanceFilter;

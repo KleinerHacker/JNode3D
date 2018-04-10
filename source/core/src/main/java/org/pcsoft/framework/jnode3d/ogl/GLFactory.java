@@ -1,4 +1,4 @@
-package org.pcsoft.framework.jnode3d.internal.ogl;
+package org.pcsoft.framework.jnode3d.ogl;
 
 public final class GLFactory {
     private static NativeGL nativeGLImplementation;

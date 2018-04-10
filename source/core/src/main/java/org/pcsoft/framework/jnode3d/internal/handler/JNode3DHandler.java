@@ -5,7 +5,7 @@ import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Node;
 import org.pcsoft.framework.jnode3d.node.RenderNode;
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 
 public final class JNode3DHandler {
     @SuppressWarnings("unchecked")

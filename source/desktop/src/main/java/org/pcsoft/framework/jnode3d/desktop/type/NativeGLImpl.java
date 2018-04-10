@@ -2,8 +2,8 @@ package org.pcsoft.framework.jnode3d.desktop.type;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
-import org.pcsoft.framework.jnode3d.internal.ogl.DrawingCallback;
-import org.pcsoft.framework.jnode3d.internal.ogl.NativeGL;
+import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
+import org.pcsoft.framework.jnode3d.ogl.NativeGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.Vertex;
 import org.pcsoft.framework.jnode3d.type.reference.BufferReference;

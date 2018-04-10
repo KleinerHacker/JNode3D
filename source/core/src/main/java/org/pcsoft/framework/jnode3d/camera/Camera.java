@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.camera;
 
-import org.pcsoft.framework.jnode3d.internal.ogl.OpenGL;
+import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.MatrixMode;
 
 public abstract class Camera {
