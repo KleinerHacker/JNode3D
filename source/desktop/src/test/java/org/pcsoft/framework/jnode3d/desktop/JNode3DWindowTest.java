@@ -15,6 +15,8 @@ public class JNode3DWindowTest extends JNode3DTest {
         window3D.setResizable(false);
         window3D.setWidth(800);
         window3D.setHeight(600);
+        window3D.setAmbientLightPower(0.05f);
+        window3D.setDirectionalLightPower(0.1f);
         buildScene(window3D);
         window3D.showAndWait();
         window3D.terminate();

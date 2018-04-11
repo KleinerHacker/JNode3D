@@ -23,5 +23,5 @@ void snow_fs()
         g = gray;
         b = gray;
     }
-    gl_FragColor = vec4(r, g, b, 1);
+    gl_FragColor = vec4(r, g, b, gl_FragColor.a);
 }

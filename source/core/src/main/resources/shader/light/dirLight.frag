@@ -5,7 +5,7 @@ uniform float dirLight_Power = 1.0;
 
 void dirLight_fs()
 {
-    float intensity = clamp(dot(normalize(dirLight_Normal), normalize(dirLight_Direction)), 0.0, 1.0);
+    float intensity = clamp(dot(dirLight_Normal, normalize(dirLight_Direction)), 0.0, 1.0);
 
     if (intensity > 0.0)
     {
