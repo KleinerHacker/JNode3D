@@ -6,7 +6,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.node.VertexObjectNode;
+import org.pcsoft.framework.jnode3d.node.RenderableObjectNode;
 import org.pcsoft.framework.jnode3d.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.shader.Shader;
@@ -27,7 +27,7 @@ public final class ShaderManager implements Manager {
         return instance;
     }
 
-    private final Map<VertexObjectNode, ShaderProgramReference> shaderProgramMap = new HashMap<>();
+    private final Map<RenderableObjectNode, ShaderProgramReference> shaderProgramMap = new HashMap<>();
     private boolean initialized = false;
 
     private final ShaderUpdateListener shaderUpdateListener = new ShaderUpdateListener();
@@ -41,7 +41,7 @@ public final class ShaderManager implements Manager {
     public void initialize() {
         LOGGER.info("Initialize Shader Manager");
 
-        for (final VertexObjectNode node : shaderProgramMap.keySet()) {
+        for (final RenderableObjectNode node : shaderProgramMap.keySet()) {
             final ShaderProgramReference shaderIdentifier = buildShader(node, false);
             if (shaderIdentifier == null)
                 continue;
@@ -56,7 +56,7 @@ public final class ShaderManager implements Manager {
     public void destroy() {
         LOGGER.info("Destroy Shader Manager");
 
-        for (final VertexObjectNode node : new HashSet<>(shaderProgramMap.keySet())) {
+        for (final RenderableObjectNode node : new HashSet<>(shaderProgramMap.keySet())) {
             if (!deleteShader(node))
                 continue;
 
@@ -73,7 +73,7 @@ public final class ShaderManager implements Manager {
     //</editor-fold>
 
     //<editor-fold desc="Register / Unregister">
-    public void registerShaderCollection(VertexObjectNode node) {
+    public void registerShaderCollection(RenderableObjectNode node) {
         LOGGER.debug("Register node (initialized: " + isInitialized() + ")");
 
         if (isInitialized()) {
@@ -87,7 +87,7 @@ public final class ShaderManager implements Manager {
         node.addSceneChangedListener(sceneUpdateListener);
     }
 
-    public void unregisterShaderCollection(VertexObjectNode node) {
+    public void unregisterShaderCollection(RenderableObjectNode node) {
         LOGGER.debug("Unregister node (initialized: " + isInitialized() + ")");
 
         if (isInitialized()) {
@@ -103,8 +103,8 @@ public final class ShaderManager implements Manager {
         if (!isInitialized())
             throw new IllegalStateException("Unable to update uniform values yet: not initialized");
 
-        if (node instanceof VertexObjectNode) {
-            updateUniformValues((VertexObjectNode) node, propertyName);
+        if (node instanceof RenderableObjectNode) {
+            updateUniformValues((RenderableObjectNode) node, propertyName);
         } else if (node instanceof Group) {
             for (final Node child : ((Group) node).getChildren()) {
                 updateGlobalUniformValues(child, propertyName);
@@ -112,7 +112,7 @@ public final class ShaderManager implements Manager {
         }
     }
 
-    public void updateUniformValues(VertexObjectNode node, String propertyName) {
+    public void updateUniformValues(RenderableObjectNode node, String propertyName) {
         if (!isInitialized())
             throw new IllegalStateException("Unable to update uniform values yet: not initialized");
 
@@ -120,7 +120,7 @@ public final class ShaderManager implements Manager {
         updateUniformValues(node, shaderProgramReference, propertyName);
     }
 
-    private void updateUniformValues(VertexObjectNode node, ShaderProgramReference shaderProgramReference, String propertyName) {
+    private void updateUniformValues(RenderableObjectNode node, ShaderProgramReference shaderProgramReference, String propertyName) {
         for (final Shader shader : node.getShaders()) {
             for (final Shader.PropertyInfo propertyInfo : shader.getPropertyInfos()) {
                 if (StringUtils.isEmpty(propertyName)) {
@@ -133,7 +133,7 @@ public final class ShaderManager implements Manager {
         }
     }
 
-    public ShaderProgramReference getShaderProgramReference(VertexObjectNode node) {
+    public ShaderProgramReference getShaderProgramReference(RenderableObjectNode node) {
         if (!shaderProgramMap.containsKey(node))
             throw new IllegalArgumentException("Unable to find node");
 
@@ -141,32 +141,41 @@ public final class ShaderManager implements Manager {
     }
 
     //<editor-fold desc="Shader Helper Methods">
-    private static void setupShaderPropertyVariable(Shader shader, ShaderProgramReference shaderIdentifier, Shader.PropertyInfo propertyInfo) {
+    private static void setupShaderPropertyVariable(Shader shader, ShaderProgramReference shaderProgramReference, Shader.PropertyInfo propertyInfo) {
         final OpenGL ogl = GLFactory.getOpenGL();
 
         try {
+            final Object value = propertyInfo.getField().get(shader);
+            final boolean success;
+
             if (propertyInfo.getType() == int.class || propertyInfo.getType() == Integer.class ||
                     propertyInfo.getType() == byte.class || propertyInfo.getType() == Byte.class ||
                     propertyInfo.getType() == short.class || propertyInfo.getType() == Short.class ||
                     propertyInfo.getType() == long.class || propertyInfo.getType() == Long.class) {
-                ogl.glSetProgramVar(shaderIdentifier, propertyInfo.getName(), (int) propertyInfo.getField().get(shader));
+                success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (int) value);
             } else if (propertyInfo.getType() == boolean.class || propertyInfo.getType() == Boolean.class) {
-                ogl.glSetProgramVar(shaderIdentifier, propertyInfo.getName(), (boolean) propertyInfo.getField().get(shader));
+                success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (boolean) value);
             } else if (propertyInfo.getType() == float.class || propertyInfo.getType() == Float.class ||
                     propertyInfo.getType() == double.class || propertyInfo.getType() == Double.class) {
-                ogl.glSetProgramVar(shaderIdentifier, propertyInfo.getName(), (float) propertyInfo.getField().get(shader));
+                success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (float) value);
             } else if (propertyInfo.getType() == Vector3f.class) {
-                ogl.glSetProgramVar(shaderIdentifier, propertyInfo.getName(), (Vector3f) propertyInfo.getField().get(shader));
+                success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (Vector3f) value);
             } else if (propertyInfo.getType() == Color.class) {
-                ogl.glSetProgramVar(shaderIdentifier, propertyInfo.getName(), (Color) propertyInfo.getField().get(shader));
+                success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (Color) value);
             } else
                 throw new IllegalStateException("Not supported shader var type: " + propertyInfo.getType().getName());
+
+            if (success) {
+                LOGGER.trace("Setup variable " + propertyInfo.getName() + " successfully to <" + value + ">");
+            } else {
+                LOGGER.warn("Setup variable " + propertyInfo.getName() + " to <" + value + "> failed: not found");
+            }
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Unable to access uniform variable field " + propertyInfo.getName() + ": " + propertyInfo.getField());
         }
     }
 
-    private ShaderProgramReference buildShader(VertexObjectNode node, boolean overwrite) {
+    private ShaderProgramReference buildShader(RenderableObjectNode node, boolean overwrite) {
         if (!overwrite && shaderProgramMap.get(node) != null)
             return null;
         if (node.getScene() == null)
@@ -222,12 +231,12 @@ public final class ShaderManager implements Manager {
         try {
             switch (shaderType) {
                 case FragmentShader:
-                    fullProgram = IOUtils.toString(getClass().getResourceAsStream("/shader/base/base.frag"))
+                    fullProgram = IOUtils.toString(getClass().getResourceAsStream("/shader/template.frag"))
                             .replace("___CONTENT___;", mainMethodCallString.toString())
                             .replace("___METHOD___;", StringUtils.join(scriptList, StringUtils.repeat(SystemUtils.LINE_SEPARATOR, 2)));
                     break;
                 case VertexShader:
-                    fullProgram = IOUtils.toString(getClass().getResourceAsStream("/shader/base/base.vert"))
+                    fullProgram = IOUtils.toString(getClass().getResourceAsStream("/shader/template.vert"))
                             .replace("___CONTENT___;", mainMethodCallString.toString())
                             .replace("___METHOD___;", StringUtils.join(scriptList, StringUtils.repeat(SystemUtils.LINE_SEPARATOR, 2)));
                     break;
@@ -253,7 +262,7 @@ public final class ShaderManager implements Manager {
         return shaderId;
     }
 
-    private boolean deleteShader(VertexObjectNode node) {
+    private boolean deleteShader(RenderableObjectNode node) {
         final ShaderProgramReference shaderIdentifier = shaderProgramMap.get(node);
         if (shaderIdentifier == null)
             return false;
@@ -266,7 +275,7 @@ public final class ShaderManager implements Manager {
         return true;
     }
 
-    private void rebuildAndUpdateShaderProgram(VertexObjectNode node) {
+    private void rebuildAndUpdateShaderProgram(RenderableObjectNode node) {
         deleteShader(node);
         final ShaderProgramReference shaderProgramReference = buildShader(node, true);
         shaderProgramMap.put(node, shaderProgramReference);//Overwrite
@@ -274,9 +283,9 @@ public final class ShaderManager implements Manager {
     //</editor-fold>
 
     //<editor-fold desc="Listeners">
-    private final class ShaderUpdateListener implements VertexObjectNode.ChangedListener<VertexObjectNode> {
+    private final class ShaderUpdateListener implements RenderableObjectNode.ChangedListener<RenderableObjectNode> {
         @Override
-        public void onChanged(VertexObjectNode node) {
+        public void onChanged(RenderableObjectNode node) {
             if (!shaderProgramMap.containsKey(node))
                 return;
             if (!isInitialized())
@@ -291,7 +300,7 @@ public final class ShaderManager implements Manager {
     private final class SceneUpdateListener implements Node.ChangedListener<Node> {
         @Override
         public void onChanged(Node node) {
-            if (!(node instanceof VertexObjectNode))
+            if (!(node instanceof RenderableObjectNode))
                 return;
             if (!shaderProgramMap.containsKey(node))
                 return;
@@ -300,7 +309,7 @@ public final class ShaderManager implements Manager {
             if (node.getScene() == null)
                 return;
 
-            rebuildAndUpdateShaderProgram((VertexObjectNode) node);
+            rebuildAndUpdateShaderProgram((RenderableObjectNode) node);
         }
     }
     //</editor-fold>

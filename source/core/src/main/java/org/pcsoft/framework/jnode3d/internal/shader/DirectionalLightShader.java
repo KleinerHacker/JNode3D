@@ -1,13 +1,13 @@
 package org.pcsoft.framework.jnode3d.internal.shader;
 
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.shader.Shader;
+import org.pcsoft.framework.jnode3d.shader.LightShader;
 import org.pcsoft.framework.jnode3d.shader.ShaderDescriptor;
 import org.pcsoft.framework.jnode3d.shader.ShaderProperty;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 @ShaderDescriptor(vertexMain = "dirLight_vs", fragmentMain = "dirLight_fs")
-public final class DirectionalLightShader extends Shader {
+public final class DirectionalLightShader extends LightShader {
     public static final String DIR_LIGHT_DIRECTION = "dirLight_Direction";
     public static final String DIR_LIGHT_COLOR = "dirLight_Color";
     public static final String DIR_LIGHT_POWER = "dirLight_Power";
@@ -20,7 +20,7 @@ public final class DirectionalLightShader extends Shader {
     private float power = 1f;
 
     public DirectionalLightShader() {
-        super(loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dirLight.vert")),
+        super(1, loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dirLight.vert")),
                 loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dirLight.frag")));
     }
 

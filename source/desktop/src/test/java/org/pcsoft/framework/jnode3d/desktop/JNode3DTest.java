@@ -11,6 +11,7 @@ import org.pcsoft.framework.jnode3d.node.Triangle;
 import org.pcsoft.framework.jnode3d.shader.SnowShader;
 import org.pcsoft.framework.jnode3d.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.CullMode;
 
 import java.io.IOException;
 
@@ -89,6 +90,7 @@ public abstract class JNode3DTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        box.setCullMode(CullMode.None);
         box.addShader(new SnowShader());
 
         return box;

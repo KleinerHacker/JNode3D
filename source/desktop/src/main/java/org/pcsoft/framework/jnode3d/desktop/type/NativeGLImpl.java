@@ -235,33 +235,53 @@ public class NativeGLImpl implements NativeGL {
     }
 
     @Override
-    public void glSetProgramVar(ShaderProgramReference programReference, String varName, boolean value) {
+    public boolean glSetProgramVar(ShaderProgramReference programReference, String varName, boolean value) {
         final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        if (location < 0)
+            return false;
+
         GL41.glProgramUniform1i(programReference.getProgramId(), location, value ? 1 : 0);
+        return true;
     }
 
     @Override
-    public void glSetProgramVar(ShaderProgramReference programReference, String varName, float value) {
+    public boolean glSetProgramVar(ShaderProgramReference programReference, String varName, float value) {
         final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        if (location < 0)
+            return false;
+
         GL41.glProgramUniform1f(programReference.getProgramId(), location, value);
+        return true;
     }
 
     @Override
-    public void glSetProgramVar(ShaderProgramReference programReference, String varName, int value) {
+    public boolean glSetProgramVar(ShaderProgramReference programReference, String varName, int value) {
         final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        if (location < 0)
+            return false;
+
         GL41.glProgramUniform1i(programReference.getProgramId(), location, value);
+        return true;
     }
 
     @Override
-    public void glSetProgramVar(ShaderProgramReference programReference, String varName, Vector3f value) {
+    public boolean glSetProgramVar(ShaderProgramReference programReference, String varName, Vector3f value) {
         final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        if (location < 0)
+            return false;
+
         GL41.glProgramUniform3f(programReference.getProgramId(), location, value.x, value.y, value.z);
+        return true;
     }
 
     @Override
-    public void glSetProgramVar(ShaderProgramReference programReference, String varName, Color value) {
+    public boolean glSetProgramVar(ShaderProgramReference programReference, String varName, Color value) {
         final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        if (location < 0)
+            return false;
+
         GL41.glProgramUniform4f(programReference.getProgramId(), location, value.getR(), value.getG(), value.getB(), value.getA());
+        return true;
     }
 
     //</editor-fold>

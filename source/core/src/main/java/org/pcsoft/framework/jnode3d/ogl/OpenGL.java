@@ -256,24 +256,24 @@ public final class OpenGL {
         return ngl.glProgramLog(programIdentifier);
     }
 
-    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, boolean value) {
-        ngl.glSetProgramVar(programIdentifier, varName, value);
+    public boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, boolean value) {
+        return ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, float value) {
-        ngl.glSetProgramVar(programIdentifier, varName, value);
+    public boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, float value) {
+        return ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, int value) {
-        ngl.glSetProgramVar(programIdentifier, varName, value);
+    public boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, int value) {
+        return ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Vector3f value) {
-        ngl.glSetProgramVar(programIdentifier, varName, value);
+    public boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Vector3f value) {
+        return ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 
-    public void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value) {
-        ngl.glSetProgramVar(programIdentifier, varName, value);
+    public boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value) {
+        return ngl.glSetProgramVar(programIdentifier, varName, value);
     }
 //</editor-fold>
 }

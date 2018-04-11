@@ -172,10 +172,10 @@ public interface NativeGL {
 
     void glUseProgram(ShaderProgramReference programIdentifier);
 
-    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, boolean value);
-    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, float value);
-    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, int value);
-    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Vector3f value);
-    void glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value);
+    boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, boolean value);
+    boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, float value);
+    boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, int value);
+    boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Vector3f value);
+    boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value);
     //</editor-fold>
 }

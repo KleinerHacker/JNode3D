@@ -3,14 +3,14 @@ package org.pcsoft.framework.jnode3d.shader;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
-import org.pcsoft.framework.jnode3d.node.VertexObjectNode;
+import org.pcsoft.framework.jnode3d.node.RenderableObjectNode;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public abstract class Shader {
+public abstract class Shader implements Comparable<Shader> {
     protected static String loadShader(InputStream in) {
         try {
             return IOUtils.toString(in);
@@ -20,23 +20,25 @@ public abstract class Shader {
     }
 
     private final String vertexShader, fragmentShader;
+    private final long orderValue;
     private final Map<String, PropertyInfo> propertyInfoMap = new HashMap<>();
     private final ShaderDescriptor descriptor;
-    private VertexObjectNode parent = null;
+    private RenderableObjectNode parent = null;
 
-    protected Shader(String vertexShader, String fragmentShader) {
+    protected Shader(long orderValue, String vertexShader, String fragmentShader) {
         this.descriptor = findDescriptor();
         buildPropertyInfoList();
 
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
+        this.orderValue = orderValue;
     }
 
-    public VertexObjectNode getParent() {
+    public RenderableObjectNode getParent() {
         return parent;
     }
 
-    public void setParent(VertexObjectNode parent) {
+    public void setParent(RenderableObjectNode parent) {
         this.parent = parent;
     }
 
@@ -64,6 +66,7 @@ public abstract class Shader {
         return descriptor;
     }
 
+    //<editor-fold desc="Helper Methods">
     private ShaderDescriptor findDescriptor() {
         Class current = this.getClass();
         while (current != null) {
@@ -95,6 +98,7 @@ public abstract class Shader {
             current = current.getSuperclass();
         }
     }
+    //</editor-fold>
 
     protected final void updateUniformValue(String value) {
         if (ShaderManager.getInstance().isInitialized() && parent != null) {
@@ -102,6 +106,12 @@ public abstract class Shader {
         }
     }
 
+    @Override
+    public final int compareTo(Shader o) {
+        return Long.compare(orderValue, o.orderValue);
+    }
+
+    //<editor-fold desc="Equals / Hashcode">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,6 +125,7 @@ public abstract class Shader {
     public int hashCode() {
         return Objects.hash(vertexShader, fragmentShader);
     }
+    //</editor-fold>
 
     public static final class PropertyInfo {
         private final String name;

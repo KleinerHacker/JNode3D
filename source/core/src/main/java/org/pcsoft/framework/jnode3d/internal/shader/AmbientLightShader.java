@@ -1,12 +1,12 @@
 package org.pcsoft.framework.jnode3d.internal.shader;
 
-import org.pcsoft.framework.jnode3d.shader.Shader;
+import org.pcsoft.framework.jnode3d.shader.LightShader;
 import org.pcsoft.framework.jnode3d.shader.ShaderDescriptor;
 import org.pcsoft.framework.jnode3d.shader.ShaderProperty;
 import org.pcsoft.framework.jnode3d.type.Color;
 
 @ShaderDescriptor(fragmentMain = "ambiLight_fs")
-public final class AmbientLightShader extends Shader {
+public final class AmbientLightShader extends LightShader {
     public static final String AMBI_LIGHT_COLOR = "ambiLight_Color";
     public static final String AMBI_LIGHT_POWER = "ambiLight_Power";
 
@@ -16,7 +16,7 @@ public final class AmbientLightShader extends Shader {
     private float power = 0.3f;
 
     public AmbientLightShader() {
-        super(null, loadShader(AmbientLightShader.class.getResourceAsStream("/shader/light/ambiLight.frag")));
+        super(0, null, loadShader(AmbientLightShader.class.getResourceAsStream("/shader/light/ambiLight.frag")));
     }
 
     public Color getColor() {

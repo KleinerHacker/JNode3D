@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.node.Group;
 import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.node.RenderNode;
+import org.pcsoft.framework.jnode3d.node.RenderableObjectNode;
 import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 
 public final class JNode3DHandler {
@@ -29,7 +29,7 @@ public final class JNode3DHandler {
     private static void handleNodeChildren(Node root, OpenGL ogl, JNode3DConfiguration configuration, Matrix4f childRootMatrix) {
         if (root instanceof Group) {
             for (final Node child : ((Group) root).getChildren()) {
-                if (!(child instanceof RenderNode))
+                if (!(child instanceof RenderableObjectNode))
                     continue;
 
                 handleNode(child, childRootMatrix, ogl, configuration);

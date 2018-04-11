@@ -11,7 +11,7 @@ import org.pcsoft.framework.jnode3d.type.Vertex;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ConstructedObjectNode<CK> extends VertexObjectNode {
+public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
     private final Class<CK> colorKeyClass;
     private final Map<CK, Color> colorMap = new HashMap<>();
 

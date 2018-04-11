@@ -1,7 +1,7 @@
 package org.pcsoft.framework.jnode3d.shader;
 
 @ShaderDescriptor(fragmentMain = "snow_fs", vertexMain = "snow_vs")
-public final class SnowShader extends Shader {
+public final class SnowShader extends EffectShader {
     private static final String SNOW_COLORED = "snow_Colored";
     private static final String SNOW_R_MOD = "snow_Seed";
 
@@ -13,6 +13,16 @@ public final class SnowShader extends Shader {
     public SnowShader() {
         super(loadShader(SnowShader.class.getResourceAsStream("/shader/effect/snow.vert")),
                 loadShader(SnowShader.class.getResourceAsStream("/shader/effect/snow.frag")));
+    }
+
+    public SnowShader(boolean colored) {
+        this();
+        this.colored = colored;
+    }
+
+    public SnowShader(boolean colored, float seed) {
+        this(colored);
+        this.seed = seed;
     }
 
     public boolean isColored() {

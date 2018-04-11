@@ -1,13 +1,8 @@
+uniform int base_CullMode = 3;
 uniform float base_Opacity = 1.0;
-vec4 base_Light;
 
-___METHOD___;
-
-void main() {
-    gl_FragColor = vec4(gl_Color.r, gl_Color.g, gl_Color.b, gl_Color.a * base_Opacity);
-    base_Light = gl_FragColor;
-
-	___CONTENT___;
-
-	gl_FragColor = base_Light;
+void base_fs() {
+    if ((((base_CullMode == 1 || base_CullMode == 3) && gl_FrontFacing) || ((base_CullMode == 2 || base_CullMode == 3) && !gl_FrontFacing))) {
+        gl_FragColor = vec4(gl_FragColor.r, gl_FragColor.g, gl_FragColor.b, gl_FragColor.a * base_Opacity);
+    }
 }

@@ -7,7 +7,7 @@ import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.TextureBorderFilter;
 import org.pcsoft.framework.jnode3d.type.TextureDistanceFilter;
 
-public abstract class TexturedNode extends RenderNode {
+public abstract class TexturedNode extends RenderableObjectNode {
     private TextureBorderFilter textureBorderFilterS = TextureBorderFilter.Repeated, textureBorderFilterT = TextureBorderFilter.Repeated;
     private Color textureBorderColor = Color.WHITE;
     private TextureDistanceFilter textureDistanceMinifying = null, textureDistanceMagnifying = null;
