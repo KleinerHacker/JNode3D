@@ -2,13 +2,13 @@ package org.pcsoft.framework.jnode3d.node.processing.vert_calc;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.node.Triangle;
+import org.pcsoft.framework.jnode3d.node.TriangleNode;
 import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public final class TriangleVertexCalculationProcessor implements VertexCalculationProcessor<Triangle> {
+public final class TriangleVertexCalculationProcessor implements VertexCalculationProcessor<TriangleNode> {
     @Override
-    public Vector3f[] recalculatePoints(Triangle node) {
+    public Vector3f[] recalculatePoints(TriangleNode node) {
         return new Vector3f[]{
                 new Vector3f(-node.getWidth() / 2f, -node.getHeight() / 2f, 0f),
                 new Vector3f(node.getTopPercentage() * node.getWidth() - node.getWidth() / 2f, node.getHeight() / 2f, 0f),
@@ -18,7 +18,7 @@ public final class TriangleVertexCalculationProcessor implements VertexCalculati
     }
 
     @Override
-    public Vector3f[] recalculateNormals(Triangle node) {
+    public Vector3f[] recalculateNormals(TriangleNode node) {
         return new Vector3f[]{
                 new Vector3f(0, 0, 1),
                 new Vector3f(0, 0, 1),
@@ -27,16 +27,16 @@ public final class TriangleVertexCalculationProcessor implements VertexCalculati
     }
 
     @Override
-    public Color[] recalculateColors(Triangle node) {
+    public Color[] recalculateColors(TriangleNode node) {
         return new Color[]{
-                node.getColorAt(Triangle.Points.LeftCorner),
-                node.getColorAt(Triangle.Points.Top),
-                node.getColorAt(Triangle.Points.RightCorner)
+                node.getColorAt(TriangleNode.Points.LeftCorner),
+                node.getColorAt(TriangleNode.Points.Top),
+                node.getColorAt(TriangleNode.Points.RightCorner)
         };
     }
 
     @Override
-    public Vector2f[] recalculateTextureCoordinates(Triangle node) {
+    public Vector2f[] recalculateTextureCoordinates(TriangleNode node) {
         return new Vector2f[]{
                 new Vector2f(0f, 1f),
                 new Vector2f(0.5f, 0f),
@@ -45,7 +45,7 @@ public final class TriangleVertexCalculationProcessor implements VertexCalculati
     }
 
     @Override
-    public int[] recalculateIndices(Triangle node) {
+    public int[] recalculateIndices(TriangleNode node) {
         return new int[] {
                 0, 1, 2
         };

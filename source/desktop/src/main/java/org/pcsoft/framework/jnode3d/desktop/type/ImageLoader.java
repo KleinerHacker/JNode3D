@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public final class ImageLoader implements org.pcsoft.framework.jnode3d.texture.ImageLoader {
+public final class ImageLoader implements org.pcsoft.framework.jnode3d.material.texture.ImageLoader {
     private ByteBuffer buffer;
     private int width, height;
 

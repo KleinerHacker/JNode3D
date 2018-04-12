@@ -2,15 +2,15 @@ package org.pcsoft.framework.jnode3d.node.processing.vert_calc;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.node.Box;
+import org.pcsoft.framework.jnode3d.node.BoxNode;
 import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public final class BoxVertexCalculationProcessor implements VertexCalculationProcessor<Box> {
+public final class BoxVertexCalculationProcessor implements VertexCalculationProcessor<BoxNode> {
     private static final int SIDES = 6, VERTICES_PER_SIDE = 4, INDICES_PER_SIDE = 6;
 
     @Override
-    public Vector3f[] recalculatePoints(Box node) {
+    public Vector3f[] recalculatePoints(BoxNode node) {
         return new Vector3f[] {
                 //Top
                 new Vector3f(-node.getWidth() / 2, -node.getHeight() / 2, node.getDepth() / 2),
@@ -46,7 +46,7 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public Vector3f[] recalculateNormals(Box node) {
+    public Vector3f[] recalculateNormals(BoxNode node) {
         return new Vector3f[] {
                 //Top
                 new Vector3f(0, 1, 0),
@@ -82,43 +82,43 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public Color[] recalculateColors(Box node) {
+    public Color[] recalculateColors(BoxNode node) {
         return new Color[] {
                 //Top
-                node.getColorAt(Box.Points.TopLeftBack),
-                node.getColorAt(Box.Points.TopRightBack),
-                node.getColorAt(Box.Points.TopLeftFront),
-                node.getColorAt(Box.Points.TopRightFront),
+                node.getColorAt(BoxNode.Points.TopLeftBack),
+                node.getColorAt(BoxNode.Points.TopRightBack),
+                node.getColorAt(BoxNode.Points.TopLeftFront),
+                node.getColorAt(BoxNode.Points.TopRightFront),
                 //Bottom
-                node.getColorAt(Box.Points.BottomLeftBack),
-                node.getColorAt(Box.Points.BottomRightBack),
-                node.getColorAt(Box.Points.BottomLeftFront),
-                node.getColorAt(Box.Points.BottomRightFront),
+                node.getColorAt(BoxNode.Points.BottomLeftBack),
+                node.getColorAt(BoxNode.Points.BottomRightBack),
+                node.getColorAt(BoxNode.Points.BottomLeftFront),
+                node.getColorAt(BoxNode.Points.BottomRightFront),
                 //Left
-                node.getColorAt(Box.Points.TopLeftBack),
-                node.getColorAt(Box.Points.TopLeftFront),
-                node.getColorAt(Box.Points.BottomLeftBack),
-                node.getColorAt(Box.Points.BottomLeftFront),
+                node.getColorAt(BoxNode.Points.TopLeftBack),
+                node.getColorAt(BoxNode.Points.TopLeftFront),
+                node.getColorAt(BoxNode.Points.BottomLeftBack),
+                node.getColorAt(BoxNode.Points.BottomLeftFront),
                 //Right
-                node.getColorAt(Box.Points.TopRightBack),
-                node.getColorAt(Box.Points.TopRightFront),
-                node.getColorAt(Box.Points.BottomRightBack),
-                node.getColorAt(Box.Points.BottomRightFront),
+                node.getColorAt(BoxNode.Points.TopRightBack),
+                node.getColorAt(BoxNode.Points.TopRightFront),
+                node.getColorAt(BoxNode.Points.BottomRightBack),
+                node.getColorAt(BoxNode.Points.BottomRightFront),
                 //Front
-                node.getColorAt(Box.Points.TopLeftFront),
-                node.getColorAt(Box.Points.TopRightFront),
-                node.getColorAt(Box.Points.BottomLeftFront),
-                node.getColorAt(Box.Points.BottomRightFront),
+                node.getColorAt(BoxNode.Points.TopLeftFront),
+                node.getColorAt(BoxNode.Points.TopRightFront),
+                node.getColorAt(BoxNode.Points.BottomLeftFront),
+                node.getColorAt(BoxNode.Points.BottomRightFront),
                 //Back
-                node.getColorAt(Box.Points.TopLeftBack),
-                node.getColorAt(Box.Points.TopRightBack),
-                node.getColorAt(Box.Points.BottomLeftBack),
-                node.getColorAt(Box.Points.BottomRightBack),
+                node.getColorAt(BoxNode.Points.TopLeftBack),
+                node.getColorAt(BoxNode.Points.TopRightBack),
+                node.getColorAt(BoxNode.Points.BottomLeftBack),
+                node.getColorAt(BoxNode.Points.BottomRightBack),
         };
     }
 
     @Override
-    public Vector2f[] recalculateTextureCoordinates(Box node) {
+    public Vector2f[] recalculateTextureCoordinates(BoxNode node) {
         return new Vector2f[] {
                 //Top
                 new Vector2f(0, 0),
@@ -154,7 +154,7 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public int[] recalculateIndices(Box node) {
+    public int[] recalculateIndices(BoxNode node) {
         return new int[] {
                 //Top
                 0, 1, 2,

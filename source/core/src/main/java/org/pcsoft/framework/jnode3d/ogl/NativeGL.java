@@ -1,5 +1,6 @@
 package org.pcsoft.framework.jnode3d.ogl;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.Vertex;
@@ -177,5 +178,6 @@ public interface NativeGL {
     boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, int value);
     boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Vector3f value);
     boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value);
+    boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Matrix4f value);
     //</editor-fold>
 }

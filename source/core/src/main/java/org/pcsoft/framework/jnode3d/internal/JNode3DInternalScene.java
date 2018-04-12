@@ -1,23 +1,20 @@
 package org.pcsoft.framework.jnode3d.internal;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.JNode3DScene;
 import org.pcsoft.framework.jnode3d.anim.AnimationBase;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.camera.OrthographicCamera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.internal.handler.JNode3DHandler;
-import org.pcsoft.framework.jnode3d.internal.manager.AnimationManager;
-import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
-import org.pcsoft.framework.jnode3d.internal.manager.TextureManager;
-import org.pcsoft.framework.jnode3d.ogl.GLFactory;
-import org.pcsoft.framework.jnode3d.internal.shader.AmbientLightShader;
-import org.pcsoft.framework.jnode3d.internal.shader.DirectionalLightShader;
+import org.pcsoft.framework.jnode3d.internal.manager.*;
 import org.pcsoft.framework.jnode3d.node.Node;
+import org.pcsoft.framework.jnode3d.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.ogl.OpenGL;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.MatrixMode;
+import org.pcsoft.framework.jnode3d.type.light.AmbientLight;
+import org.pcsoft.framework.jnode3d.type.light.DirectionalLight;
 
 public final class JNode3DInternalScene implements JNode3DScene {
     private Node root;
@@ -27,9 +24,6 @@ public final class JNode3DInternalScene implements JNode3DScene {
 
     private final JNode3DConfiguration configuration;
     private boolean initialized = false;
-
-    private final AmbientLightShader ambientLightShader = new AmbientLightShader();
-    private final DirectionalLightShader directionalLightShader = new DirectionalLightShader();
 
     public JNode3DInternalScene(JNode3DConfiguration configuration, int width, int height) {
         this.configuration = configuration;
@@ -96,69 +90,14 @@ public final class JNode3DInternalScene implements JNode3DScene {
     }
 
     @Override
-    public Color getAmbientLightColor() {
-        return ambientLightShader.getColor();
+    public AmbientLight getAmbientLight() {
+        return LightManager.getInstance().getAmbientLight();
     }
 
     @Override
-    public void setAmbientLightColor(Color color) {
-        ambientLightShader.setColor(color);
-        ShaderManager.getInstance().updateGlobalUniformValues(root, AmbientLightShader.AMBI_LIGHT_COLOR);
+    public DirectionalLight getDirectionalLight() {
+        return LightManager.getInstance().getDirectionalLight();
     }
-
-    @Override
-    public float getAmbientLightPower() {
-        return ambientLightShader.getPower();
-    }
-
-    @Override
-    public void setAmbientLightPower(float value) {
-        ambientLightShader.setPower(value);
-        ShaderManager.getInstance().updateGlobalUniformValues(root, AmbientLightShader.AMBI_LIGHT_POWER);
-    }
-
-    @Override
-    public Vector3f getDirectionalLightDirection() {
-        return directionalLightShader.getDirection();
-    }
-
-    @Override
-    public void setDirectionalLightDirection(Vector3f direction) {
-        directionalLightShader.setDirection(direction);
-        ShaderManager.getInstance().updateGlobalUniformValues(root, DirectionalLightShader.DIR_LIGHT_DIRECTION);
-    }
-
-    @Override
-    public Color getDirectionalLightColor() {
-        return directionalLightShader.getColor();
-    }
-
-    @Override
-    public void setDirectionalLightColor(Color color) {
-        directionalLightShader.setColor(color);
-        ShaderManager.getInstance().updateGlobalUniformValues(root, DirectionalLightShader.DIR_LIGHT_COLOR);
-    }
-
-    @Override
-    public float getDirectionalLightPower() {
-        return directionalLightShader.getPower();
-    }
-
-    @Override
-    public void setDirectionalLightPower(float value) {
-        directionalLightShader.setPower(value);
-        ShaderManager.getInstance().updateGlobalUniformValues(root, DirectionalLightShader.DIR_LIGHT_POWER);
-    }
-
-    //<editor-fold desc="Internal use only">
-    public AmbientLightShader getAmbientLightShader() {
-        return ambientLightShader;
-    }
-
-    public DirectionalLightShader getDirectionalLightShader() {
-        return directionalLightShader;
-    }
-    //</editor-fold>
 
     @Override
     public JNode3DConfiguration getConfiguration() {
@@ -169,17 +108,31 @@ public final class JNode3DInternalScene implements JNode3DScene {
         if (isInitialized())
             throw new IllegalStateException("Already initialized");
 
-        ShaderManager.getInstance().initialize();
+        LightManager.getInstance().initialize();
         TextureManager.getInstance().initialize();
+        ShaderManager.getInstance().initialize();
+        BufferManager.getInstance().initialize();
 
         this.initialized = true;
+    }
+
+    public void destroy() {
+        if (!isInitialized())
+            throw new IllegalStateException("Not initialized yet");
+
+        BufferManager.getInstance().destroy();
+        ShaderManager.getInstance().destroy();
+        TextureManager.getInstance().destroy();
+        LightManager.getInstance().destroy();
+
+        this.initialized = false;
     }
 
     public void loop() {
         if (!isInitialized())
             throw new IllegalStateException("Not initialized yet");
 
-        for (final AnimationBase animation : AnimationManager.getInstance().getAnimationList()) {
+        for (final AnimationBase animation : AnimationManager.getInstance().getAnimations()) {
             animation.callLoop();
         }
 
@@ -195,16 +148,6 @@ public final class JNode3DInternalScene implements JNode3DScene {
                 OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT | OpenGL.GL_STENCIL_BUFFER_BIT);
 
         JNode3DHandler.handleNode(root, new Matrix4f().identity(), ogl, configuration);
-    }
-
-    public void destroy() {
-        if (!isInitialized())
-            throw new IllegalStateException("Not initialized yet");
-
-        ShaderManager.getInstance().destroy();
-        TextureManager.getInstance().destroy();
-
-        this.initialized = false;
     }
 
     public boolean isInitialized() {

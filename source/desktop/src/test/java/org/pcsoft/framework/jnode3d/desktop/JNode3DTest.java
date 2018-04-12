@@ -4,20 +4,21 @@ import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.anim.AnimationBase;
 import org.pcsoft.framework.jnode3d.camera.PerspectiveLookAtCamera;
 import org.pcsoft.framework.jnode3d.desktop.type.ImageLoader;
-import org.pcsoft.framework.jnode3d.node.Box;
-import org.pcsoft.framework.jnode3d.node.Group;
-import org.pcsoft.framework.jnode3d.node.Rectangle;
-import org.pcsoft.framework.jnode3d.node.Triangle;
-import org.pcsoft.framework.jnode3d.shader.PointLightShader;
-import org.pcsoft.framework.jnode3d.texture.Texture;
+import org.pcsoft.framework.jnode3d.material.SnowMaterial;
+import org.pcsoft.framework.jnode3d.material.texture.Texture;
+import org.pcsoft.framework.jnode3d.node.*;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.transformation.Translation;
 
 import java.io.IOException;
 
 public abstract class JNode3DTest {
     protected static void buildScene(JNode3DStandalone standalone) {
-        final Group root = new Group();
+        final GroupNode root = new GroupNode();
         root.getChildren().add(buildBox());
+        final PointLightNode pointLightNode = new PointLightNode();
+        pointLightNode.getTransformationList().add(new Translation(new Vector3f(0.6f, 0.6f, 0.6f)));
+        root.getChildren().add(pointLightNode);
 
         standalone.setRoot(root);
         final PerspectiveLookAtCamera camera = buildCamera();
@@ -34,64 +35,57 @@ public abstract class JNode3DTest {
         }.start();
     }
 
-    private static Rectangle buildRectangle() {
-        final Rectangle rectangle = new Rectangle();
-        rectangle.setColorAt(Rectangle.Points.LeftTopCorner, Color.BLUE);
-        rectangle.setColorAt(Rectangle.Points.RightTopCorner, Color.RED);
-        rectangle.setColorAt(Rectangle.Points.LeftBottomCorner, Color.GREEN);
-        rectangle.setColorAt(Rectangle.Points.RightBottomCorner, Color.YELLOW);
+    private static RectangleNode buildRectangle() {
+        final RectangleNode rectangleNode = new RectangleNode();
+        rectangleNode.setColorAt(RectangleNode.Points.LeftTopCorner, Color.BLUE);
+        rectangleNode.setColorAt(RectangleNode.Points.RightTopCorner, Color.RED);
+        rectangleNode.setColorAt(RectangleNode.Points.LeftBottomCorner, Color.GREEN);
+        rectangleNode.setColorAt(RectangleNode.Points.RightBottomCorner, Color.YELLOW);
         try {
             final Texture texture2D = new Texture(new ImageLoader(JNode3DTest.class.getResourceAsStream("/tex/tex01.png"), "png"));
-            rectangle.setTexture(texture2D);
+            rectangleNode.setTexture(texture2D);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*rectangle.getShaderList().addAll(Arrays.asList(
-                SnowShader.get().buildInstance(false),
-                OpacityShader.get().buildInstance(0.1f)
-        ));*/
 
-        return rectangle;
+        return rectangleNode;
     }
 
-    private static Triangle buildTriangle() {
-        final Triangle triangle = new Triangle();
-        triangle.setColorAt(Triangle.Points.Top, Color.BLUE);
-        triangle.setColorAt(Triangle.Points.LeftCorner, Color.RED);
-        triangle.setColorAt(Triangle.Points.RightCorner, Color.GREEN);
+    private static TriangleNode buildTriangle() {
+        final TriangleNode triangleNode = new TriangleNode();
+        triangleNode.setColorAt(TriangleNode.Points.Top, Color.BLUE);
+        triangleNode.setColorAt(TriangleNode.Points.LeftCorner, Color.RED);
+        triangleNode.setColorAt(TriangleNode.Points.RightCorner, Color.GREEN);
         try {
             final Texture texture2D = new Texture(new ImageLoader(JNode3DTest.class.getResourceAsStream("/tex/tex01.png"), "png"));
-            triangle.setTexture(texture2D);
+            triangleNode.setTexture(texture2D);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*triangle.getShaderList().addAll(Arrays.asList(
-                SnowShader.get().buildInstance(false),
-                OpacityShader.get().buildInstance(0.5f)
-        ));*/
 
-        return triangle;
+        return triangleNode;
     }
 
-    private static Box buildBox() {
-        final Box box = new Box();
-        box.setColorAt(Box.Points.TopLeftFront, Color.BLUE);
-        box.setColorAt(Box.Points.TopRightFront, Color.RED);
-        box.setColorAt(Box.Points.TopLeftBack, Color.GREEN);
-        box.setColorAt(Box.Points.TopRightBack, Color.YELLOW);
-        box.setColorAt(Box.Points.BottomLeftFront, Color.YELLOW);
-        box.setColorAt(Box.Points.BottomRightFront, Color.GREEN);
-        box.setColorAt(Box.Points.BottomLeftBack, Color.RED);
-        box.setColorAt(Box.Points.BottomRightBack, Color.BLUE);
+    private static BoxNode buildBox() {
+        final BoxNode boxNode = new BoxNode();
+        boxNode.setColorAt(BoxNode.Points.TopLeftFront, Color.BLUE);
+        boxNode.setColorAt(BoxNode.Points.TopRightFront, Color.RED);
+        boxNode.setColorAt(BoxNode.Points.TopLeftBack, Color.GREEN);
+        boxNode.setColorAt(BoxNode.Points.TopRightBack, Color.YELLOW);
+        boxNode.setColorAt(BoxNode.Points.BottomLeftFront, Color.YELLOW);
+        boxNode.setColorAt(BoxNode.Points.BottomRightFront, Color.GREEN);
+        boxNode.setColorAt(BoxNode.Points.BottomLeftBack, Color.RED);
+        boxNode.setColorAt(BoxNode.Points.BottomRightBack, Color.BLUE);
         try {
             final Texture texture2D = new Texture(new ImageLoader(JNode3DTest.class.getResourceAsStream("/tex/tex01.png"), "png"));
-            box.setTexture(texture2D);
+            boxNode.setTexture(texture2D);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        box.addShader(new PointLightShader(new Vector3f(-1, -1, -1)));
+        final SnowMaterial snowMaterial = new SnowMaterial();
+        boxNode.setMaterial(snowMaterial);
 
-        return box;
+        return boxNode;
     }
 
     private static PerspectiveLookAtCamera buildCamera() {

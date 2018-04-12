@@ -27,7 +27,7 @@ public abstract class AnimationBase {
         if (started)
             return;
 
-        AnimationManager.getInstance().getAnimationList().add(this);
+        AnimationManager.getInstance().registerAnimation(this);
         started = true;
     }
 
@@ -37,7 +37,7 @@ public abstract class AnimationBase {
         if (!started)
             return;
 
-        AnimationManager.getInstance().getAnimationList().remove(this);
+        AnimationManager.getInstance().unregisterAnimation(this);
         started = false;
     }
 

@@ -6,6 +6,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.type.*;
+import org.pcsoft.framework.jnode3d.type.geom.Bounds2D;
 import org.pcsoft.framework.jnode3d.type.reference.BufferReference;
 import org.pcsoft.framework.jnode3d.type.reference.ShaderProgramReference;
 
@@ -275,5 +276,10 @@ public final class OpenGL {
     public boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Color value) {
         return ngl.glSetProgramVar(programIdentifier, varName, value);
     }
-//</editor-fold>
+
+    public boolean glSetProgramVar(ShaderProgramReference programIdentifier, String varName, Matrix4f value) {
+        return ngl.glSetProgramVar(programIdentifier, varName, value);
+    }
+
+    //</editor-fold>
 }

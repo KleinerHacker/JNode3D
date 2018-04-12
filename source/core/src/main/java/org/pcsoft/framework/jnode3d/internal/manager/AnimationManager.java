@@ -4,8 +4,7 @@ import org.pcsoft.framework.jnode3d.anim.AnimationBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class AnimationManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnimationManager.class);
@@ -15,30 +14,22 @@ public final class AnimationManager implements Manager {
         return instance;
     }
 
-    private final List<AnimationBase> animationList = new ArrayList<>();
-    private boolean initialized = false;
+    private final Set<AnimationBase> animationList = new HashSet<>();
 
     private AnimationManager() {
     }
 
-    @Override
-    public void initialize() {
-        animationList.clear();
-        initialized = true;
+    public void registerAnimation(AnimationBase animation) {
+        LOGGER.debug("Register animation");
+        animationList.add(animation);
     }
 
-    @Override
-    public void destroy() {
-        animationList.clear();
-        initialized = false;
+    public void unregisterAnimation(AnimationBase animation) {
+        LOGGER.debug("Unregister animation");
+        animationList.remove(animation);
     }
 
-    @Override
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    public List<AnimationBase> getAnimationList() {
-        return animationList;
+    public Collection<AnimationBase> getAnimations() {
+        return Collections.unmodifiableCollection(animationList);
     }
 }

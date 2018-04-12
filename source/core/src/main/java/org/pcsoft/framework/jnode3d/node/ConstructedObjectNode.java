@@ -2,9 +2,10 @@ package org.pcsoft.framework.jnode3d.node;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.pcsoft.framework.jnode3d.internal.manager.BufferManager;
 import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
 import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
-import org.pcsoft.framework.jnode3d.texture.Texture;
+import org.pcsoft.framework.jnode3d.material.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.Vertex;
 
@@ -100,6 +101,8 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
             vertices[i].setPosition(points[i]);
             vertices[i].setNormal(normals[i]);
         }
+
+        BufferManager.getInstance().updateBuffer(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -110,6 +113,8 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
         for (int i=0; i<vertexCalculationProcessor.getCountOfVertices(); i++) {
             vertices[i].setTextureCoordinate(textureCoordinates[i]);
         }
+
+        BufferManager.getInstance().updateBuffer(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,6 +125,8 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
         for (int i=0; i<vertexCalculationProcessor.getCountOfVertices(); i++) {
             vertices[i].setColor(colors[i]);
         }
+
+        BufferManager.getInstance().updateBuffer(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -135,6 +142,8 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
             vertices[i] = new Vertex(points[i], textureCoordinates[i], colors[i], normals[i]);
         }
         this.indices = vertexCalculationProcessor.recalculateIndices(this);
+
+        BufferManager.getInstance().updateBuffer(this);
     }
     //</editor-fold>
 }

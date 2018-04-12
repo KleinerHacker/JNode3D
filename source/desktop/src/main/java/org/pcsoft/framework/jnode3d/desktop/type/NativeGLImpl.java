@@ -1,5 +1,6 @@
 package org.pcsoft.framework.jnode3d.desktop.type;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
 import org.pcsoft.framework.jnode3d.ogl.DrawingCallback;
@@ -281,6 +282,16 @@ public class NativeGLImpl implements NativeGL {
             return false;
 
         GL41.glProgramUniform4f(programReference.getProgramId(), location, value.getR(), value.getG(), value.getB(), value.getA());
+        return true;
+    }
+
+    @Override
+    public boolean glSetProgramVar(ShaderProgramReference programReference, String varName, Matrix4f value) {
+        final int location = GL20.glGetUniformLocation(programReference.getProgramId(), varName);
+        if (location < 0)
+            return false;
+
+        GL41.glProgramUniformMatrix4fv(programReference.getProgramId(), location, false, value.get(new float[4 * 4]));
         return true;
     }
 

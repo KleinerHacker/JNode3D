@@ -1,15 +1,16 @@
 package org.pcsoft.framework.jnode3d.desktop.awt;
 
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.pcsoft.framework.jnode3d.camera.Camera;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.desktop.type.NativeGLImpl;
 import org.pcsoft.framework.jnode3d.internal.JNode3DInternalScene;
-import org.pcsoft.framework.jnode3d.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.node.Node;
+import org.pcsoft.framework.jnode3d.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.light.AmbientLight;
+import org.pcsoft.framework.jnode3d.type.light.DirectionalLight;
 
 
 public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScene {
@@ -76,53 +77,13 @@ public class JNode3DAwtScene implements org.pcsoft.framework.jnode3d.JNode3DScen
     }
 
     @Override
-    public Color getAmbientLightColor() {
-        return JNode3DInternalScene.getAmbientLightColor();
+    public AmbientLight getAmbientLight() {
+        return JNode3DInternalScene.getAmbientLight();
     }
 
     @Override
-    public void setAmbientLightColor(Color color) {
-        JNode3DInternalScene.setAmbientLightColor(color);
-    }
-
-    @Override
-    public float getAmbientLightPower() {
-        return JNode3DInternalScene.getAmbientLightPower();
-    }
-
-    @Override
-    public void setAmbientLightPower(float value) {
-        JNode3DInternalScene.setAmbientLightPower(value);
-    }
-
-    @Override
-    public Vector3f getDirectionalLightDirection() {
-        return JNode3DInternalScene.getDirectionalLightDirection();
-    }
-
-    @Override
-    public void setDirectionalLightDirection(Vector3f direction) {
-        JNode3DInternalScene.setDirectionalLightDirection(direction);
-    }
-
-    @Override
-    public Color getDirectionalLightColor() {
-        return JNode3DInternalScene.getDirectionalLightColor();
-    }
-
-    @Override
-    public void setDirectionalLightColor(Color color) {
-        JNode3DInternalScene.setDirectionalLightColor(color);
-    }
-
-    @Override
-    public float getDirectionalLightPower() {
-        return JNode3DInternalScene.getDirectionalLightPower();
-    }
-
-    @Override
-    public void setDirectionalLightPower(float value) {
-        JNode3DInternalScene.setDirectionalLightPower(value);
+    public DirectionalLight getDirectionalLight() {
+        return JNode3DInternalScene.getDirectionalLight();
     }
 
     @Override

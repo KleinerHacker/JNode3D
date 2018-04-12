@@ -2,7 +2,7 @@ package org.pcsoft.framework.jnode3d.internal.manager;
 
 import org.pcsoft.framework.jnode3d.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.ogl.OpenGL;
-import org.pcsoft.framework.jnode3d.texture.Texture;
+import org.pcsoft.framework.jnode3d.material.texture.Texture;
 import org.pcsoft.framework.jnode3d.type.TextureStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
-public final class TextureManager implements Manager {
+public final class TextureManager implements OpenGLDependendManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextureManager.class);
     private static final TextureManager instance = new TextureManager();
 
@@ -23,11 +23,12 @@ public final class TextureManager implements Manager {
     private final Map<Texture, TextureIdentifier> textureIdentifierMap = new HashMap<>();
     private boolean initialized = false;
 
-    private TextureManager() {
-    }
-
+    //<editor-fold desc="Initialization">
     @Override
     public void initialize() {
+        if (initialized)
+            throw new IllegalStateException("Already initialized");
+
         LOGGER.info("Initialize Texture Manager");
 
         for (final Texture texture : textureIdentifierMap.keySet()) {
@@ -43,6 +44,9 @@ public final class TextureManager implements Manager {
 
     @Override
     public void destroy() {
+        if (!initialized)
+            throw new IllegalStateException("Not initialized yet");
+
         LOGGER.info("Destroy Texture Manager");
 
         for (final Texture texture : new HashSet<>(textureIdentifierMap.keySet())) {
@@ -59,6 +63,7 @@ public final class TextureManager implements Manager {
     public boolean isInitialized() {
         return initialized;
     }
+    //</editor-fold>
 
     public void registerTexture(Texture texture) {
         LOGGER.debug("Register texture (initialized: " + isInitialized() + ")");

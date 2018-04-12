@@ -2,13 +2,13 @@ package org.pcsoft.framework.jnode3d.node.processing.vert_calc;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.node.Rectangle;
+import org.pcsoft.framework.jnode3d.node.RectangleNode;
 import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-public final class RectangleVertexCalculationProcessor implements VertexCalculationProcessor<Rectangle> {
+public final class RectangleVertexCalculationProcessor implements VertexCalculationProcessor<RectangleNode> {
     @Override
-    public Vector3f[] recalculatePoints(Rectangle node) {
+    public Vector3f[] recalculatePoints(RectangleNode node) {
         return new Vector3f[]{
                 new Vector3f(-node.getWidth() / 2f, -node.getHeight() / 2f, 0f),
                 new Vector3f(node.getWidth() / 2f, -node.getHeight() / 2f, 0f),
@@ -19,7 +19,7 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
     }
 
     @Override
-    public Vector3f[] recalculateNormals(Rectangle node) {
+    public Vector3f[] recalculateNormals(RectangleNode node) {
         return new Vector3f[]{
                 new Vector3f(0, 0, 1),
                 new Vector3f(0, 0, 1),
@@ -29,17 +29,17 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
     }
 
     @Override
-    public Color[] recalculateColors(Rectangle node) {
+    public Color[] recalculateColors(RectangleNode node) {
         return new Color[]{
-                node.getColorAt(Rectangle.Points.LeftTopCorner),
-                node.getColorAt(Rectangle.Points.RightTopCorner),
-                node.getColorAt(Rectangle.Points.LeftBottomCorner),
-                node.getColorAt(Rectangle.Points.RightBottomCorner),
+                node.getColorAt(RectangleNode.Points.LeftTopCorner),
+                node.getColorAt(RectangleNode.Points.RightTopCorner),
+                node.getColorAt(RectangleNode.Points.LeftBottomCorner),
+                node.getColorAt(RectangleNode.Points.RightBottomCorner),
         };
     }
 
     @Override
-    public Vector2f[] recalculateTextureCoordinates(Rectangle node) {
+    public Vector2f[] recalculateTextureCoordinates(RectangleNode node) {
         return new Vector2f[]{
                 new Vector2f(0f, 0f),
                 new Vector2f(1f, 0f),
@@ -49,7 +49,7 @@ public final class RectangleVertexCalculationProcessor implements VertexCalculat
     }
 
     @Override
-    public int[] recalculateIndices(Rectangle node) {
+    public int[] recalculateIndices(RectangleNode node) {
         return new int[] {
                 0, 1, 2,
                 2, 1, 3

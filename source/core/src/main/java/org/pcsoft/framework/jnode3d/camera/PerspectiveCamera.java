@@ -2,7 +2,7 @@ package org.pcsoft.framework.jnode3d.camera;
 
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.ogl.OpenGL;
-import org.pcsoft.framework.jnode3d.type.Bounds2D;
+import org.pcsoft.framework.jnode3d.type.geom.Bounds2D;
 
 public abstract class PerspectiveCamera extends Camera {
     private float angle = 45.0f, aspect = 1f;

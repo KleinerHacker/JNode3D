@@ -1,13 +1,15 @@
 package org.pcsoft.framework.jnode3d.internal.shader;
 
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.shader.LightShader;
-import org.pcsoft.framework.jnode3d.shader.ShaderDescriptor;
-import org.pcsoft.framework.jnode3d.shader.ShaderProperty;
+import org.pcsoft.framework.jnode3d.material.Material;
+import org.pcsoft.framework.jnode3d.material.shader.Shader;
+import org.pcsoft.framework.jnode3d.material.shader.ShaderDescriptor;
+import org.pcsoft.framework.jnode3d.material.shader.ShaderProperty;
 import org.pcsoft.framework.jnode3d.type.Color;
 
-@ShaderDescriptor(vertexMain = "dirLight_vs", fragmentMain = "dirLight_fs")
-public final class DirectionalLightShader extends LightShader {
+@ShaderDescriptor(vertexResource = "/shader/light/dirLight.vert", fragmentResource = "/shader/light/dirLight.frag",
+        vertexMain = "dirLight_vs", fragmentMain = "dirLight_fs")
+public final class DirectionalLightShader extends Shader {
     public static final String DIR_LIGHT_DIRECTION = "dirLight_Direction";
     public static final String DIR_LIGHT_COLOR = "dirLight_Color";
     public static final String DIR_LIGHT_POWER = "dirLight_Power";
@@ -19,9 +21,8 @@ public final class DirectionalLightShader extends LightShader {
     @ShaderProperty(name = DIR_LIGHT_POWER)
     private float power = 1f;
 
-    public DirectionalLightShader() {
-        super(1, loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dirLight.vert")),
-                loadShader(DirectionalLightShader.class.getResourceAsStream("/shader/light/dirLight.frag")));
+    public DirectionalLightShader(Material assignedMaterial) {
+        super(assignedMaterial);
     }
 
     public Vector3f getDirection() {

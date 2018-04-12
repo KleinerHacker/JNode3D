@@ -3,13 +3,12 @@ package org.pcsoft.framework.jnode3d.internal.manager;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.pcsoft.framework.jnode3d.node.Group;
-import org.pcsoft.framework.jnode3d.node.Node;
-import org.pcsoft.framework.jnode3d.node.RenderableObjectNode;
+import org.pcsoft.framework.jnode3d.material.Material;
+import org.pcsoft.framework.jnode3d.material.shader.Shader;
 import org.pcsoft.framework.jnode3d.ogl.GLFactory;
 import org.pcsoft.framework.jnode3d.ogl.OpenGL;
-import org.pcsoft.framework.jnode3d.shader.Shader;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.ShaderType;
 import org.pcsoft.framework.jnode3d.type.reference.ShaderProgramReference;
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public final class ShaderManager implements Manager {
+public final class ShaderManager implements OpenGLDependendManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShaderManager.class);
     private static final ShaderManager instance = new ShaderManager();
 
@@ -27,11 +26,8 @@ public final class ShaderManager implements Manager {
         return instance;
     }
 
-    private final Map<RenderableObjectNode, ShaderProgramReference> shaderProgramMap = new HashMap<>();
+    private final Map<Material, ShaderProgramReference> shaderProgramMap = new HashMap<>();
     private boolean initialized = false;
-
-    private final ShaderUpdateListener shaderUpdateListener = new ShaderUpdateListener();
-    private final SceneUpdateListener sceneUpdateListener = new SceneUpdateListener();
 
     private ShaderManager() {
     }
@@ -39,14 +35,17 @@ public final class ShaderManager implements Manager {
     //<editor-fold desc="Init / Destroy">
     @Override
     public void initialize() {
+        if (initialized)
+            throw new IllegalStateException("Already initialized");
+
         LOGGER.info("Initialize Shader Manager");
 
-        for (final RenderableObjectNode node : shaderProgramMap.keySet()) {
-            final ShaderProgramReference shaderIdentifier = buildShader(node, false);
+        for (final Material material : shaderProgramMap.keySet()) {
+            final ShaderProgramReference shaderIdentifier = buildShader(material, false);
             if (shaderIdentifier == null)
                 continue;
 
-            shaderProgramMap.put(node, shaderIdentifier);
+            shaderProgramMap.put(material, shaderIdentifier);
         }
 
         this.initialized = true;
@@ -54,13 +53,16 @@ public final class ShaderManager implements Manager {
 
     @Override
     public void destroy() {
+        if (!initialized)
+            throw new IllegalStateException("Not initialized yet");
+
         LOGGER.info("Destroy Shader Manager");
 
-        for (final RenderableObjectNode node : new HashSet<>(shaderProgramMap.keySet())) {
-            if (!deleteShader(node))
+        for (final Material material : new HashSet<>(shaderProgramMap.keySet())) {
+            if (!deleteShader(material))
                 continue;
 
-            shaderProgramMap.put(node, null);
+            shaderProgramMap.put(material, null);
         }
 
         this.initialized = false;
@@ -73,55 +75,37 @@ public final class ShaderManager implements Manager {
     //</editor-fold>
 
     //<editor-fold desc="Register / Unregister">
-    public void registerShaderCollection(RenderableObjectNode node) {
-        LOGGER.debug("Register node (initialized: " + isInitialized() + ")");
+    public void registerShaderProgram(Material material) {
+        LOGGER.debug("Register shader program for material (initialized: " + isInitialized() + ")");
 
         if (isInitialized()) {
-            final ShaderProgramReference shaderProgramReference = buildShader(node, true);
-            shaderProgramMap.put(node, shaderProgramReference);
+            final ShaderProgramReference shaderProgramReference = buildShader(material, true);
+            shaderProgramMap.put(material, shaderProgramReference);
         } else {
-            shaderProgramMap.put(node, null);
+            shaderProgramMap.put(material, null);
         }
-
-        node.addShaderListChangedListener(shaderUpdateListener);
-        node.addSceneChangedListener(sceneUpdateListener);
     }
 
-    public void unregisterShaderCollection(RenderableObjectNode node) {
-        LOGGER.debug("Unregister node (initialized: " + isInitialized() + ")");
+    public void unregisterShaderProgram(Material material) {
+        LOGGER.debug("Unregister shader program for material (initialized: " + isInitialized() + ")");
 
-        if (isInitialized()) {
-            deleteShader(node);
+        if (initialized) {
+            deleteShader(material);
         }
-        shaderProgramMap.remove(node);
-        node.removeListShaderChangedListener(shaderUpdateListener);
-        node.removeSceneChangedListener(sceneUpdateListener);
+        shaderProgramMap.remove(material);
     }
     //</editor-fold>
 
-    public void updateGlobalUniformValues(Node node, String propertyName) {
+    public void updateUniformValues(Material material, String propertyName) {
         if (!isInitialized())
             throw new IllegalStateException("Unable to update uniform values yet: not initialized");
 
-        if (node instanceof RenderableObjectNode) {
-            updateUniformValues((RenderableObjectNode) node, propertyName);
-        } else if (node instanceof Group) {
-            for (final Node child : ((Group) node).getChildren()) {
-                updateGlobalUniformValues(child, propertyName);
-            }
-        }
+        final ShaderProgramReference shaderProgramReference = shaderProgramMap.get(material);
+        updateUniformValues(material, shaderProgramReference, propertyName);
     }
 
-    public void updateUniformValues(RenderableObjectNode node, String propertyName) {
-        if (!isInitialized())
-            throw new IllegalStateException("Unable to update uniform values yet: not initialized");
-
-        final ShaderProgramReference shaderProgramReference = shaderProgramMap.get(node);
-        updateUniformValues(node, shaderProgramReference, propertyName);
-    }
-
-    private void updateUniformValues(RenderableObjectNode node, ShaderProgramReference shaderProgramReference, String propertyName) {
-        for (final Shader shader : node.getShaders()) {
+    private void updateUniformValues(Material material, ShaderProgramReference shaderProgramReference, String propertyName) {
+        for (final Shader shader : material.getShaders()) {
             for (final Shader.PropertyInfo propertyInfo : shader.getPropertyInfos()) {
                 if (StringUtils.isEmpty(propertyName)) {
                     setupShaderPropertyVariable(shader, shaderProgramReference, propertyInfo);
@@ -133,11 +117,11 @@ public final class ShaderManager implements Manager {
         }
     }
 
-    public ShaderProgramReference getShaderProgramReference(RenderableObjectNode node) {
-        if (!shaderProgramMap.containsKey(node))
-            throw new IllegalArgumentException("Unable to find node");
+    public ShaderProgramReference getShaderProgramReference(Material material) {
+        if (!shaderProgramMap.containsKey(material))
+            throw new IllegalArgumentException("Unable to find material");
 
-        return shaderProgramMap.get(node);
+        return shaderProgramMap.get(material);
     }
 
     //<editor-fold desc="Shader Helper Methods">
@@ -162,12 +146,12 @@ public final class ShaderManager implements Manager {
                 success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (Vector3f) value);
             } else if (propertyInfo.getType() == Color.class) {
                 success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (Color) value);
+            } else if (propertyInfo.getType() == Matrix4f.class) {
+                success = ogl.glSetProgramVar(shaderProgramReference, propertyInfo.getName(), (Matrix4f) value);
             } else
                 throw new IllegalStateException("Not supported shader var type: " + propertyInfo.getType().getName());
 
-            if (success) {
-                LOGGER.trace("Setup variable " + propertyInfo.getName() + " successfully to <" + value + ">");
-            } else {
+            if (!success) {
                 LOGGER.warn("Setup variable " + propertyInfo.getName() + " to <" + value + "> failed: not found");
             }
         } catch (IllegalAccessException e) {
@@ -175,35 +159,33 @@ public final class ShaderManager implements Manager {
         }
     }
 
-    private ShaderProgramReference buildShader(RenderableObjectNode node, boolean overwrite) {
-        if (!overwrite && shaderProgramMap.get(node) != null)
-            return null;
-        if (node.getScene() == null)
+    private ShaderProgramReference buildShader(Material material, boolean overwrite) {
+        if (!overwrite && shaderProgramMap.get(material) != null)
             return null;
 
-        LOGGER.debug("Build shader of node " + node.getClass().getName());
+        LOGGER.debug("Build shader of material " + material.getClass().getName());
         final OpenGL ogl = GLFactory.getOpenGL();
 
-        final int fragId = buildShaderOfType(ShaderType.FragmentShader, node.getShaders(), ogl);
-        final int vertId = buildShaderOfType(ShaderType.VertexShader, node.getShaders(), ogl);
+        final int fragId = buildShaderOfType(ShaderType.FragmentShader, material.getShaders(), ogl);
+        final int vertId = buildShaderOfType(ShaderType.VertexShader, material.getShaders(), ogl);
 
         final ShaderProgramReference progId = ogl.glCreateProgram(vertId, fragId);
         final String progLog = ogl.glProgramLog(progId);
         if (StringUtils.isEmpty(progLog)) {
-            LOGGER.info("Program of shader " + node.getClass().getName() + " was successfully created");
+            LOGGER.info("Program of shader " + material.getClass().getName() + " was successfully created");
         } else {
-            LOGGER.warn("Program of shader " + node.getClass().getName() + " contains warnings and/or errors:" + SystemUtils.LINE_SEPARATOR + progLog);
+            LOGGER.warn("Program of shader " + material.getClass().getName() + " contains warnings and/or errors:" + SystemUtils.LINE_SEPARATOR + progLog);
         }
 
         ogl.glDeleteShader(fragId);
         ogl.glDeleteShader(vertId);
 
-        updateUniformValues(node, progId, null);
+        updateUniformValues(material, progId, null);
 
         return progId;
     }
 
-    private int buildShaderOfType(ShaderType shaderType, Shader[] shaders, OpenGL ogl) {
+    private int buildShaderOfType(ShaderType shaderType, Collection<Shader> shaders, OpenGL ogl) {
         final List<String> scriptList = new ArrayList<>();
         final StringBuilder mainMethodCallString = new StringBuilder();
         mainMethodCallString.append(SystemUtils.LINE_SEPARATOR).append("\t");
@@ -262,12 +244,12 @@ public final class ShaderManager implements Manager {
         return shaderId;
     }
 
-    private boolean deleteShader(RenderableObjectNode node) {
-        final ShaderProgramReference shaderIdentifier = shaderProgramMap.get(node);
+    private boolean deleteShader(Material material) {
+        final ShaderProgramReference shaderIdentifier = shaderProgramMap.get(material);
         if (shaderIdentifier == null)
             return false;
 
-        LOGGER.debug("Delete shader of node " + node.getClass().getName());
+        LOGGER.debug("Delete shader of material " + material.getClass().getName());
         final OpenGL ogl = GLFactory.getOpenGL();
 
         ogl.glDeleteProgram(shaderIdentifier);
@@ -275,42 +257,10 @@ public final class ShaderManager implements Manager {
         return true;
     }
 
-    private void rebuildAndUpdateShaderProgram(RenderableObjectNode node) {
-        deleteShader(node);
-        final ShaderProgramReference shaderProgramReference = buildShader(node, true);
-        shaderProgramMap.put(node, shaderProgramReference);//Overwrite
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Listeners">
-    private final class ShaderUpdateListener implements RenderableObjectNode.ChangedListener<RenderableObjectNode> {
-        @Override
-        public void onChanged(RenderableObjectNode node) {
-            if (!shaderProgramMap.containsKey(node))
-                return;
-            if (!isInitialized())
-                return;
-            if (node.getScene() == null)
-                return;
-
-            rebuildAndUpdateShaderProgram(node);
-        }
-    }
-
-    private final class SceneUpdateListener implements Node.ChangedListener<Node> {
-        @Override
-        public void onChanged(Node node) {
-            if (!(node instanceof RenderableObjectNode))
-                return;
-            if (!shaderProgramMap.containsKey(node))
-                return;
-            if (!isInitialized())
-                return;
-            if (node.getScene() == null)
-                return;
-
-            rebuildAndUpdateShaderProgram((RenderableObjectNode) node);
-        }
+    private void rebuildAndUpdateShaderProgram(Material material) {
+        deleteShader(material);
+        final ShaderProgramReference shaderProgramReference = buildShader(material, true);
+        shaderProgramMap.put(material, shaderProgramReference);//Overwrite
     }
     //</editor-fold>
 }

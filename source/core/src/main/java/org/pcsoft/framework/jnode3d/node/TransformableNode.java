@@ -1,6 +1,6 @@
 package org.pcsoft.framework.jnode3d.node;
 
-import org.pcsoft.framework.jnode3d.transformation.Transformation;
+import org.pcsoft.framework.jnode3d.type.transformation.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;

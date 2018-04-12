@@ -1,10 +1,12 @@
 package org.pcsoft.framework.jnode3d.internal.shader;
 
-import org.pcsoft.framework.jnode3d.shader.Shader;
-import org.pcsoft.framework.jnode3d.shader.ShaderDescriptor;
-import org.pcsoft.framework.jnode3d.shader.ShaderProperty;
+import org.pcsoft.framework.jnode3d.material.Material;
+import org.pcsoft.framework.jnode3d.material.shader.Shader;
+import org.pcsoft.framework.jnode3d.material.shader.ShaderDescriptor;
+import org.pcsoft.framework.jnode3d.material.shader.ShaderProperty;
 
-@ShaderDescriptor(vertexMain = "base_vs", fragmentMain = "base_fs")
+@ShaderDescriptor(vertexResource = "/shader/base/base.vert", fragmentResource = "/shader/base/base.frag",
+        vertexMain = "base_vs", fragmentMain = "base_fs")
 public final class BaseShader extends Shader {
     private static final String BASE_OPACITY = "base_Opacity";
     private static final String BASE_CULL_MODE = "base_CullMode";
@@ -14,9 +16,8 @@ public final class BaseShader extends Shader {
     @ShaderProperty(name = BASE_CULL_MODE)
     private int cullMode = 3;
 
-    public BaseShader() {
-        super(Long.MIN_VALUE, loadShader(BaseShader.class.getResourceAsStream("/shader/base/base.vert")),
-                loadShader(BaseShader.class.getResourceAsStream("/shader/base/base.frag")));
+    public BaseShader(Material assignedMaterial) {
+        super(assignedMaterial);
     }
 
     public float getOpacity() {
