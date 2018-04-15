@@ -12,6 +12,7 @@ public abstract class Node {
 
     private boolean disposed = false;
     private JNode3DScene scene = null;
+    private GroupNode parent = null;
 
     private final List<ChangedListener<Node>> sceneChangedListenerList = new ArrayList<>();
 
@@ -19,9 +20,25 @@ public abstract class Node {
         return scene;
     }
 
+    /**
+     * For internal use only!
+     * @param scene
+     */
     public void setScene(JNode3DScene scene) {
         this.scene = scene;
         fireSceneChanged();
+    }
+
+    public GroupNode getParent() {
+        return parent;
+    }
+
+    /**
+     * For internal use only!
+     * @param parent
+     */
+    public void setParent(GroupNode parent) {
+        this.parent = parent;
     }
 
     public final void dispose() {
