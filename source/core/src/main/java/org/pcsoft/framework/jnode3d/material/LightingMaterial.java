@@ -66,6 +66,7 @@ public abstract class LightingMaterial extends Material {
             pointLightShader.setPower(light.getPower());
             pointLightShader.setPosition(light.getPosition());
             pointLightShader.setAttitude(((PointLight) light).getAttitude());
+            pointLightShader.setExponent(((PointLight) light).getExponent());
             pointLightShader.setTransformationMatrix(light.getTransformationMatrix());
             break;
         }

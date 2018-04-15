@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.node.TriangleNode;
 import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.RenderMode;
 
 public final class TriangleVertexCalculationProcessor implements VertexCalculationProcessor<TriangleNode> {
     @Override
@@ -52,12 +53,17 @@ public final class TriangleVertexCalculationProcessor implements VertexCalculati
     }
 
     @Override
-    public int getCountOfVertices() {
+    public int getCountOfVertices(TriangleNode node) {
         return 3;
     }
 
     @Override
-    public int getCountOfIndices() {
+    public int getCountOfIndices(TriangleNode node) {
         return 3;
+    }
+
+    @Override
+    public RenderMode getRenderMode() {
+        return RenderMode.Triangles;
     }
 }

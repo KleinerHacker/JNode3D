@@ -106,7 +106,13 @@ public class NativeGLImpl implements NativeGL {
     public void glDisableDepthTest() {
         GL11.glDisable(GL11.GL_DEPTH_TEST);
     }
-//</editor-fold>
+
+    @Override
+    public void glPolygonMode(int cullMode, int mode) {
+        GL11.glPolygonMode(cullMode, mode);
+    }
+
+    //</editor-fold>
 
     //<editor-fold desc="Texture">
     @Override
@@ -212,7 +218,7 @@ public class NativeGLImpl implements NativeGL {
 
     @Override
     public void glUseProgram(ShaderProgramReference programReference) {
-        GL20.glUseProgram(programReference.getProgramId());
+        GL20.glUseProgram(programReference == null ? 0 : programReference.getProgramId());
     }
 
     @Override

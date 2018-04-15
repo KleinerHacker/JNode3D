@@ -1,5 +1,5 @@
 varying vec3 dirLight_Normal;
-uniform vec3 dirLight_Direction = vec3(1, -1, 1);
+uniform vec3 dirLight_Direction = vec3(0.9, 0.5, 1.1);
 uniform vec4 dirLight_Color = vec4(1, 1, 1, 1);
 uniform float dirLight_Power = 1.0;
 

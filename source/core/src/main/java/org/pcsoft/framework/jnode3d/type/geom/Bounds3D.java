@@ -1,10 +1,25 @@
 package org.pcsoft.framework.jnode3d.type.geom;
 
+import org.joml.Vector3f;
+
 import java.util.Objects;
 
 public class Bounds3D extends Bounds2D {
-    private float front;
-    private float depth;
+    private final float front;
+    private final float depth;
+
+    public Bounds3D() {
+        front = 0f;
+        depth = 0f;
+    }
+
+    public Bounds3D(Point3D position, Size3D size) {
+        this(position.getX(), position.getY(), position.getZ(), size.getWidth(), size.getHeight(), size.getDepth());
+    }
+
+    public Bounds3D(Vector3f position, Vector3f size) {
+        this(position.x, position.y, position.z, size.x, size.y, size.z);
+    }
 
     public Bounds3D(float left, float top, float front, float width, float height, float depth) {
         super(left, top, width, height);
@@ -16,24 +31,12 @@ public class Bounds3D extends Bounds2D {
         return front;
     }
 
-    public void setFront(float front) {
-        this.front = front;
-    }
-
     public float getDepth() {
         return depth;
     }
 
-    public void setDepth(float depth) {
-        this.depth = depth;
-    }
-
     public float getBack() {
         return front + depth;
-    }
-
-    public void setBack(float back) {
-        this.depth = back - front;
     }
 
     @Override

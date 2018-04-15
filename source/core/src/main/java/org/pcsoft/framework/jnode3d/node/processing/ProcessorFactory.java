@@ -1,12 +1,6 @@
 package org.pcsoft.framework.jnode3d.node.processing;
 
-import org.pcsoft.framework.jnode3d.node.BoxNode;
 import org.pcsoft.framework.jnode3d.node.ConstructedObjectNode;
-import org.pcsoft.framework.jnode3d.node.RectangleNode;
-import org.pcsoft.framework.jnode3d.node.TriangleNode;
-import org.pcsoft.framework.jnode3d.node.processing.vert_calc.BoxVertexCalculationProcessor;
-import org.pcsoft.framework.jnode3d.node.processing.vert_calc.RectangleVertexCalculationProcessor;
-import org.pcsoft.framework.jnode3d.node.processing.vert_calc.TriangleVertexCalculationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,14 +14,6 @@ public final class ProcessorFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessorFactory.class);
 
     private static final Map<Class<? extends ConstructedObjectNode>, VertexCalculationProcessor> VERTEX_CALCULATION_PROCESSOR_MAP = new HashMap<>();
-
-    //Register builtin nodes
-    static {
-        //Vertex Calculation
-        registerVertexCalculationProcessor(TriangleNode.class, new TriangleVertexCalculationProcessor());
-        registerVertexCalculationProcessor(RectangleNode.class, new RectangleVertexCalculationProcessor());
-        registerVertexCalculationProcessor(BoxNode.class, new BoxVertexCalculationProcessor());
-    }
 
     //<editor-fold desc="Vertex Calculation">
     public static <T extends ConstructedObjectNode> void registerVertexCalculationProcessor(Class<T> clazz, VertexCalculationProcessor<T> vertexCalculationProcessor) {

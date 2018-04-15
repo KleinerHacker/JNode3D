@@ -1,10 +1,24 @@
 package org.pcsoft.framework.jnode3d.type.geom;
 
+import org.joml.Vector2f;
+
 import java.util.Objects;
 
 public class Bounds2D {
-    private float left, top;
-    private float width, height;
+    private final float left, top;
+    private final float width, height;
+
+    public Bounds2D() {
+        this(0f, 0f, 0f, 0f);
+    }
+
+    public Bounds2D(Point2D position, Size2D size) {
+        this(position.getX(), position.getY(), size.getWidth(), size.getHeight());
+    }
+
+    public Bounds2D(Vector2f position, Vector2f size) {
+        this(position.x, position.y, size.x, size.y);
+    }
 
     public Bounds2D(float left, float top, float width, float height) {
         this.left = left;
@@ -17,48 +31,24 @@ public class Bounds2D {
         return left;
     }
 
-    public void setLeft(float left) {
-        this.left = left;
-    }
-
     public float getTop() {
         return top;
-    }
-
-    public void setTop(float top) {
-        this.top = top;
     }
 
     public float getWidth() {
         return width;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
     public float getHeight() {
         return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
     }
 
     public float getRight() {
         return left + width;
     }
 
-    public void setRight(float right) {
-        this.width = right - left;
-    }
-
     public float getBottom() {
         return top + height;
-    }
-
-    public void setBottom(float bottom) {
-        this.height = bottom - top;
     }
 
     @Override

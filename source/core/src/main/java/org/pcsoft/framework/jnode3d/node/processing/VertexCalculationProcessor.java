@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.node.ConstructedObjectNode;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.RenderMode;
 
 public interface VertexCalculationProcessor<T extends ConstructedObjectNode> {
     Vector3f[] recalculatePoints(T node);
@@ -16,7 +17,9 @@ public interface VertexCalculationProcessor<T extends ConstructedObjectNode> {
 
     int[] recalculateIndices(T node);
 
-    int getCountOfVertices();
+    int getCountOfVertices(T node);
 
-    int getCountOfIndices();
+    int getCountOfIndices(T node);
+
+    RenderMode getRenderMode();
 }

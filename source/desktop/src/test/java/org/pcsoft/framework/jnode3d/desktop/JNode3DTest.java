@@ -3,21 +3,21 @@ package org.pcsoft.framework.jnode3d.desktop;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.anim.AnimationBase;
 import org.pcsoft.framework.jnode3d.camera.PerspectiveLookAtCamera;
-import org.pcsoft.framework.jnode3d.desktop.type.ImageLoader;
-import org.pcsoft.framework.jnode3d.material.SnowMaterial;
-import org.pcsoft.framework.jnode3d.material.texture.Texture;
 import org.pcsoft.framework.jnode3d.node.*;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.transformation.Rotation;
 import org.pcsoft.framework.jnode3d.type.transformation.Translation;
 
-import java.io.IOException;
-
 public abstract class JNode3DTest {
+    private static final Vector3f camPos = new Vector3f(-3f, 2f, -3f);
+
     protected static void buildScene(JNode3DStandalone standalone) {
         final GroupNode root = new GroupNode();
+        root.getChildren().add(buildSphere());
         root.getChildren().add(buildBox());
+        root.getChildren().add(buildCircle());
         final PointLightNode pointLightNode = new PointLightNode();
-        pointLightNode.getTransformationList().add(new Translation(new Vector3f(0.6f, 0.6f, 0.6f)));
+        pointLightNode.getTransformationList().add(new Translation(new Vector3f(1.25f, 1f, 1.25f)));
         root.getChildren().add(pointLightNode);
 
         standalone.setRoot(root);
@@ -30,7 +30,7 @@ public abstract class JNode3DTest {
             @Override
             protected void loop(long timeDelta) {
                 counter += timeDelta;
-                camera.setPosition(new Vector3f((float) (Math.sin(counter * 0.000000001) * -2d), 2f, (float) (Math.cos(counter * 0.000000001) * -2d)));
+                camera.setPosition(new Vector3f((float) (Math.sin(counter * 0.000000001) * camPos.x), camPos.y, (float) (Math.cos(counter * 0.000000001) * camPos.z)));
             }
         }.start();
     }
@@ -41,12 +41,6 @@ public abstract class JNode3DTest {
         rectangleNode.setColorAt(RectangleNode.Points.RightTopCorner, Color.RED);
         rectangleNode.setColorAt(RectangleNode.Points.LeftBottomCorner, Color.GREEN);
         rectangleNode.setColorAt(RectangleNode.Points.RightBottomCorner, Color.YELLOW);
-        try {
-            final Texture texture2D = new Texture(new ImageLoader(JNode3DTest.class.getResourceAsStream("/tex/tex01.png"), "png"));
-            rectangleNode.setTexture(texture2D);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         return rectangleNode;
     }
@@ -56,12 +50,6 @@ public abstract class JNode3DTest {
         triangleNode.setColorAt(TriangleNode.Points.Top, Color.BLUE);
         triangleNode.setColorAt(TriangleNode.Points.LeftCorner, Color.RED);
         triangleNode.setColorAt(TriangleNode.Points.RightCorner, Color.GREEN);
-        try {
-            final Texture texture2D = new Texture(new ImageLoader(JNode3DTest.class.getResourceAsStream("/tex/tex01.png"), "png"));
-            triangleNode.setTexture(texture2D);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         return triangleNode;
     }
@@ -76,21 +64,30 @@ public abstract class JNode3DTest {
         boxNode.setColorAt(BoxNode.Points.BottomRightFront, Color.GREEN);
         boxNode.setColorAt(BoxNode.Points.BottomLeftBack, Color.RED);
         boxNode.setColorAt(BoxNode.Points.BottomRightBack, Color.BLUE);
-        try {
-            final Texture texture2D = new Texture(new ImageLoader(JNode3DTest.class.getResourceAsStream("/tex/tex01.png"), "png"));
-            boxNode.setTexture(texture2D);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        final SnowMaterial snowMaterial = new SnowMaterial();
-        boxNode.setMaterial(snowMaterial);
+        boxNode.getTransformationList().add(new Translation(-0.5f, 0f, -0.5f));
+        boxNode.getTransformationList().add(new Rotation(40f));
+        //final SnowMaterial snowMaterial = new SnowMaterial();
+        //boxNode.setMaterial(snowMaterial);
 
         return boxNode;
     }
 
+    private static SphereNode buildSphere() {
+        final SphereNode sphereNode = new SphereNode(1f);
+        return sphereNode;
+    }
+
+    private static CircleNode buildCircle() {
+        final CircleNode circleNode = new CircleNode(2f);
+        circleNode.setColorAt(CircleNode.Points.Center, Color.RED);
+        circleNode.setColorAt(CircleNode.Points.Border, Color.GREEN);
+
+        return circleNode;
+    }
+
     private static PerspectiveLookAtCamera buildCamera() {
         final PerspectiveLookAtCamera camera = new PerspectiveLookAtCamera();
-        camera.setPosition(new Vector3f(-2f, 2f, -2f));
+        camera.setPosition(camPos);
 
         return camera;
     }

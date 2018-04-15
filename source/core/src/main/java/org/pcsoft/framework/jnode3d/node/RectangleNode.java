@@ -1,7 +1,14 @@
 package org.pcsoft.framework.jnode3d.node;
 
+import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
+import org.pcsoft.framework.jnode3d.node.processing.vert_calc.RectangleVertexCalculationProcessor;
+
 public final class RectangleNode extends ConstructedObjectNode<RectangleNode.Points> {
     private float width, height;
+
+    static {
+        ProcessorFactory.registerVertexCalculationProcessor(RectangleNode.class, new RectangleVertexCalculationProcessor());
+    }
 
     public RectangleNode() {
         this(1f, 1f);

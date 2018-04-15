@@ -8,8 +8,10 @@ import java.util.List;
 
 public final class PointLight extends PositionableLight {
     private float attitude = 0.5f;
+    private float exponent = 2f;
 
     private final List<ValueChangedListener<Float>> attitudeChangedListenerList = new ArrayList<>();
+    private final List<ValueChangedListener<Float>> exponentChangedListenerList = new ArrayList<>();
 
     public PointLight() {
     }
@@ -42,6 +44,16 @@ public final class PointLight extends PositionableLight {
         fireChanged();
     }
 
+    public float getExponent() {
+        return exponent;
+    }
+
+    public void setExponent(float exponent) {
+        this.exponent = exponent;
+        fireExponentChanged(exponent);
+        fireChanged();
+    }
+
     //<editor-fold desc="Listeners">
     public void addAttitudeChangedListener(ValueChangedListener<Float> listener) {
         attitudeChangedListenerList.add(listener);
@@ -54,6 +66,20 @@ public final class PointLight extends PositionableLight {
     protected final void fireAttitudeChanged(float attitude) {
         for (final ValueChangedListener<Float> listener : attitudeChangedListenerList) {
             listener.onChanged(attitude);
+        }
+    }
+
+    public void addExponentChangedListener(ValueChangedListener<Float> listener) {
+        exponentChangedListenerList.add(listener);
+    }
+
+    public void removeExponentChangedListener(ValueChangedListener<Float> listener) {
+        exponentChangedListenerList.remove(listener);
+    }
+
+    protected final void fireExponentChanged(float exponent) {
+        for (final ValueChangedListener<Float> listener : exponentChangedListenerList) {
+            listener.onChanged(exponent);
         }
     }
     //</editor-fold>

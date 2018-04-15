@@ -27,7 +27,7 @@ final class JNode3DTransformHandler {
             }
         }
 
-        final Matrix4f resultMatrix = rootMatrix.mul(localMatrix);
+        final Matrix4f resultMatrix = new Matrix4f(rootMatrix).mul(localMatrix);
         ogl.glLoadMatrix(resultMatrix);
 
         return resultMatrix;

@@ -1,8 +1,15 @@
 package org.pcsoft.framework.jnode3d.node;
 
+import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
+import org.pcsoft.framework.jnode3d.node.processing.vert_calc.TriangleVertexCalculationProcessor;
+
 public final class TriangleNode extends ConstructedObjectNode<TriangleNode.Points> {
     private float width, height;
     private float topPercentage;
+
+    static {
+        ProcessorFactory.registerVertexCalculationProcessor(TriangleNode.class, new TriangleVertexCalculationProcessor());
+    }
 
     public TriangleNode() {
         this(1f, 1f);

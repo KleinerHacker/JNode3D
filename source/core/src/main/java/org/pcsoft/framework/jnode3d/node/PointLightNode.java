@@ -14,4 +14,12 @@ public final class PointLightNode extends LightNode<PointLight> {
     public void setAttitude(float attitude) {
         light.setAttitude(attitude);
     }
+
+    public float getExponent() {
+        return light.getExponent();
+    }
+
+    public void setExponent(float exponent) {
+        light.setExponent(exponent);
+    }
 }

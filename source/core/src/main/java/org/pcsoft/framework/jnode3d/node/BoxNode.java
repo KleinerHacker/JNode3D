@@ -1,7 +1,14 @@
 package org.pcsoft.framework.jnode3d.node;
 
+import org.pcsoft.framework.jnode3d.node.processing.ProcessorFactory;
+import org.pcsoft.framework.jnode3d.node.processing.vert_calc.BoxVertexCalculationProcessor;
+
 public final class BoxNode extends ConstructedObjectNode<BoxNode.Points> {
     private float width, height, depth;
+
+    static {
+        ProcessorFactory.registerVertexCalculationProcessor(BoxNode.class, new BoxVertexCalculationProcessor());
+    }
 
     public BoxNode() {
         this(1f);

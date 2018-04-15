@@ -72,6 +72,11 @@ public final class PseudoGL implements NativeGL {
     }
 
     @Override
+    public void glPolygonMode(int cullMode, int mode) {
+
+    }
+
+    @Override
     public void glTextureWrap(int sWrap, int tWrap) {
 
     }

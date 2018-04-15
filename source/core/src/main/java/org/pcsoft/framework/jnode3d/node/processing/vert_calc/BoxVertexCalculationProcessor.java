@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.node.BoxNode;
 import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
+import org.pcsoft.framework.jnode3d.type.RenderMode;
 
 public final class BoxVertexCalculationProcessor implements VertexCalculationProcessor<BoxNode> {
     private static final int SIDES = 6, VERTICES_PER_SIDE = 4, INDICES_PER_SIDE = 6;
@@ -49,15 +50,15 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     public Vector3f[] recalculateNormals(BoxNode node) {
         return new Vector3f[] {
                 //Top
-                new Vector3f(0, 1, 0),
-                new Vector3f(0, 1, 0),
-                new Vector3f(0, 1, 0),
-                new Vector3f(0, 1, 0),
+                new Vector3f(0, -1, 0),
+                new Vector3f(0, -1, 0),
+                new Vector3f(0, -1, 0),
+                new Vector3f(0, -1, 0),
                 //Bottom
-                new Vector3f(0, -1, 0),
-                new Vector3f(0, -1, 0),
-                new Vector3f(0, -1, 0),
-                new Vector3f(0, -1, 0),
+                new Vector3f(0, 1, 0),
+                new Vector3f(0, 1, 0),
+                new Vector3f(0, 1, 0),
+                new Vector3f(0, 1, 0),
                 //Left
                 new Vector3f(-1, 0, 0),
                 new Vector3f(-1, 0, 0),
@@ -178,12 +179,17 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public int getCountOfVertices() {
+    public int getCountOfVertices(BoxNode node) {
         return SIDES * VERTICES_PER_SIDE;
     }
 
     @Override
-    public int getCountOfIndices() {
+    public int getCountOfIndices(BoxNode node) {
         return SIDES * INDICES_PER_SIDE;
+    }
+
+    @Override
+    public RenderMode getRenderMode() {
+        return RenderMode.Triangles;
     }
 }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class DirectionalLight extends Light {
-    private Vector3f direction = new Vector3f(1, -1, 1);
+    private Vector3f direction = new Vector3f(0.9f, 0.5f, 1.1f);
 
     private final List<ValueChangedListener<Vector3f>> directionChangedListenerList = new ArrayList<>();
 

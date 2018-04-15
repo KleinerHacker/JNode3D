@@ -109,6 +109,29 @@ public interface NativeGL {
             GL_TESS_EVALUATION_SHADER_BIT = 0x10,
             GL_ALL_SHADER_BITS            = 0xFFFFFFFF;
 
+    /** DrawBufferMode */
+    int
+            GL_NONE           = 0,
+            GL_FRONT_LEFT     = 0x400,
+            GL_FRONT_RIGHT    = 0x401,
+            GL_BACK_LEFT      = 0x402,
+            GL_BACK_RIGHT     = 0x403,
+            GL_FRONT          = 0x404,
+            GL_BACK           = 0x405,
+            GL_LEFT           = 0x406,
+            GL_RIGHT          = 0x407,
+            GL_FRONT_AND_BACK = 0x408,
+            GL_AUX0           = 0x409,
+            GL_AUX1           = 0x40A,
+            GL_AUX2           = 0x40B,
+            GL_AUX3           = 0x40C;
+
+    /** PolygonMode */
+    int
+            GL_POINT = 0x1B00,
+            GL_LINE  = 0x1B01,
+            GL_FILL  = 0x1B02;
+
     //<editor-fold desc="Clear">
 
     void glClear(float r, float g, float b, float a, int mask);
@@ -127,6 +150,8 @@ public interface NativeGL {
     void glNormal(float x, float y, float z);
 
     void glDraw(int mode, DrawingCallback drawingCallback);
+
+    void glPolygonMode(int cullMode, int mode);
 
     BufferReference glCreateBuffer(Vertex[] vertices, int[] indices);
     void glDrawBuffer(int mode, BufferReference reference);

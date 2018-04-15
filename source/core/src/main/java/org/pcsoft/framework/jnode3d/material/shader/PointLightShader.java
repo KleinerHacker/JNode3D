@@ -13,6 +13,7 @@ public final class PointLightShader extends Shader {
     private static final String POINT_LIGHT_POWER = "pointLight_Power";
     private static final String POINT_LIGHT_ATTITUDE = "pointLight_Attitude";
     private static final String POINT_LIGHT_TRANSFORMATION_MATRIX = "pointLight_TransformationMatrix";
+    private static final String POINT_LIGHT_EXPONENT = "pointLight_Exponent";
 
     @ShaderProperty(name = POINT_LIGHT_POSITION)
     private Vector3f position = new Vector3f();
@@ -22,6 +23,8 @@ public final class PointLightShader extends Shader {
     private float power = 1f;
     @ShaderProperty(name = POINT_LIGHT_ATTITUDE)
     private float attitude = 0.5f;
+    @ShaderProperty(name = POINT_LIGHT_EXPONENT)
+    private float exponent = 2f;
     @ShaderProperty(name = POINT_LIGHT_TRANSFORMATION_MATRIX)
     private Matrix4f transformationMatrix = new Matrix4f();
 
@@ -63,6 +66,15 @@ public final class PointLightShader extends Shader {
     public void setAttitude(float attitude) {
         this.attitude = attitude;
         updateUniformValue(POINT_LIGHT_ATTITUDE);
+    }
+
+    public float getExponent() {
+        return exponent;
+    }
+
+    public void setExponent(float exponent) {
+        this.exponent = exponent;
+        updateUniformValue(POINT_LIGHT_EXPONENT);
     }
 
     public Matrix4f getTransformationMatrix() {

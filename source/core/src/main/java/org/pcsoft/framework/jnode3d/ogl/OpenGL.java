@@ -133,6 +133,10 @@ public final class OpenGL {
         ngl.glDisableDepthTest();
     }
 
+    public void glPolygonMode(PolygonMode mode) {
+        ngl.glPolygonMode(NativeGL.GL_FRONT_AND_BACK, mode.getValue());
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Texture">
