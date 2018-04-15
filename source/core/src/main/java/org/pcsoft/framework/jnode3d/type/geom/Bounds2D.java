@@ -51,6 +51,31 @@ public class Bounds2D {
         return top + height;
     }
 
+    public Point2D getPosition() {
+        return new Point2D(left, top);
+    }
+
+    public Point2D getRBPosition() {
+        return new Point2D(getRight(), getBottom());
+    }
+
+    public Size2D getSize() {
+        return new Size2D(width, height);
+    }
+
+    public Vector2f getPositionVector() {
+        return new Vector2f(left, top);
+    }
+
+    public Vector2f getRBPositionVector() {
+        return new Vector2f(left, top);
+    }
+
+    public Vector2f getSizeVector() {
+        return new Vector2f(width, height);
+    }
+
+    //<editor-fold desc="Equals / Hashcode">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,4 +101,5 @@ public class Bounds2D {
                 ", height=" + height +
                 '}';
     }
+    //</editor-fold>
 }

@@ -4,13 +4,12 @@ import org.joml.Vector3f;
 
 import java.util.Objects;
 
-public class Bounds3D extends Bounds2D {
-    private final float front;
-    private final float depth;
+public class Bounds3D {
+    private final float left, top, front;
+    private final float width, height, depth;
 
     public Bounds3D() {
-        front = 0f;
-        depth = 0f;
+        this(0f, 0f, 0f, 0f, 0f, 0f);
     }
 
     public Bounds3D(Point3D position, Size3D size) {
@@ -22,9 +21,36 @@ public class Bounds3D extends Bounds2D {
     }
 
     public Bounds3D(float left, float top, float front, float width, float height, float depth) {
-        super(left, top, width, height);
+        this.left = left;
+        this.top = top;
         this.front = front;
+        this.width = width;
+        this.height = height;
         this.depth = depth;
+    }
+
+    public float getLeft() {
+        return left;
+    }
+
+    public float getTop() {
+        return top;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public float getRight() {
+        return left + width;
+    }
+
+    public float getBottom() {
+        return top + height;
     }
 
     public float getFront() {
@@ -39,6 +65,31 @@ public class Bounds3D extends Bounds2D {
         return front + depth;
     }
 
+    public Point3D getPosition() {
+        return new Point3D(left, top, front);
+    }
+
+    public Vector3f getPositionVector() {
+        return new Vector3f(left, top, front);
+    }
+
+    public Point3D getRBBPosition() {
+        return new Point3D(getRight(), getBottom(), getBack());
+    }
+
+    public Vector3f getRBBPositionVector() {
+        return new Vector3f(getRight(), getBottom(), getBack());
+    }
+
+    public Size3D getSize() {
+        return new Size3D(width, height, depth);
+    }
+
+    public Vector3f getSizeVector() {
+        return new Vector3f(width, height, depth);
+    }
+
+    //<editor-fold desc="Equals / Hashcode">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,4 +112,5 @@ public class Bounds3D extends Bounds2D {
                 ", depth=" + depth +
                 "} " + super.toString();
     }
+    //</editor-fold>
 }

@@ -5,10 +5,11 @@ import org.joml.Vector2f;
 import java.util.Objects;
 
 public class Size2D {
-    private float width;
-    private float height;
+    private final float width;
+    private final float height;
 
     public Size2D() {
+        this(0f, 0f);
     }
 
     public Size2D(Vector2f size) {
@@ -24,18 +25,15 @@ public class Size2D {
         return width;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
     public float getHeight() {
         return height;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
+    public Vector2f getSize() {
+        return new Vector2f(width, height);
     }
 
+    //<editor-fold desc="Equals / Hashcode">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,4 +55,5 @@ public class Size2D {
                 ", height=" + height +
                 '}';
     }
+    //</editor-fold>
 }

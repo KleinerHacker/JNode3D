@@ -4,10 +4,13 @@ import org.joml.Vector3f;
 
 import java.util.Objects;
 
-public class Size3D extends Size2D {
-    private float depth;
+public class Size3D {
+    private final float width;
+    private final float height;
+    private final float depth;
 
     public Size3D() {
+        this(0f, 0f, 0f);
     }
 
     public Size3D(Vector3f size) {
@@ -15,18 +18,28 @@ public class Size3D extends Size2D {
     }
 
     public Size3D(float width, float height, float depth) {
-        super(width, height);
+        this.width = width;
+        this.height = height;
         this.depth = depth;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
     }
 
     public float getDepth() {
         return depth;
     }
 
-    public void setDepth(float depth) {
-        this.depth = depth;
+    public Vector3f getSize() {
+        return new Vector3f(width, height, depth);
     }
 
+    //<editor-fold desc="Equals / Hashcode">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,4 +60,5 @@ public class Size3D extends Size2D {
                 "depth=" + depth +
                 "} " + super.toString();
     }
+    //</editor-fold>
 }

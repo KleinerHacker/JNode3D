@@ -83,7 +83,7 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
     }
 
     @Override
-    public Bounds3D getBounds() {
+    public Bounds3D getLocalBounds() {
         return bounds;
     }
 

@@ -1,5 +1,7 @@
 package org.pcsoft.framework.jnode3d.node;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.internal.manager.BufferManager;
 import org.pcsoft.framework.jnode3d.material.EmptyMaterial;
 import org.pcsoft.framework.jnode3d.material.Material;
@@ -7,7 +9,6 @@ import org.pcsoft.framework.jnode3d.type.CullMode;
 import org.pcsoft.framework.jnode3d.type.PolygonMode;
 import org.pcsoft.framework.jnode3d.type.Vertex;
 import org.pcsoft.framework.jnode3d.type.geom.Bounds3D;
-import org.pcsoft.framework.jnode3d.type.geom.Size3D;
 
 public abstract class RenderableObjectNode extends TransformableNode {
     protected Vertex[] vertices = new Vertex[0];
@@ -72,11 +73,16 @@ public abstract class RenderableObjectNode extends TransformableNode {
         this.polygonMode = polygonMode;
     }
 
-    public abstract Bounds3D getBounds();
+    public abstract Bounds3D getLocalBounds();
 
-    public final Size3D getSize() {
-        final Bounds3D bounds = getBounds();
-        return new Size3D(bounds.getWidth(), bounds.getHeight(), bounds.getDepth());
+    public final Bounds3D getBounds() {
+        final Bounds3D localBounds = getLocalBounds();
+        final Matrix4f matrix = getMatrix();
+
+        return new Bounds3D(
+                localBounds.getPositionVector().mulPosition(matrix),
+                localBounds.getSizeVector().mul(matrix.getScale(new Vector3f()))
+        );
     }
 
     @Override

@@ -28,6 +28,11 @@ public class Point2D {
         return y;
     }
 
+    public Vector2f getPoint() {
+        return new Vector2f(x, y);
+    }
+
+    //<editor-fold desc="Equals / Hashcode">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,4 +54,5 @@ public class Point2D {
                 ", y=" + y +
                 '}';
     }
+    //</editor-fold>
 }
