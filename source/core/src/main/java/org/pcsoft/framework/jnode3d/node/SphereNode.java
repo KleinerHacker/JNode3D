@@ -24,7 +24,7 @@ public final class SphereNode extends ConstructedObjectNode<SphereNode.Points> {
     }
 
     public SphereNode(float radius, int sectors, int rings) {
-        super(Points.class);
+        super(Points.class, SphereNode.class);
         this.radius = radius;
         this.sectors = sectors;
         this.rings = rings;

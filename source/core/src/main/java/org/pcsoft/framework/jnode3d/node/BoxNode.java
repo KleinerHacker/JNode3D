@@ -19,7 +19,7 @@ public final class BoxNode extends ConstructedObjectNode<BoxNode.Points> {
     }
 
     public BoxNode(float width, float height, float depth) {
-        super(Points.class);
+        super(Points.class, BoxNode.class);
         this.width = width;
         this.height = height;
         this.depth = depth;

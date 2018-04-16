@@ -3,6 +3,7 @@ package org.pcsoft.framework.jnode3d.material;
 import org.pcsoft.framework.jnode3d.internal.manager.ShaderManager;
 import org.pcsoft.framework.jnode3d.internal.shader.BaseShader;
 import org.pcsoft.framework.jnode3d.material.shader.Shader;
+import org.pcsoft.framework.jnode3d.node.RenderableObjectNode;
 import org.pcsoft.framework.jnode3d.type.CullMode;
 
 import java.util.*;
@@ -13,16 +14,33 @@ public abstract class Material {
     private BaseShader baseShader;
 
     private boolean disposed = false;
+    private String debugName;
 
     public Material() {
         shaders = initShaders();
         ShaderManager.getInstance().registerShaderProgram(this);
     }
 
+    public String getDebugName() {
+        return debugName;
+    }
+
+    public void setDebugName(String debugName) {
+        this.debugName = debugName;
+    }
+
+    /**
+     * Returns the culling mode. Please use {@link RenderableObjectNode#getCullMode()} instead.
+     * @return
+     */
     public final CullMode getCullMode() {
         return CullMode.fromValue(baseShader.getCullMode());
     }
 
+    /**
+     * Set the culling mode. Please use {@link RenderableObjectNode#setCullMode(CullMode)} instead.
+     * @param cullMode
+     */
     public final void setCullMode(CullMode cullMode) {
         baseShader.setCullMode(cullMode.getValue());
     }

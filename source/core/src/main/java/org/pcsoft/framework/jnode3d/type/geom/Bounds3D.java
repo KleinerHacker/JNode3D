@@ -2,9 +2,68 @@ package org.pcsoft.framework.jnode3d.type.geom;
 
 import org.joml.Vector3f;
 
-import java.util.Objects;
+import java.util.*;
 
 public class Bounds3D {
+    public static Bounds3D create(float left, float top, float front, float right, float bottom, float back) {
+        return new Bounds3D(left, top, front, right - top, bottom - top, back - front);
+    }
+
+    public static Bounds3D create(Vector3f position, Vector3f rbPosition) {
+        return create(position.x, position.y, position.z, rbPosition.x, rbPosition.y, rbPosition.z);
+    }
+
+    public static Bounds3D create(Point3D position, Point3D rbPosition) {
+        return create(position.getX(), position.getY(), position.getZ(), rbPosition.getX(), rbPosition.getY(), rbPosition.getZ());
+    }
+
+    public static Bounds3D fromPoints(Collection<Point3D> points) {
+        float minX, minY, minZ;
+        minX = minY = minZ = Float.MAX_VALUE;
+        float maxX, maxY, maxZ;
+        maxX = maxY = maxZ = Float.MIN_VALUE;
+
+        for (final Point3D point : points) {
+            if (minX > point.getX()) {
+                minX = point.getX();
+            }
+            if (minY > point.getY()) {
+                minY = point.getY();
+            }
+            if (minZ > point.getZ()) {
+                minZ = point.getZ();
+            }
+
+            if (maxX < point.getX()) {
+                maxX = point.getX();
+            }
+            if (maxY < point.getY()) {
+                maxY = point.getY();
+            }
+            if (maxZ < point.getZ()) {
+                maxZ = point.getZ();
+            }
+        }
+
+        return new Bounds3D(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    public static Bounds3D fromPoints(Point3D... points) {
+        return fromPoints(Arrays.asList(points));
+    }
+
+    public static Bounds3D fromVectors(Collection<Vector3f> points) {
+        final List<Point3D> list = new ArrayList<>();
+        for (final Vector3f point : points) {
+            list.add(new Point3D(point));
+        }
+        return fromPoints(list);
+    }
+
+    public static Bounds3D fromVectors(Vector3f... points) {
+        return fromVectors(Arrays.asList(points));
+    }
+
     private final float left, top, front;
     private final float width, height, depth;
 

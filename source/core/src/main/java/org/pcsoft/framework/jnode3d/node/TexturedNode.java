@@ -12,6 +12,10 @@ public abstract class TexturedNode extends RenderableObjectNode {
     private Color textureBorderColor = Color.WHITE;
     private TextureDistanceFilter textureDistanceMinifying = null, textureDistanceMagnifying = null;
 
+    public TexturedNode(int fragmentCount) {
+        super(fragmentCount);
+    }
+
     public TextureBorderFilter getTextureBorderFilterS() {
         return textureBorderFilterS;
     }

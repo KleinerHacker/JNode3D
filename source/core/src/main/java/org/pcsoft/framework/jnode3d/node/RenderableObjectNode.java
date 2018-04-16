@@ -6,28 +6,31 @@ import org.pcsoft.framework.jnode3d.internal.manager.BufferManager;
 import org.pcsoft.framework.jnode3d.material.EmptyMaterial;
 import org.pcsoft.framework.jnode3d.material.Material;
 import org.pcsoft.framework.jnode3d.type.CullMode;
+import org.pcsoft.framework.jnode3d.type.Fragment;
 import org.pcsoft.framework.jnode3d.type.PolygonMode;
-import org.pcsoft.framework.jnode3d.type.Vertex;
 import org.pcsoft.framework.jnode3d.type.geom.Bounds3D;
 
 public abstract class RenderableObjectNode extends TransformableNode {
-    protected Vertex[] vertices = new Vertex[0];
-    protected int[] indices = new int[0];
+    protected final Fragment[] fragments;
 
     protected boolean depthTestActive = true;
     protected PolygonMode polygonMode = PolygonMode.Fill;
     private Material material = new EmptyMaterial();
 
-    public RenderableObjectNode() {
-        BufferManager.getInstance().registerBuffer(this);
+    public RenderableObjectNode(int fragmentCount) {
+        fragments = new Fragment[fragmentCount];
+        for (int i=0; i<fragmentCount; i++) {
+            fragments[i] = new Fragment();
+            BufferManager.getInstance().registerBuffer(this, i);
+        }
     }
 
-    public Vertex[] getVertices() {
-        return vertices;
-    }
-
-    public int[] getIndices() {
-        return indices;
+    /**
+     * For internal use only!
+     * @return
+     */
+    public Fragment[] getFragments() {
+        return fragments;
     }
 
     public Material getMaterial() {
@@ -88,6 +91,9 @@ public abstract class RenderableObjectNode extends TransformableNode {
     @Override
     protected void _dispose() {
         super._dispose();
-        BufferManager.getInstance().unregisterBuffer(this);
+        for (int i=0; i<fragments.length; i++) {
+            BufferManager.getInstance().unregisterBuffer(this, i);
+            fragments[i] = null;
+        }
     }
 }

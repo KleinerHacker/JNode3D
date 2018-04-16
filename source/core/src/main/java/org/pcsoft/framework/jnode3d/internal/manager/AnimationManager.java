@@ -20,12 +20,12 @@ public final class AnimationManager implements Manager {
     }
 
     public void registerAnimation(AnimationBase animation) {
-        LOGGER.debug("Register animation");
+        LOGGER.debug("Register animation " + animation.getDebugName());
         animationList.add(animation);
     }
 
     public void unregisterAnimation(AnimationBase animation) {
-        LOGGER.debug("Unregister animation");
+        LOGGER.debug("Unregister animation " + animation.getDebugName());
         animationList.remove(animation);
     }
 

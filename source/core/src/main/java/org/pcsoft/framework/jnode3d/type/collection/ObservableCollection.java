@@ -57,6 +57,10 @@ public final class ObservableCollection<T> implements Iterable<T> {
         return list.containsAll(c);
     }
 
+    public boolean addAll(T... c) {
+        return addAll(Arrays.asList(c));
+    }
+
     public boolean addAll(Collection<? extends T> c) {
         final boolean result = list.addAll(c);
         if (result) {
@@ -66,6 +70,11 @@ public final class ObservableCollection<T> implements Iterable<T> {
 
         return result;
     }
+
+    public boolean addAll(int index, T... c) {
+        return addAll(index, Arrays.asList(c));
+    }
+
     public boolean addAll(int index, Collection<? extends T> c) {
         final boolean result = list.addAll(index, c);
         if (result) {
@@ -74,6 +83,10 @@ public final class ObservableCollection<T> implements Iterable<T> {
         }
 
         return result;
+    }
+
+    public boolean removeAll(T... c) {
+        return removeAll(Arrays.asList(c));
     }
 
     @SuppressWarnings("unchecked")

@@ -2,9 +2,62 @@ package org.pcsoft.framework.jnode3d.type.geom;
 
 import org.joml.Vector2f;
 
-import java.util.Objects;
+import java.util.*;
 
 public class Bounds2D {
+    public static Bounds2D create(float left, float top, float right, float bottom) {
+        return new Bounds2D(left, top, right - top, bottom - top);
+    }
+
+    public static Bounds2D create(Vector2f position, Vector2f rbPosition) {
+        return create(position.x, position.y, rbPosition.x, rbPosition.y);
+    }
+
+    public static Bounds2D create(Point2D position, Point2D rbPosition) {
+        return create(position.getX(), position.getY(), rbPosition.getX(), rbPosition.getY());
+    }
+
+    public static Bounds2D fromPoints(Collection<Point2D> points) {
+        float minX, minY;
+        minX = minY = Float.MAX_VALUE;
+        float maxX, maxY;
+        maxX = maxY = Float.MIN_VALUE;
+
+        for (final Point2D point : points) {
+            if (minX > point.getX()) {
+                minX = point.getX();
+            }
+            if (minY > point.getY()) {
+                minY = point.getY();
+            }
+
+            if (maxX < point.getX()) {
+                maxX = point.getX();
+            }
+            if (maxY < point.getY()) {
+                maxY = point.getY();
+            }
+        }
+
+        return new Bounds2D(minX, minY, maxX, maxY);
+    }
+
+    public static Bounds2D fromPoints(Point2D... points) {
+        return fromPoints(Arrays.asList(points));
+    }
+
+    public static Bounds2D fromVectors(Collection<Vector2f> points) {
+        final List<Point2D> list = new ArrayList<>();
+        for (final Vector2f point : points) {
+            list.add(new Point2D(point));
+        }
+        return fromPoints(list);
+    }
+
+    public static Bounds2D fromVectors(Vector2f... points) {
+        return fromVectors(Arrays.asList(points));
+    }
+
     private final float left, top;
     private final float width, height;
 

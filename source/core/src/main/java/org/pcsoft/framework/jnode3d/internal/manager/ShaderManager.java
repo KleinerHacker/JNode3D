@@ -76,7 +76,7 @@ public final class ShaderManager implements OpenGLDependendManager {
 
     //<editor-fold desc="Register / Unregister">
     public void registerShaderProgram(Material material) {
-        LOGGER.debug("Register shader program for material (initialized: " + isInitialized() + ")");
+        LOGGER.debug("Register shader program for material " + material.getDebugName() + " (initialized: " + isInitialized() + ")");
 
         if (isInitialized()) {
             final ShaderProgramReference shaderProgramReference = buildShader(material, true);
@@ -87,7 +87,7 @@ public final class ShaderManager implements OpenGLDependendManager {
     }
 
     public void unregisterShaderProgram(Material material) {
-        LOGGER.debug("Unregister shader program for material (initialized: " + isInitialized() + ")");
+        LOGGER.debug("Unregister shader program for material " + material.getDebugName() + " (initialized: " + isInitialized() + ")");
 
         if (initialized) {
             deleteShader(material);
@@ -98,7 +98,7 @@ public final class ShaderManager implements OpenGLDependendManager {
 
     public void updateUniformValues(Material material, String propertyName) {
         if (!isInitialized())
-            throw new IllegalStateException("Unable to update uniform values yet: not initialized");
+            throw new IllegalStateException("Unable to update uniform values yet: not initialized (material: " + material.getDebugName() + ")");
 
         final ShaderProgramReference shaderProgramReference = shaderProgramMap.get(material);
         updateUniformValues(material, shaderProgramReference, propertyName);
@@ -119,7 +119,7 @@ public final class ShaderManager implements OpenGLDependendManager {
 
     public ShaderProgramReference getShaderProgramReference(Material material) {
         if (!shaderProgramMap.containsKey(material))
-            throw new IllegalArgumentException("Unable to find material");
+            throw new IllegalArgumentException("Given material is not registered: " + material.getDebugName());
 
         return shaderProgramMap.get(material);
     }

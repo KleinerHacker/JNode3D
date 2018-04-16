@@ -20,7 +20,9 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
     private float textureTranslationX = 0f, textureTranslationY = 0f;
     private Bounds3D bounds = new Bounds3D();
 
-    protected ConstructedObjectNode(Class<CK> colorKeyClass) {
+    protected ConstructedObjectNode(Class<CK> colorKeyClass, Class<? extends ConstructedObjectNode<CK>> clazz) {
+        super(ProcessorFactory.getVertexCalculationProcessor(clazz).getCountOfFragments());
+
         if (!colorKeyClass.isEnum())
             throw new IllegalArgumentException("colorKeyClass must be an enumeration");
 
@@ -91,95 +93,74 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForPositionAndNormals() {
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
-        final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this);
-        final Vector3f[] normals = vertexCalculationProcessor.recalculateNormals(this);
+        for (int i = 0; i < vertexCalculationProcessor.getCountOfFragments(); i++) {
+            final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this, i);
+            final Vector3f[] normals = vertexCalculationProcessor.recalculateNormals(this, i);
 
-        final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this);
-        for (int i = 0; i< countOfVertices; i++) {
-            vertices[i].setPosition(points[i]);
-            vertices[i].setNormal(normals[i]);
+            final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this, i);
+            for (int j = 0; j < countOfVertices; j++) {
+                fragments[i].getVertices()[j].setPosition(points[j]);
+                fragments[i].getVertices()[j].setNormal(normals[j]);
+            }
+
+            this.bounds = Bounds3D.fromVectors(points);
+
+            BufferManager.getInstance().updateBuffer(this, i);
         }
-
-        recalculateBounds(points);
-
-        BufferManager.getInstance().updateBuffer(this);
     }
 
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForTextureCoordinates() {
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
-        final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this);
+        for (int i = 0; i < vertexCalculationProcessor.getCountOfFragments(); i++) {
+            final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this, i);
 
-        final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this);
-        for (int i = 0; i< countOfVertices; i++) {
-            vertices[i].setTextureCoordinate(textureCoordinates[i]);
+            final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this, i);
+            for (int j = 0; j < countOfVertices; j++) {
+                fragments[i].getVertices()[j].setTextureCoordinate(textureCoordinates[j]);
+            }
+
+            BufferManager.getInstance().updateBuffer(this, i);
         }
-
-        BufferManager.getInstance().updateBuffer(this);
     }
 
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForColors() {
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
-        final Color[] colors = vertexCalculationProcessor.recalculateColors(this);
+        for (int i = 0; i < vertexCalculationProcessor.getCountOfFragments(); i++) {
+            final Color[] colors = vertexCalculationProcessor.recalculateColors(this, i);
 
-        final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this);
-        for (int i = 0; i< countOfVertices; i++) {
-            vertices[i].setColor(colors[i]);
+            final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this, i);
+            for (int j = 0; j < countOfVertices; j++) {
+                fragments[i].getVertices()[j].setColor(colors[j]);
+            }
+
+            BufferManager.getInstance().updateBuffer(this, i);
         }
-
-        BufferManager.getInstance().updateBuffer(this);
     }
 
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForAll() {
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
-        final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this);
-        final Vector3f[] normals = vertexCalculationProcessor.recalculateNormals(this);
-        final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this);
-        final Color[] colors = vertexCalculationProcessor.recalculateColors(this);
+        for (int i = 0; i<vertexCalculationProcessor.getCountOfFragments(); i++) {
+            final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this, i);
+            final Vector3f[] normals = vertexCalculationProcessor.recalculateNormals(this, i);
+            final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this, i);
+            final Color[] colors = vertexCalculationProcessor.recalculateColors(this, i);
 
-        final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this);
-        vertices = new Vertex[countOfVertices];
-        for (int i = 0; i< countOfVertices; i++) {
-            vertices[i] = new Vertex(points[i], textureCoordinates[i], colors[i], normals[i]);
+            final int countOfVertices = vertexCalculationProcessor.getCountOfVertices(this, i);
+            fragments[i].setVertices(new Vertex[countOfVertices]);
+            for (int j = 0; j < countOfVertices; j++) {
+                fragments[i].getVertices()[j] = new Vertex(points[j], textureCoordinates[j], colors[j], normals[j]);
+            }
+            
+            final int[] indices = vertexCalculationProcessor.recalculateIndices(this, i);
+            fragments[i].setIndices(indices);
+
+            this.bounds = Bounds3D.fromVectors(points);
+
+            BufferManager.getInstance().updateBuffer(this, i);
         }
-        this.indices = vertexCalculationProcessor.recalculateIndices(this);
-
-        recalculateBounds(points);
-
-        BufferManager.getInstance().updateBuffer(this);
     }
     //</editor-fold>
-    
-    private void recalculateBounds(Vector3f[] points) {
-        float minX, minY, minZ;
-        minX = minY = minZ = Float.MAX_VALUE;
-        float maxX, maxY, maxZ;
-        maxX = maxY = maxZ = Float.MIN_VALUE;
-
-        for (final Vector3f point : points) {
-            if (minX > point.x) {
-                minX = point.x;
-            }
-            if (minY > point.y) {
-                minY = point.y;
-            }
-            if (minZ > point.z) {
-                minZ = point.z;
-            }
-
-            if (maxX < point.x) {
-                maxX = point.x;
-            }
-            if (maxY < point.y) {
-                maxY = point.y;
-            }
-            if (maxZ < point.z) {
-                maxZ = point.z;
-            }
-        }
-
-        bounds = new Bounds3D(minX, minY, minZ, maxX, maxY, maxZ);
-    }
 }

@@ -20,7 +20,7 @@ public final class TriangleNode extends ConstructedObjectNode<TriangleNode.Point
     }
 
     public TriangleNode(float width, float height, float topPercentage) {
-        super(Points.class);
+        super(Points.class, TriangleNode.class);
         this.width = width;
         this.height = height;
         this.topPercentage = topPercentage;

@@ -6,6 +6,23 @@ public abstract class AnimationBase {
     private long lastCall = 0;
     private boolean disposed = false;
     private boolean started = false;
+    private String debugName;
+
+    public AnimationBase() {
+        debugName = getClass().getName();
+    }
+
+    /**
+     * Returns the debug name for logging
+     * @return
+     */
+    public String getDebugName() {
+        return debugName;
+    }
+
+    public void setDebugName(String debugName) {
+        this.debugName = debugName;
+    }
 
     public final void callLoop() {
         final long nanoTime = System.nanoTime();

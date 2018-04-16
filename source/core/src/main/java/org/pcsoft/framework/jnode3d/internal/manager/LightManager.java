@@ -80,7 +80,7 @@ public final class LightManager implements OpenGLDependendManager {
     }
 
     public void registerLight(PositionableLight light) {
-        LOGGER.debug("Register light");
+        LOGGER.debug("Register light " + light.getDebugName());
 
         lightList.add(light);
         light.addChangedListener(positionableLightHandler);
@@ -88,7 +88,7 @@ public final class LightManager implements OpenGLDependendManager {
     }
 
     public void unregisterLight(PositionableLight light) {
-        LOGGER.debug("Unregister light");
+        LOGGER.debug("Unregister light " + light.getDebugName());
 
         light.removeChangedListener(positionableLightHandler);
         lightList.remove(light);

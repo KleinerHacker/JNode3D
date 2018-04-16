@@ -8,12 +8,14 @@ import java.util.List;
 public abstract class Light {
     private Color color = Color.WHITE;
     private float power = 1f;
+    private String debugName;
 
     private final List<ValueChangedListener<Light>> changedListenerList = new ArrayList<>();
     private final List<ValueChangedListener<Color>> colorChangedListenerList = new ArrayList<>();
     private final List<ValueChangedListener<Float>> powerChangedListenerList = new ArrayList<>();
 
     public Light() {
+        debugName = getClass().getName();
     }
 
     public Light(Color color) {
@@ -24,6 +26,18 @@ public abstract class Light {
     public Light(Color color, float power) {
         this(color);
         this.power = power;
+    }
+
+    /**
+     * Returns the debug name for logging
+     * @return
+     */
+    public String getDebugName() {
+        return debugName;
+    }
+
+    public void setDebugName(String debugName) {
+        this.debugName = debugName;
     }
 
     public Color getColor() {

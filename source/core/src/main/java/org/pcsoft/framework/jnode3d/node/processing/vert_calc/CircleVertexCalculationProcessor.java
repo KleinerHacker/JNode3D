@@ -3,15 +3,15 @@ package org.pcsoft.framework.jnode3d.node.processing.vert_calc;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.node.CircleNode;
-import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
+import org.pcsoft.framework.jnode3d.node.processing.SimpleVertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.RenderMode;
 
 import java.util.Arrays;
 
-public final class CircleVertexCalculationProcessor implements VertexCalculationProcessor<CircleNode> {
+public final class CircleVertexCalculationProcessor extends SimpleVertexCalculationProcessor<CircleNode> {
     @Override
-    public Vector3f[] recalculatePoints(CircleNode node) {
+    protected Vector3f[] recalculatePoints(CircleNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Vector3f[] points = new Vector3f[countOfVertices];
 
@@ -30,7 +30,7 @@ public final class CircleVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public Vector3f[] recalculateNormals(CircleNode node) {
+    protected Vector3f[] recalculateNormals(CircleNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Vector3f[] normals = new Vector3f[countOfVertices];
         Arrays.fill(normals, new Vector3f(0f, 0f, -1f));
@@ -39,7 +39,7 @@ public final class CircleVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public Color[] recalculateColors(CircleNode node) {
+    protected Color[] recalculateColors(CircleNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Color[] colors = new Color[countOfVertices];
         colors[0] = node.getColorAt(CircleNode.Points.Center);
@@ -49,7 +49,7 @@ public final class CircleVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public Vector2f[] recalculateTextureCoordinates(CircleNode node) {
+    protected Vector2f[] recalculateTextureCoordinates(CircleNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Vector2f[] coordinates = new Vector2f[countOfVertices];
 
@@ -67,7 +67,7 @@ public final class CircleVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public int[] recalculateIndices(CircleNode node) {
+    protected int[] recalculateIndices(CircleNode node) {
         final int countOfIndices = getCountOfIndices(node);
         final int[] indices = new int[countOfIndices];
 
@@ -81,17 +81,17 @@ public final class CircleVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public int getCountOfVertices(CircleNode node) {
+    protected int getCountOfVertices(CircleNode node) {
         return node.getTiles() + 1;
     }
 
     @Override
-    public int getCountOfIndices(CircleNode node) {
+    protected int getCountOfIndices(CircleNode node) {
         return node.getTiles() + 2;
     }
 
     @Override
-    public RenderMode getRenderMode() {
+    protected RenderMode getRenderMode() {
         return RenderMode.TriangleFan;
     }
 }

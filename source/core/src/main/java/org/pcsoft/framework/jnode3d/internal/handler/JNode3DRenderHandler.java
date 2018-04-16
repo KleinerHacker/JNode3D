@@ -28,9 +28,11 @@ final class JNode3DRenderHandler {
                 ogl.glUseProgram(shaderProgramReference);
             }
 
-            //Draw
-            final RenderMode renderMode = ProcessorFactory.getVertexCalculationProcessor((Class)renderableObjectNode.getClass()).getRenderMode();
-            ogl.glDrawBuffer(renderMode, BufferManager.getInstance().getBuffer(renderableObjectNode));
+            //Draw (all fragments)
+            for (int i=0; i<renderableObjectNode.getFragments().length; i++) {
+                final RenderMode renderMode = ProcessorFactory.getVertexCalculationProcessor((Class) renderableObjectNode.getClass()).getRenderMode(i);
+                ogl.glDrawBuffer(renderMode, BufferManager.getInstance().getBuffer(renderableObjectNode, i));
+            }
 
             //Cleanup
             ogl.glUseProgram(null);

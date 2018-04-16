@@ -3,15 +3,15 @@ package org.pcsoft.framework.jnode3d.node.processing.vert_calc;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.node.BoxNode;
-import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
+import org.pcsoft.framework.jnode3d.node.processing.SimpleVertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.RenderMode;
 
-public final class BoxVertexCalculationProcessor implements VertexCalculationProcessor<BoxNode> {
+public final class BoxVertexCalculationProcessor extends SimpleVertexCalculationProcessor<BoxNode> {
     private static final int SIDES = 6, VERTICES_PER_SIDE = 4, INDICES_PER_SIDE = 6;
 
     @Override
-    public Vector3f[] recalculatePoints(BoxNode node) {
+    protected Vector3f[] recalculatePoints(BoxNode node) {
         return new Vector3f[] {
                 //Top
                 new Vector3f(-node.getWidth() / 2, -node.getHeight() / 2, node.getDepth() / 2),
@@ -47,7 +47,7 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public Vector3f[] recalculateNormals(BoxNode node) {
+    protected Vector3f[] recalculateNormals(BoxNode node) {
         return new Vector3f[] {
                 //Top
                 new Vector3f(0, -1, 0),
@@ -83,7 +83,7 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public Color[] recalculateColors(BoxNode node) {
+    protected Color[] recalculateColors(BoxNode node) {
         return new Color[] {
                 //Top
                 node.getColorAt(BoxNode.Points.TopLeftBack),
@@ -119,7 +119,7 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public Vector2f[] recalculateTextureCoordinates(BoxNode node) {
+    protected Vector2f[] recalculateTextureCoordinates(BoxNode node) {
         return new Vector2f[] {
                 //Top
                 new Vector2f(0, 0),
@@ -155,7 +155,7 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public int[] recalculateIndices(BoxNode node) {
+    protected int[] recalculateIndices(BoxNode node) {
         return new int[] {
                 //Top
                 0, 1, 2,
@@ -179,17 +179,17 @@ public final class BoxVertexCalculationProcessor implements VertexCalculationPro
     }
 
     @Override
-    public int getCountOfVertices(BoxNode node) {
+    protected int getCountOfVertices(BoxNode node) {
         return SIDES * VERTICES_PER_SIDE;
     }
 
     @Override
-    public int getCountOfIndices(BoxNode node) {
+    protected int getCountOfIndices(BoxNode node) {
         return SIDES * INDICES_PER_SIDE;
     }
 
     @Override
-    public RenderMode getRenderMode() {
+    protected RenderMode getRenderMode() {
         return RenderMode.Triangles;
     }
 }

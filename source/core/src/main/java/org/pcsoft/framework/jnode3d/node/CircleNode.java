@@ -20,7 +20,7 @@ public final class CircleNode extends ConstructedObjectNode<CircleNode.Points> {
     }
 
     public CircleNode(float radius, int tiles) {
-        super(Points.class);
+        super(Points.class, CircleNode.class);
         this.radius = radius;
         this.tiles = tiles;
 

@@ -13,8 +13,25 @@ public abstract class Node {
     private boolean disposed = false;
     private JNode3DScene scene = null;
     private GroupNode parent = null;
+    private String debugName;
 
     private final List<ChangedListener<Node>> sceneChangedListenerList = new ArrayList<>();
+
+    public Node() {
+        debugName = getClass().getName();
+    }
+
+    /**
+     * Returns the name for this node for checking debug log
+     * @return
+     */
+    public String getDebugName() {
+        return debugName;
+    }
+
+    public void setDebugName(String debugName) {
+        this.debugName = debugName;
+    }
 
     public JNode3DScene getScene() {
         return scene;

@@ -3,15 +3,15 @@ package org.pcsoft.framework.jnode3d.node.processing.vert_calc;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.node.SphereNode;
-import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
+import org.pcsoft.framework.jnode3d.node.processing.SimpleVertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.RenderMode;
 
 import java.util.Arrays;
 
-public final class SphereVertexCalculationProcessor implements VertexCalculationProcessor<SphereNode> {
+public final class SphereVertexCalculationProcessor extends SimpleVertexCalculationProcessor<SphereNode> {
     @Override
-    public Vector3f[] recalculatePoints(SphereNode node) {
+    protected Vector3f[] recalculatePoints(SphereNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Vector3f[] points = new Vector3f[countOfVertices];
 
@@ -38,7 +38,7 @@ public final class SphereVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public Vector3f[] recalculateNormals(SphereNode node) {
+    protected Vector3f[] recalculateNormals(SphereNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Vector3f[] normals = new Vector3f[countOfVertices];
 
@@ -65,7 +65,7 @@ public final class SphereVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public Color[] recalculateColors(SphereNode node) {
+    protected Color[] recalculateColors(SphereNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Color[] colors = new Color[countOfVertices];
         Arrays.fill(colors, node.getColorAt(SphereNode.Points.Body));
@@ -74,7 +74,7 @@ public final class SphereVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public Vector2f[] recalculateTextureCoordinates(SphereNode node) {
+    protected Vector2f[] recalculateTextureCoordinates(SphereNode node) {
         final int countOfVertices = getCountOfVertices(node);
         final Vector2f[] coordinates = new Vector2f[countOfVertices];
 
@@ -95,7 +95,7 @@ public final class SphereVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public int[] recalculateIndices(SphereNode node) {
+    protected int[] recalculateIndices(SphereNode node) {
         final int countOfIndices = getCountOfIndices(node);
         final int[] indices = new int[countOfIndices];
 
@@ -116,17 +116,17 @@ public final class SphereVertexCalculationProcessor implements VertexCalculation
     }
 
     @Override
-    public int getCountOfVertices(SphereNode node) {
+    protected int getCountOfVertices(SphereNode node) {
         return node.getRings() * node.getSectors();
     }
 
     @Override
-    public int getCountOfIndices(SphereNode node) {
+    protected int getCountOfIndices(SphereNode node) {
         return node.getRings() * node.getSectors() * 4;
     }
 
     @Override
-    public RenderMode getRenderMode() {
+    protected RenderMode getRenderMode() {
         return RenderMode.Quads;
     }
 }

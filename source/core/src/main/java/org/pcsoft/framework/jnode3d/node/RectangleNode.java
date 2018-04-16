@@ -15,7 +15,7 @@ public final class RectangleNode extends ConstructedObjectNode<RectangleNode.Poi
     }
 
     public RectangleNode(float width, float height) {
-        super(Points.class);
+        super(Points.class, RectangleNode.class);
         this.width = width;
         this.height = height;
 
