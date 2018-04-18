@@ -23,6 +23,10 @@ public final class Color {
         this(color.r, color.g, color.b, a);
     }
 
+    public Color(float r, float g, float b) {
+        this(r, g, b, 1f);
+    }
+
     public Color(float r, float g, float b, float a) {
         this.r = r;
         this.g = g;

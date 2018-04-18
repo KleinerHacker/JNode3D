@@ -8,12 +8,15 @@ import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.PolygonMode;
 import org.pcsoft.framework.jnode3d.type.geom.Point3D;
 import org.pcsoft.framework.jnode3d.type.transformation.Rotation;
+import org.pcsoft.framework.jnode3d.type.transformation.Scaling;
 import org.pcsoft.framework.jnode3d.type.transformation.Translation;
+
+import java.io.IOException;
 
 public abstract class JNode3DTest {
     private static final Vector3f camPos = new Vector3f(-3f, 2f, -3f);
 
-    protected static void buildScene(JNode3DStandalone standalone) {
+    protected static void buildScene(JNode3DStandalone standalone) throws IOException {
         final GroupNode root = new GroupNode();
         root.getChildren().add(buildSphere());
         root.getChildren().add(buildBox());
@@ -21,6 +24,7 @@ public abstract class JNode3DTest {
         root.getChildren().add(buildPolygon());
         root.getChildren().add(buildCylinder());
         root.getChildren().add(buildRotationObject());
+        root.getChildren().add(buildHeightMap());
         final PointLightNode pointLightNode = new PointLightNode();
         pointLightNode.getTransformationList().add(new Translation(new Vector3f(1.25f, 1f, 1.25f)));
         root.getChildren().add(pointLightNode);
@@ -121,6 +125,21 @@ public abstract class JNode3DTest {
         rotationObjectNode.setColorAt(RotationObjectNode.Points.BottomCircleCenter, Color.GREEN);
 
         return rotationObjectNode;
+    }
+
+    public static Node buildHeightMap() throws IOException {
+        final HeightMapNode heightMapNode = new HeightMapNode(JNode3DTest.class.getResourceAsStream("/hm/rivers.png"));
+        heightMapNode.setColorAt(HeightMapNode.Points.Bottom, Color.BLUE);
+        heightMapNode.setColorAt(HeightMapNode.Points.VeryLow, new Color(0.5f, 0.5f, 0f));
+        heightMapNode.setColorAt(HeightMapNode.Points.Low, Color.YELLOW);
+        heightMapNode.setColorAt(HeightMapNode.Points.Medium, new Color(0f, 0.5f, 0f));
+        heightMapNode.setColorAt(HeightMapNode.Points.Height, Color.GREEN);
+        heightMapNode.setColorAt(HeightMapNode.Points.VeryHeight, new Color(0.9f, 0.9f, 0.9f));
+        heightMapNode.setColorAt(HeightMapNode.Points.Top, Color.WHITE);
+        heightMapNode.getTransformationList().add(new Translation(0f, -2f, 0f));
+        heightMapNode.getTransformationList().add(new Scaling(0.01f, 1f, 0.01f));
+
+        return heightMapNode;
     }
 
     private static PerspectiveLookAtCamera buildCamera() {

@@ -3,9 +3,11 @@ package org.pcsoft.framework.jnode3d.desktop;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfigurationBuilder;
 
+import java.io.IOException;
+
 public class JNode3DWindowTest extends JNode3DTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final JNode3DConfiguration configuration = JNode3DConfigurationBuilder.create()
                 .withVSync(true)
                 .build();

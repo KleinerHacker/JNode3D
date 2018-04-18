@@ -5,6 +5,10 @@ import org.joml.Vector3f;
 public final class Scaling extends Transformation {
     private final float x, y, z;
 
+    public Scaling(float factor) {
+        this(factor, factor, factor);
+    }
+
     public Scaling(Vector3f scale) {
         this(scale.x, scale.y, scale.z);
     }

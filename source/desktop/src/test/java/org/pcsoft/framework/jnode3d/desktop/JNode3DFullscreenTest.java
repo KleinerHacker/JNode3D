@@ -4,9 +4,10 @@ import org.pcsoft.framework.jnode3d.config.JNode3DConfiguration;
 import org.pcsoft.framework.jnode3d.config.JNode3DConfigurationBuilder;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class JNode3DFullscreenTest extends JNode3DTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final JNode3DConfiguration configuration = JNode3DConfigurationBuilder.create()
                 .withVSync(true)
                 .build();
