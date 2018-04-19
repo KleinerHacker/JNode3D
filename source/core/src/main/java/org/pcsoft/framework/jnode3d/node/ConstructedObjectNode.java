@@ -1,5 +1,7 @@
 package org.pcsoft.framework.jnode3d.node;
 
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.pcsoft.framework.jnode3d.internal.manager.BufferManager;
@@ -8,11 +10,16 @@ import org.pcsoft.framework.jnode3d.node.processing.VertexCalculationProcessor;
 import org.pcsoft.framework.jnode3d.type.Color;
 import org.pcsoft.framework.jnode3d.type.Vertex;
 import org.pcsoft.framework.jnode3d.type.geom.Bounds3D;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConstructedObjectNode.class);
+    private static final StopWatch STOP_WATCH = new StopWatch();
+
     private final Class<CK> colorKeyClass;
     private final Map<CK, Color> colorMap = new HashMap<>();
 
@@ -92,6 +99,11 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
     //<editor-fold desc="Value Changed">
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForPositionAndNormals() {
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.reset();
+            STOP_WATCH.start();
+        }
+
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
         for (int i = 0; i < vertexCalculationProcessor.getCountOfFragments(); i++) {
             final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this, i);
@@ -107,10 +119,20 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
 
             BufferManager.getInstance().updateBuffer(this, i);
         }
+
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.stop();
+            LOGGER.trace("Rebuild Positions and Normals after " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss,SSS") + "seconds");
+        }
     }
 
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForTextureCoordinates() {
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.reset();
+            STOP_WATCH.start();
+        }
+
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
         for (int i = 0; i < vertexCalculationProcessor.getCountOfFragments(); i++) {
             final Vector2f[] textureCoordinates = vertexCalculationProcessor.recalculateTextureCoordinates(this, i);
@@ -122,10 +144,20 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
 
             BufferManager.getInstance().updateBuffer(this, i);
         }
+
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.stop();
+            LOGGER.trace("Rebuild Texture Coordinates after " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss,SSS") + "seconds");
+        }
     }
 
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForColors() {
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.reset();
+            STOP_WATCH.start();
+        }
+
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
         for (int i = 0; i < vertexCalculationProcessor.getCountOfFragments(); i++) {
             final Color[] colors = vertexCalculationProcessor.recalculateColors(this, i);
@@ -137,10 +169,20 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
 
             BufferManager.getInstance().updateBuffer(this, i);
         }
+
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.stop();
+            LOGGER.trace("Rebuild Colors after " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss,SSS") + "seconds");
+        }
     }
 
     @SuppressWarnings("unchecked")
     protected final void fireValueChangedForAll() {
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.reset();
+            STOP_WATCH.start();
+        }
+
         final VertexCalculationProcessor vertexCalculationProcessor = ProcessorFactory.getVertexCalculationProcessor(this.getClass());
         for (int i = 0; i<vertexCalculationProcessor.getCountOfFragments(); i++) {
             final Vector3f[] points = vertexCalculationProcessor.recalculatePoints(this, i);
@@ -160,6 +202,11 @@ public abstract class ConstructedObjectNode<CK> extends RenderableObjectNode {
             this.bounds = Bounds3D.fromVectors(points);
 
             BufferManager.getInstance().updateBuffer(this, i);
+        }
+
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.stop();
+            LOGGER.trace("Rebuild ALL after " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss,SSS") + "seconds");
         }
     }
     //</editor-fold>

@@ -137,7 +137,7 @@ public abstract class JNode3DTest {
         heightMapNode.setColorAt(HeightMapNode.Points.VeryHeight, new Color(0.9f, 0.9f, 0.9f));
         heightMapNode.setColorAt(HeightMapNode.Points.Top, Color.WHITE);
         heightMapNode.getTransformationList().add(new Translation(0f, -2f, 0f));
-        heightMapNode.getTransformationList().add(new Scaling(0.01f, 1f, 0.01f));
+        heightMapNode.getTransformationList().add(new Scaling(0.01f, 2f, 0.01f));
 
         return heightMapNode;
     }
