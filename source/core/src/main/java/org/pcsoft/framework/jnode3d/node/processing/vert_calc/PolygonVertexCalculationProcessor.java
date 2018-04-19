@@ -30,7 +30,12 @@ public final class PolygonVertexCalculationProcessor extends SimpleVertexCalcula
         final Vector3f[] normals = new Vector3f[countOfVertices];
 
         for (int i = 0; i < countOfVertices; i++) {
-            normals[i] = node.getPointList().get(i).getPoint();
+            final Vector3f levVec1 = i > 0 ? node.getPointList().get(i - 1).getPoint() :
+                    node.getPointList().get(node.getPointList().size() - 1).getPoint();
+            final Vector3f levVec2 = i < node.getPointList().size() - 1 ? node.getPointList().get(i + 1).getPoint() :
+                    node.getPointList().get(0).getPoint();
+
+            normals[i] = levVec1.cross(levVec2);
         }
 
         return normals;

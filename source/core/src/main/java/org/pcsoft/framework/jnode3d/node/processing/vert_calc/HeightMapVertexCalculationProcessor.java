@@ -16,7 +16,7 @@ public final class HeightMapVertexCalculationProcessor extends SimpleVertexCalcu
         int counter = 0;
         for (int row = 0; row < node.getHeightMap().length; row++) {
             for (int column = 0; column < node.getHeightMap()[row].length; column++) {
-                vertices[counter++] = new Vector3f(column - node.getHeightMapWidth() / 2, node.getHeightMap()[row][column] - 0.5f, row - node.getHeightMapHeight() / 2);
+                vertices[counter++] = calculatePoint(node, row, column);
             }
         }
 
@@ -34,7 +34,21 @@ public final class HeightMapVertexCalculationProcessor extends SimpleVertexCalcu
         int counter = 0;
         for (int row = 0; row < node.getHeightMap().length; row++) {
             for (int column = 0; column < node.getHeightMap()[row].length; column++) {
-                normals[counter++] = new Vector3f(column - node.getHeightMapWidth() / 2, node.getHeightMap()[row][column] - 0.5f, row - node.getHeightMapHeight() / 2).normalize();
+                final Vector3f levVec1;
+                if (row < node.getHeightMap().length - 1) {
+                    levVec1 = calculatePoint(node, row + 1, column).sub(calculatePoint(node, row, column));
+                } else {
+                    levVec1 = calculatePoint(node, row, column).sub(calculatePoint(node, row - 1, column));
+                }
+
+                final Vector3f levVec2;
+                if (column < node.getHeightMap()[row].length - 1) {
+                    levVec2 = calculatePoint(node, row, column + 1).sub(calculatePoint(node, row, column));
+                } else {
+                    levVec2 = calculatePoint(node, row, column).sub(calculatePoint(node, row, column - 1));
+                }
+
+                normals[counter++] = levVec1.cross(levVec2).normalize();
             }
         }
 
@@ -133,5 +147,9 @@ public final class HeightMapVertexCalculationProcessor extends SimpleVertexCalcu
     @Override
     protected RenderMode getRenderMode() {
         return RenderMode.Quads;
+    }
+
+    private Vector3f calculatePoint(HeightMapNode node, int row, int column) {
+        return new Vector3f(column - node.getHeightMapWidth() / 2, node.getHeightMap()[row][column] - 0.5f, row - node.getHeightMapHeight() / 2);
     }
 }

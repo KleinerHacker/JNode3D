@@ -32,17 +32,8 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
 
         int counter = 0;
         for (int i = 0; i < node.getTiles(); i++) {
-            vertices[counter++] = new Vector3f(
-                    (float) Math.sin(part * i) * node.getTopRadius(),
-                    node.getHeight() / 2f,
-                    (float) Math.cos(part * i) * node.getTopRadius()
-            );
-
-            vertices[counter++] = new Vector3f(
-                    (float) Math.sin(part * i) * node.getBottomRadius(),
-                    -node.getHeight() / 2f,
-                    (float) Math.cos(part * i) * node.getBottomRadius()
-            );
+            vertices[counter++] = calculateTopPoint(part * i, node);
+            vertices[counter++] = calculateBottomPoint(part * i, node);
         }
 
         if (counter != countOfVertices)
@@ -103,9 +94,10 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
 
         return vertices;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Normals">
+
     @Override
     public Vector3f[] recalculateNormals(CylinderNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -118,7 +110,6 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
                 throw new RuntimeException();
         }
     }
-
     private Vector3f[] recalculateNormalsForBody(CylinderNode node) {
         final int countOfVertices = getCountOfVertices(node, FRAG_BODY);
         final Vector3f[] normals = new Vector3f[countOfVertices];
@@ -127,17 +118,16 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
 
         int counter = 0;
         for (int i = 0; i < node.getTiles(); i++) {
-            normals[counter++] = new Vector3f(
-                    (float) Math.sin(part * i) * node.getBottomRadius(),
-                    0f, //TODO: Optimize for radius difference
-                    (float) Math.cos(part * i) * node.getBottomRadius()
-            ).normalize();
+            final Vector3f levVec1;
+            if (i < node.getTiles()-1) {
+                levVec1 = calculateBottomPoint(part * (i + 1), node).sub(calculateBottomPoint(part * i, node));
+            } else {
+                levVec1 = calculateBottomPoint(0, node).sub(calculateBottomPoint(part * i, node));
+            }
+            final Vector3f levVec2 = calculateTopPoint(part * i, node).sub(calculateBottomPoint(part * i, node));
 
-            normals[counter++] = new Vector3f(
-                    (float) Math.sin(part * i) * node.getTopRadius(),
-                    0f, //TODO: Optimize for radius difference
-                    (float) Math.cos(part * i) * node.getTopRadius()
-            ).normalize();
+            normals[counter++] = levVec1.cross(levVec2).normalize();
+            normals[counter++] = levVec1.cross(levVec2).normalize();
         }
 
         if (counter != countOfVertices)
@@ -184,9 +174,10 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
 
         return normals;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Colors">
+
     @Override
     public Color[] recalculateColors(CylinderNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -199,7 +190,6 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
                 throw new RuntimeException();
         }
     }
-
     private Color[] recalculateColorsForBody(CylinderNode node) {
         final int countOfVertices = getCountOfVertices(node, FRAG_BODY);
         final Color[] colors = new Color[countOfVertices];
@@ -264,9 +254,10 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
 
         return colors;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Texture Coordinates">
+
     @Override
     public Vector2f[] recalculateTextureCoordinates(CylinderNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -279,7 +270,6 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
                 throw new RuntimeException();
         }
     }
-
     private Vector2f[] recalculateTextureCoordinatesForBody(CylinderNode node) {
         final int countOfVertices = getCountOfVertices(node, FRAG_BODY);
         final Vector2f[] textureCoordinates = new Vector2f[countOfVertices];
@@ -328,9 +318,10 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
 
         return textureCoordinates;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Indices">
+
     @Override
     public int[] recalculateIndices(CylinderNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -343,7 +334,6 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
                 throw new RuntimeException();
         }
     }
-
     private int[] recalculateIndicesForBody(CylinderNode node) {
         final int countOfIndices = getCountOfIndices(node, FRAG_BODY);
         final int[] indices = new int[countOfIndices];
@@ -407,8 +397,8 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
 
         return indices;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     @Override
     public int getCountOfVertices(CylinderNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -469,11 +459,28 @@ public final class CylinderVertexCalculationProcessor implements VertexCalculati
         }
 
         private final int fragmentIndex;
-        private final int multiplier;
 
+        private final int multiplier;
         ConclusionType(int fragmentIndex, int multiplier) {
             this.fragmentIndex = fragmentIndex;
             this.multiplier = multiplier;
         }
+
+    }
+
+    private Vector3f calculateTopPoint(float partResult, CylinderNode node) {
+        return new Vector3f(
+                (float) Math.sin(partResult) * node.getTopRadius(),
+                node.getHeight() / 2f,
+                (float) Math.cos(partResult) * node.getTopRadius()
+        );
+    }
+
+    private Vector3f calculateBottomPoint(float partResult, CylinderNode node) {
+        return new Vector3f(
+                (float) Math.sin(partResult) * node.getBottomRadius(),
+                -node.getHeight() / 2f,
+                (float) Math.cos(partResult) * node.getBottomRadius()
+        );
     }
 }

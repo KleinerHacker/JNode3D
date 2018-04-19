@@ -38,11 +38,7 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
             final float funcY = node.getFunctionCallback().func(funcX);
 
             for (int sector = 0; sector < node.getSectors(); sector++) {
-                vertices[counter++] = new Vector3f(
-                        (float) Math.sin(sectorPart * sector) * funcY,
-                        -node.getHeight() / 2f + ring * ringPart,
-                        (float) Math.cos(sectorPart * sector) * funcY
-                );
+                vertices[counter++] = calculatePoint(node, funcY, ringPart * ring, sectorPart * sector);
             }
         }
 
@@ -104,9 +100,10 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
 
         return vertices;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Normals">
+
     @Override
     public Vector3f[] recalculateNormals(RotationObjectNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -125,7 +122,7 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
         final Vector3f[] normals = new Vector3f[countOfVertices];
 
         final float sectorPart = (float) (2d * Math.PI / node.getSectors());
-        //final float ringPart = node.getHeight() / node.getRings();
+        final float ringPart = node.getHeight() / node.getRings();
         final float xPart = node.getRange().getLength() / node.getRings();
 
         int counter = 0;
@@ -134,11 +131,25 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
             final float funcY = node.getFunctionCallback().func(funcX);
 
             for (int sector = 0; sector < node.getSectors(); sector++) {
-                normals[counter++] = new Vector3f(
-                        (float) Math.sin(sectorPart * sector) * funcY,
-                        0f, //TODO: Optimize for radius difference
-                        (float) Math.cos(sectorPart * sector) * funcY
-                ).normalize();
+                final Vector3f levVec1;
+                if (sector < node.getSectors() - 1) {
+                    levVec1 = calculatePoint(node, funcY, ringPart * ring, sectorPart * (sector + 1)).sub(
+                            calculatePoint(node, funcY, ringPart * ring, sectorPart * sector));
+                } else {
+                    levVec1 = calculatePoint(node, funcY, ringPart * ring, 0).sub(
+                            calculatePoint(node, funcY, ringPart * ring, sectorPart * sector));
+                }
+
+                final Vector3f levVec2;
+                if (ring < node.getRings() - 1) {
+                    levVec2 = calculatePoint(node, funcY, ringPart * (ring + 1), sectorPart * sector).sub(
+                            calculatePoint(node, funcY, ringPart * ring, sectorPart * sector));
+                } else {
+                    levVec2 = calculatePoint(node, funcY, ringPart * ring, sectorPart * sector).sub(
+                            calculatePoint(node, funcY, ringPart * (ring - 1), sectorPart * sector));
+                }
+
+                normals[counter++] = levVec1.cross(levVec2).normalize();
             }
         }
 
@@ -186,9 +197,10 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
 
         return normals;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Colors">
+
     @Override
     public Color[] recalculateColors(RotationObjectNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -258,9 +270,10 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
 
         return colors;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Texture Coordinates">
+
     @Override
     public Vector2f[] recalculateTextureCoordinates(RotationObjectNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -325,9 +338,10 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
 
         return textureCoordinates;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Indices">
+
     @Override
     public int[] recalculateIndices(RotationObjectNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -406,8 +420,8 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
 
         return indices;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     @Override
     public int getCountOfVertices(RotationObjectNode node, int fragmentIndex) {
         switch (fragmentIndex) {
@@ -468,11 +482,21 @@ public final class RotationObjectVertexCalculationProcessor implements VertexCal
         }
 
         private final int fragmentIndex;
+
         private final int multiplier;
 
         ConclusionType(int fragmentIndex, int multiplier) {
             this.fragmentIndex = fragmentIndex;
             this.multiplier = multiplier;
         }
+
+    }
+
+    private Vector3f calculatePoint(RotationObjectNode node, float funcY, float ringResult, float sectorResult) {
+        return new Vector3f(
+                (float) Math.sin(sectorResult) * funcY,
+                -node.getHeight() / 2f + ringResult,
+                (float) Math.cos(sectorResult) * funcY
+        );
     }
 }
